@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>遊戲控制器 (Controller)</title>
+    <style>
+        :root {
+            --primary-bg: #cdeaf7;
+            --panel-bg: rgba(255, 255, 255, 0.9);
+            --border-color: #000;
+            --text-dark: #1f2937;
+            --accent-green: #10b981;
+            --accent-orange: #f59e0b;
+            --accent-red: #ef4444;
+            --accent-blue: #0284c7;
+            --select-yellow: #facc15;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--primary-bg);
+            background-image: radial-gradient(circle, #e0f2fe 0%, #bae6fd 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+            color: var(--text-dark);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1250px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        /* 頂部資訊與控制欄 */
+        .top-row {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 15px;
+        }
+
+        .status-card {
+            background: var(--panel-bg);
+            border-radius: 12px;
+            padding: 8px 15px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            text-align: center;
+            border: 2px solid var(--border-color);
+        }
+
+        .status-item .title {
+            font-size: 0.85rem;
+            color: #4b5563;
+        }
+
+        .status-item .value {
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        /* 倒計時控制器 */
+        .timer-control-card {
+            background: var(--panel-bg);
+            border-radius: 12px;
+            padding: 8px 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            border: 2px solid var(--border-color);
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .input-group label {
+            font-size: 0.75rem;
+            font-weight: bold;
+            color: #374151;
+        }
+
+        .input-group input {
+            width: 70px;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border: 2px solid #9ca3af;
+            border-radius: 8px;
+            padding: 2px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 6px;
+        }
+
+        .btn {
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: opacity 0.2s;
+        }
+
+        .btn:active { opacity: 0.8; }
+        .btn-green { background-color: var(--accent-green); }
+        .btn-orange { background-color: var(--accent-orange); }
+        .btn-red { background-color: var(--accent-red); }
+        .btn-darkblue { background-color: #1e3a8a; }
+
+        /* 玩家數據欄 */
+        .player-bar {
+            background: var(--panel-bg);
+            border-radius: 12px;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border: 2px solid var(--border-color);
+        }
+
+        .val-green { color: var(--accent-green); font-size: 1.3em; font-weight: 800; }
+        .val-orange { color: var(--accent-orange); font-size: 1.2em; font-weight: 800; }
+
+        /* 主操作區域 */
+        .main-layout {
+            display: grid;
+            grid-template-columns: 140px minmax(350px, 1.4fr) 280px;
+            gap: 15px;
+        }
+
+        /* 左側選單 */
+        .menu-panel {
+            background: #fff;
+            border: 3px solid var(--border-color);
+            border-radius: 16px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .menu-btn {
+            background: #e0f2fe;
+            border: 2px solid #38bdf8;
+            color: #0369a1;
+            font-size: 1.05rem;
+            font-weight: bold;
+            padding: 10px 0;
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .menu-btn.active {
+            background: var(--accent-green);
+            color: white;
+            border-color: var(--border-color);
+        }
+
+        /* 中間 11x11 棋盤 */
+        .board {
+            background: #fff;
+            border: 3.5px solid var(--border-color);
+            border-radius: 18px;
+            aspect-ratio: 1 / 1;
+            display: grid;
+            grid-template-columns: repeat(11, 1fr);
+            grid-template-rows: repeat(11, 1fr);
+            padding: 5px;
+            gap: 3px;
+            width: 100%;
+        }
+
+        .board-center {
+            grid-column: 2 / 11;
+            grid-row: 2 / 11;
+            background-image: url('center-image.jpg');
+            background-size: cover;
+            background-position: center;
+            border-radius: 8px;
+            border: 1px dashed #ccc;
+        }
+
+        /* 可按壓的小格子 */
+        .cell {
+            border: 2px solid var(--border-color);
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.9);
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            user-select: none;
+            transition: border-color 0.1s, box-shadow 0.1s;
+        }
+
+        .cell img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            pointer-events: none;
+        }
+
+        /* 🟡 當格子被選取時的外框樣式 */
+        .cell.selected {
+            border: 4px solid var(--select-yellow) !important;
+            box-shadow: 0 0 8px rgba(250, 204, 21, 0.8);
+            z-index: 10;
+        }
+
+        /* 格子 1-40 定位 */
+        .cell:nth-child(1)  { grid-column: 1;  grid-row: 1; }
+        .cell:nth-child(2)  { grid-column: 2;  grid-row: 1; }
+        .cell:nth-child(3)  { grid-column: 3;  grid-row: 1; }
+        .cell:nth-child(4)  { grid-column: 4;  grid-row: 1; }
+        .cell:nth-child(5)  { grid-column: 5;  grid-row: 1; }
+        .cell:nth-child(6)  { grid-column: 6;  grid-row: 1; }
+        .cell:nth-child(7)  { grid-column: 7;  grid-row: 1; }
+        .cell:nth-child(8)  { grid-column: 8;  grid-row: 1; }
+        .cell:nth-child(9)  { grid-column: 9;  grid-row: 1; }
+        .cell:nth-child(10) { grid-column: 10; grid-row: 1; }
+        .cell:nth-child(11) { grid-column: 11; grid-row: 1; }
+
+        .cell:nth-child(12) { grid-column: 11; grid-row: 2; }
+        .cell:nth-child(13) { grid-column: 11; grid-row: 3; }
+        .cell:nth-child(14) { grid-column: 11; grid-row: 4; }
+        .cell:nth-child(15) { grid-column: 11; grid-row: 5; }
+        .cell:nth-child(16) { grid-column: 11; grid-row: 6; }
+        .cell:nth-child(17) { grid-column: 11; grid-row: 7; }
+        .cell:nth-child(18) { grid-column: 11; grid-row: 8; }
+        .cell:nth-child(19) { grid-column: 11; grid-row: 9; }
+        .cell:nth-child(20) { grid-column: 11; grid-row: 10; }
+
+        .cell:nth-child(21) { grid-column: 11; grid-row: 11; }
+        .cell:nth-child(22) { grid-column: 10; grid-row: 11; }
+        .cell:nth-child(23) { grid-column: 9;  grid-row: 11; }
+        .cell:nth-child(24) { grid-column: 8;  grid-row: 11; }
+        .cell:nth-child(25) { grid-column: 7;  grid-row: 11; }
+        .cell:nth-child(26) { grid-column: 6;  grid-row: 11; }
+        .cell:nth-child(27) { grid-column: 5;  grid-row: 11; }
+        .cell:nth-child(28) { grid-column: 4;  grid-row: 11; }
+        .cell:nth-child(29) { grid-column: 3;  grid-row: 11; }
+        .cell:nth-child(30) { grid-column: 2;  grid-row: 11; }
+        .cell:nth-child(31) { grid-column: 1;  grid-row: 11; }
+
+        .cell:nth-child(32) { grid-column: 1;  grid-row: 10; }
+        .cell:nth-child(33) { grid-column: 1;  grid-row: 9; }
+        .cell:nth-child(34) { grid-column: 1;  grid-row: 8; }
+        .cell:nth-child(35) { grid-column: 1;  grid-row: 7; }
+        .cell:nth-child(36) { grid-column: 1;  grid-row: 6; }
+        .cell:nth-child(37) { grid-column: 1;  grid-row: 5; }
+        .cell:nth-child(38) { grid-column: 1;  grid-row: 4; }
+        .cell:nth-child(39) { grid-column: 1;  grid-row: 3; }
+        .cell:nth-child(40) { grid-column: 1;  grid-row: 2; }
+
+        /* 右側操作控制欄 */
+        .right-column {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .btn-confirm {
+            background-color: var(--accent-green);
+            color: white;
+            font-size: 1.1rem;
+            font-weight: bold;
+            padding: 12px;
+            border-radius: 12px;
+            border: 2px solid var(--border-color);
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .land-box {
+            background: #fff;
+            border: 3px solid var(--border-color);
+            border-radius: 16px;
+            padding: 12px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .land-title {
+            font-weight: bold;
+            font-size: 0.95rem;
+            margin-bottom: 6px;
+        }
+
+        .btn-reset {
+            background-color: #f59e0b;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: bold;
+            padding: 12px;
+            border-radius: 12px;
+            border: 2px solid var(--border-color);
+            cursor: pointer;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="top-row">
+        <div class="status-card">
+            <div class="status-item">
+                <div class="title">遊戲剩餘時間</div>
+                <div class="value" id="game-timer-display">00:00:00</div>
+            </div>
+            <div class="status-item">
+                <div class="title">現在時間</div>
+                <div class="value" id="current-time">00:00:00</div>
+            </div>
+        </div>
+
+        <div class="timer-control-card">
+            <div class="input-group">
+                <label>設定遊戲分鐘</label>
+                <input type="number" id="input-minutes" value="120" min="1">
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-green" id="btn-start">開始</button>
+                <button class="btn btn-orange" id="btn-pause">暫停</button>
+                <button class="btn btn-red" id="btn-reset-timer">重新</button>
+                <button class="btn btn-darkblue" id="btn-add-5">加時5分鐘</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="player-bar">
+        <div>玩家金額 <span class="val-green">$0</span></div>
+        <div>通行證數量 <span class="val-orange">1</span></div>
+        <div>擁有道具 <span class="val-orange">1</span></div>
+        <div>擁有土地 <span class="val-orange">1</span></div>
+    </div>
+
+    <div class="main-layout">
+        <div class="menu-panel">
+            <button class="menu-btn active" data-page="board">棋盤</button>
+            <button class="menu-btn" data-page="bank">銀行</button>
+            <button class="menu-btn" data-page="house">樓房</button>
+            <button class="menu-btn" data-page="subsidy">資助</button>
+            <button class="menu-btn" data-page="shop">商店</button>
+            <button class="menu-btn" data-page="event">突發</button>
+            <button class="menu-btn" data-page="score">分數</button>
+        </div>
+
+        <div class="board" id="game-board">
+            <div class="board-center"></div>
+        </div>
+
+        <div class="right-column">
+            <button class="btn-confirm" id="btn-confirm-pos">確定玩家位置</button>
+
+            <div class="land-box">
+                <div class="land-title">已購買土地</div>
+                <hr style="border: none; border-top: 1px solid #ccc; margin-bottom: 10px;">
+                <div style="font-weight: bold; font-size: 1.1rem;" id="purchased-land-list">
+                    </div>
+            </div>
+
+            <button class="btn-reset" id="btn-reset-pos">重設</button>
+        </div>
+    </div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getDatabase, ref, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+    // ⚙️ 請貼上你的 Firebase 設定資訊（必須與 Display 相同）
+    const firebaseConfig = {
+       apiKey: "AIzaSyAiEI_WuLV1va-mooABk6e5TmegK-45cAg",
+  authDomain: "unitepoly-bb65a.firebaseapp.com",
+  databaseURL: "https://unitepoly-bb65a-default-rtdb.firebaseio.com",
+  projectId: "unitepoly-bb65a",
+  storageBucket: "unitepoly-bb65a.firebasestorage.app",
+  messagingSenderId: "1014615394934",
+  appId: "1:1014615394934:web:26958994ec19e037742d57",
+    };
+
+    // 初始化 Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const gameStateRef = ref(db, 'gameState');
+
+    // 將資料同步寫入 Firebase 的輔助函式
+    function syncToFirebase(dataObj) {
+        update(gameStateRef, dataObj).catch(err => {
+            console.error("Firebase 同步失敗:", err);
+        });
+    }
+
+    // --- 1. 棋盤點擊與選擇邏輯 ---
+    let selectedCellIndex = null;
+    const board = document.getElementById('game-board');
+
+    // 動態渲染 40 個小格子
+    for (let i = 0; i < 40; i++) {
+        const cell = document.createElement('div');
+        cell.className = 'cell';
+        cell.dataset.index = i;
+
+        cell.addEventListener('click', () => {
+            if (selectedCellIndex !== null) {
+                const prevCell = board.querySelector(`[data-index='${selectedCellIndex}']`);
+                if (prevCell) prevCell.classList.remove('selected');
+            }
+
+            selectedCellIndex = i;
+            cell.classList.add('selected');
+        });
+
+        board.appendChild(cell);
+    }
+
+    // 確定玩家位置 (同步寫入 Firebase)
+    document.getElementById('btn-confirm-pos').addEventListener('click', () => {
+        if (selectedCellIndex === null) {
+            alert("請先選擇一個棋盤格子！");
+            return;
+        }
+        syncToFirebase({ confirmedPosition: selectedCellIndex });
+    });
+
+    // 重設按鈕 (恢復黑框，並清空 Firebase 上的位置)
+    document.getElementById('btn-reset-pos').addEventListener('click', () => {
+        if (selectedCellIndex !== null) {
+            const currentCell = board.querySelector(`[data-index='${selectedCellIndex}']`);
+            if (currentCell) currentCell.classList.remove('selected');
+            selectedCellIndex = null;
+        }
+        syncToFirebase({ confirmedPosition: -1 });
+    });
+
+    // --- 2. 倒計時控制器邏輯 ---
+    let timerInterval = null;
+    let totalSeconds = 120 * 60;
+
+    function formatTime(sec) {
+        const h = String(Math.floor(sec / 3600)).padStart(2, '0');
+        const m = String(Math.floor((sec % 3600) / 60)).padStart(2, '0');
+        const s = String(sec % 60).padStart(2, '0');
+        return `${h}:${m}:${s}`;
+    }
+
+    function updateTimerDisplay() {
+        const timeText = formatTime(totalSeconds);
+        document.getElementById('game-timer-display').textContent = timeText;
+        syncToFirebase({ gameTimerText: timeText });
+    }
+
+    function startTimer() {
+        if (timerInterval) return;
+        timerInterval = setInterval(() => {
+            if (totalSeconds > 0) {
+                totalSeconds--;
+                updateTimerDisplay();
+            } else {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+        }, 1000);
+    }
+
+    function pauseTimer() {
+        clearInterval(timerInterval);
+        timerInterval = null;
+    }
+
+    function resetTimer() {
+        pauseTimer();
+        const inputMin = parseInt(document.getElementById('input-minutes').value) || 120;
+        totalSeconds = inputMin * 60;
+        updateTimerDisplay();
+    }
+
+    function addFiveMinutes() {
+        totalSeconds += 5 * 60;
+        updateTimerDisplay();
+    }
+
+    document.getElementById('btn-start').addEventListener('click', startTimer);
+    document.getElementById('btn-pause').addEventListener('click', pauseTimer);
+    document.getElementById('btn-reset-timer').addEventListener('click', resetTimer);
+    document.getElementById('btn-add-5').addEventListener('click', addFiveMinutes);
+    document.getElementById('input-minutes').addEventListener('change', resetTimer);
+
+    // --- 3. 實時時鐘 ---
+    function updateClock() {
+        const now = new Date();
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const seconds = String(now.getSeconds()).padStart(2, '0');
+        document.getElementById('current-time').textContent = `${hours}:${minutes}:${seconds}`;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+    updateTimerDisplay();
+
+    // --- 4. 切換選單頁面 ---
+    document.querySelectorAll('.menu-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            document.querySelectorAll('.menu-btn').forEach(b => b.classList.remove('active'));
+            e.target.classList.add('active');
+        });
+    });
+</script>
+
+</body>
+</html>
