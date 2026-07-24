@@ -13,7 +13,6 @@
             --accent-green: #10b981;
             --accent-orange: #f59e0b;
             --accent-red: #ef4444;
-            --accent-blue: #0284c7;
             --select-yellow: #facc15;
         }
 
@@ -43,7 +42,7 @@
             gap: 12px;
         }
 
-        /* 頂部資訊與控制欄 */
+        /* 頂部資訊欄 */
         .top-row {
             display: grid;
             grid-template-columns: 1.2fr 1fr;
@@ -61,17 +60,9 @@
             border: 2px solid var(--border-color);
         }
 
-        .status-item .title {
-            font-size: 0.85rem;
-            color: #4b5563;
-        }
+        .status-item .title { font-size: 0.85rem; color: #4b5563; }
+        .status-item .value { font-size: 1.8rem; font-weight: bold; }
 
-        .status-item .value {
-            font-size: 1.8rem;
-            font-weight: bold;
-        }
-
-        /* 倒計時控制器 */
         .timer-control-card {
             background: var(--panel-bg);
             border-radius: 12px;
@@ -89,12 +80,7 @@
             align-items: center;
         }
 
-        .input-group label {
-            font-size: 0.75rem;
-            font-weight: bold;
-            color: #374151;
-        }
-
+        .input-group label { font-size: 0.75rem; font-weight: bold; }
         .input-group input {
             width: 70px;
             text-align: center;
@@ -105,11 +91,7 @@
             padding: 2px;
         }
 
-        .btn-group {
-            display: flex;
-            gap: 6px;
-        }
-
+        .btn-group { display: flex; gap: 6px; }
         .btn {
             border: 2px solid var(--border-color);
             border-radius: 8px;
@@ -118,10 +100,7 @@
             color: white;
             cursor: pointer;
             font-size: 0.9rem;
-            transition: opacity 0.2s;
         }
-
-        .btn:active { opacity: 0.8; }
         .btn-green { background-color: var(--accent-green); }
         .btn-orange { background-color: var(--accent-orange); }
         .btn-red { background-color: var(--accent-red); }
@@ -146,7 +125,7 @@
         /* 主操作區域 */
         .main-layout {
             display: grid;
-            grid-template-columns: 140px minmax(350px, 1.4fr) 280px;
+            grid-template-columns: 140px 1fr;
             gap: 15px;
         }
 
@@ -159,6 +138,7 @@
             display: flex;
             flex-direction: column;
             gap: 8px;
+            height: fit-content;
         }
 
         .menu-btn {
@@ -179,7 +159,23 @@
             border-color: var(--border-color);
         }
 
-        /* 中間 11x11 棋盤 */
+        /* 右側切換視窗通用容器 */
+        .content-view {
+            width: 100%;
+            display: none;
+        }
+
+        .content-view.active {
+            display: block;
+        }
+
+        /* ------------------ 1. 棋盤頁面樣式 ------------------ */
+        .board-layout {
+            display: grid;
+            grid-template-columns: minmax(350px, 1.4fr) 280px;
+            gap: 15px;
+        }
+
         .board {
             background: #fff;
             border: 3.5px solid var(--border-color);
@@ -203,7 +199,6 @@
             border: 1px dashed #ccc;
         }
 
-        /* 可按壓的小格子 */
         .cell {
             border: 2px solid var(--border-color);
             border-radius: 5px;
@@ -212,18 +207,8 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            user-select: none;
-            transition: border-color 0.1s, box-shadow 0.1s;
         }
 
-        .cell img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            pointer-events: none;
-        }
-
-        /* 🟡 當格子被選取時的外框樣式 */
         .cell.selected {
             border: 4px solid var(--select-yellow) !important;
             box-shadow: 0 0 8px rgba(250, 204, 21, 0.8);
@@ -275,12 +260,7 @@
         .cell:nth-child(39) { grid-column: 1;  grid-row: 3; }
         .cell:nth-child(40) { grid-column: 1;  grid-row: 2; }
 
-        /* 右側操作控制欄 */
-        .right-column {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
+        .right-column { display: flex; flex-direction: column; gap: 12px; }
 
         .btn-confirm {
             background-color: var(--accent-green);
@@ -291,7 +271,6 @@
             border-radius: 12px;
             border: 2px solid var(--border-color);
             cursor: pointer;
-            text-align: center;
         }
 
         .land-box {
@@ -300,14 +279,6 @@
             border-radius: 16px;
             padding: 12px;
             flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .land-title {
-            font-weight: bold;
-            font-size: 0.95rem;
-            margin-bottom: 6px;
         }
 
         .btn-reset {
@@ -319,6 +290,89 @@
             border-radius: 12px;
             border: 2px solid var(--border-color);
             cursor: pointer;
+        }
+
+        /* ------------------ 2. 銀行頁面樣式 ------------------ */
+        .bank-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .bank-card {
+            background: #fff;
+            border: 3px solid var(--border-color);
+            border-radius: 16px;
+            padding: 20px 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .bank-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-bottom: 2px solid #ccc;
+            padding-bottom: 5px;
+        }
+
+        .bank-input-row {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .bank-input-row label {
+            font-weight: bold;
+            font-size: 1.05rem;
+        }
+
+        .bank-input-row input {
+            border: 2px solid var(--border-color);
+            border-radius: 20px;
+            padding: 6px 15px;
+            font-size: 1.2rem;
+            width: 160px;
+            outline: none;
+        }
+
+        .btn-bank-action {
+            border: 2px solid var(--border-color);
+            border-radius: 20px;
+            padding: 8px 25px;
+            font-size: 1rem;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+        }
+
+        .btn-borrow { background-color: var(--accent-green); }
+        .btn-repay { background-color: var(--accent-orange); }
+
+        .bank-status-row {
+            display: flex;
+            align-items: flex-end;
+            gap: 40px;
+            margin-top: 5px;
+        }
+
+        .debt-display-box .label { font-size: 0.95rem; font-weight: bold; color: #4b5563; }
+        .debt-display-box .value { font-size: 2.2rem; font-weight: 800; color: var(--accent-green); }
+
+        .timer-display-box .label { font-size: 0.95rem; font-weight: bold; color: #4b5563; }
+        .timer-display-box .value { font-size: 2.2rem; font-weight: 800; color: var(--text-dark); }
+
+        .btn-bankrupt {
+            background-color: #000;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            padding: 15px;
+            border-radius: 20px;
+            border: 3px solid var(--border-color);
+            cursor: pointer;
+            width: 100%;
+            max-width: 400px;
             text-align: center;
         }
     </style>
@@ -353,102 +407,153 @@
     </div>
 
     <div class="player-bar">
-        <div>玩家金額 <span class="val-green">$0</span></div>
-        <div>通行證數量 <span class="val-orange">1</span></div>
-        <div>擁有道具 <span class="val-orange">1</span></div>
-        <div>擁有土地 <span class="val-orange">1</span></div>
+        <div>玩家金額 <span class="val-green" id="ctrl-player-money">$0</span></div>
+        <div>通行證數量 <span class="val-orange" id="ctrl-player-pass">1</span></div>
+        <div>擁有道具 <span class="val-orange" id="ctrl-player-items">1</span></div>
+        <div>擁有土地 <span class="val-orange" id="ctrl-player-lands">1</span></div>
     </div>
 
     <div class="main-layout">
         <div class="menu-panel">
-            <button class="menu-btn active" data-page="board">棋盤</button>
-            <button class="menu-btn" data-page="bank">銀行</button>
-            <button class="menu-btn" data-page="house">樓房</button>
-            <button class="menu-btn" data-page="subsidy">資助</button>
-            <button class="menu-btn" data-page="shop">商店</button>
-            <button class="menu-btn" data-page="event">突發</button>
-            <button class="menu-btn" data-page="score">分數</button>
+            <button class="menu-btn active" onclick="switchPage('board')">棋盤</button>
+            <button class="menu-btn" onclick="switchPage('bank')">銀行</button>
+            <button class="menu-btn" onclick="switchPage('house')">樓房</button>
+            <button class="menu-btn" onclick="switchPage('subsidy')">資助</button>
+            <button class="menu-btn" onclick="switchPage('shop')">商店</button>
+            <button class="menu-btn" onclick="switchPage('event')">突發</button>
+            <button class="menu-btn" onclick="switchPage('score')">分數</button>
         </div>
 
-        <div class="board" id="game-board">
-            <div class="board-center"></div>
-        </div>
-
-        <div class="right-column">
-            <button class="btn-confirm" id="btn-confirm-pos">確定玩家位置</button>
-
-            <div class="land-box">
-                <div class="land-title">已購買土地</div>
-                <hr style="border: none; border-top: 1px solid #ccc; margin-bottom: 10px;">
-                <div style="font-weight: bold; font-size: 1.1rem;" id="purchased-land-list">
+        <div>
+            <div id="page-board" class="content-view active">
+                <div class="board-layout">
+                    <div class="board" id="game-board">
+                        <div class="board-center"></div>
                     </div>
+                    <div class="right-column">
+                        <button class="btn-confirm" id="btn-confirm-pos">確定玩家位置</button>
+                        <div class="land-box">
+                            <div style="font-weight: bold; font-size: 0.95rem; margin-bottom: 6px;">已購買土地</div>
+                            <hr style="border: none; border-top: 1px solid #ccc; margin-bottom: 10px;">
+                            <div style="font-weight: bold; font-size: 1.1rem;" id="purchased-land-list">埃及</div>
+                        </div>
+                        <button class="btn-reset" id="btn-reset-pos">重設</button>
+                    </div>
+                </div>
             </div>
 
-            <button class="btn-reset" id="btn-reset-pos">重設</button>
+            <div id="page-bank" class="content-view">
+                <div class="bank-container">
+                    <div class="bank-card">
+                        <div class="bank-title">借錢</div>
+                        <div class="bank-input-row">
+                            <label>輸入金額</label>
+                            <input type="number" id="borrow-amount-input" placeholder="0">
+                            <button class="btn-bank-action btn-borrow" id="btn-borrow-submit">輸入</button>
+                            <button class="btn-bank-action btn-repay" id="btn-repay-submit">還完</button>
+                        </div>
+                        <div class="bank-status-row">
+                            <div class="debt-display-box">
+                                <div class="label">還幾多</div>
+                                <div class="value" id="bank-debt-display">$00000</div>
+                            </div>
+                            <div class="timer-display-box">
+                                <div class="label">倒計時</div>
+                                <div class="value" id="bank-timer-display">00:00:00</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="btn-bankrupt" id="btn-bankrupt">破產</button>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, update, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-    // ⚙️ 請貼上你的 Firebase 設定資訊（必須與 Display 相同）
     const firebaseConfig = {
-       apiKey: "AIzaSyAiEI_WuLV1va-mooABk6e5TmegK-45cAg",
+        apiKey: "AIzaSyAiEI_WuLV1va-mooABk6e5TmegK-45cAg",
   authDomain: "unitepoly-bb65a.firebaseapp.com",
   databaseURL: "https://unitepoly-bb65a-default-rtdb.firebaseio.com",
   projectId: "unitepoly-bb65a",
   storageBucket: "unitepoly-bb65a.firebasestorage.app",
   messagingSenderId: "1014615394934",
-  appId: "1:1014615394934:web:26958994ec19e037742d57",
+  appId: "1:1014615394934:web:26958994ec19e037742d57"
     };
 
-    // 初始化 Firebase
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
     const gameStateRef = ref(db, 'gameState');
 
-    // 將資料同步寫入 Firebase 的輔助函式
+    // 全局狀態
+    let playerData = {
+        money: 0,
+        pass: 1,
+        items: 1,
+        lands: 1
+    };
+
+    let principal = 0;       // 本金
+    let totalDebt = 0;       // 連本帶利應還
+    let debtTimerInterval = null;
+    const DEBT_PERIOD = 30 * 60; // 30 分鐘
+    let debtSecondsLeft = DEBT_PERIOD;
+
     function syncToFirebase(dataObj) {
-        update(gameStateRef, dataObj).catch(err => {
-            console.error("Firebase 同步失敗:", err);
-        });
+        update(gameStateRef, dataObj).catch(err => console.error("Firebase 同步失敗:", err));
     }
 
-    // --- 1. 棋盤點擊與選擇邏輯 ---
+    // 監聽 Firebase 數據變更以同步本機介面
+    onValue(gameStateRef, (snapshot) => {
+        const data = snapshot.val();
+        if (!data) return;
+        if (data.player) {
+            playerData = data.player;
+            document.getElementById('ctrl-player-money').textContent = `$${playerData.money}`;
+            document.getElementById('ctrl-player-pass').textContent = playerData.pass;
+            document.getElementById('ctrl-player-items').textContent = playerData.items;
+            document.getElementById('ctrl-player-lands').textContent = playerData.lands;
+        }
+    });
+
+    // --- 1. 頁面切換邏輯 ---
+    window.switchPage = function(pageName) {
+        document.querySelectorAll('.menu-btn').forEach(btn => btn.classList.remove('active'));
+        event.target.classList.add('active');
+
+        document.querySelectorAll('.content-view').forEach(view => view.classList.remove('active'));
+        const targetView = document.getElementById(`page-${pageName}`);
+        if (targetView) targetView.classList.add('active');
+    };
+
+    // --- 2. 棋盤邏輯 ---
     let selectedCellIndex = null;
     const board = document.getElementById('game-board');
 
-    // 動態渲染 40 個小格子
     for (let i = 0; i < 40; i++) {
         const cell = document.createElement('div');
         cell.className = 'cell';
         cell.dataset.index = i;
-
         cell.addEventListener('click', () => {
             if (selectedCellIndex !== null) {
                 const prevCell = board.querySelector(`[data-index='${selectedCellIndex}']`);
                 if (prevCell) prevCell.classList.remove('selected');
             }
-
             selectedCellIndex = i;
             cell.classList.add('selected');
         });
-
         board.appendChild(cell);
     }
 
-    // 確定玩家位置 (同步寫入 Firebase)
     document.getElementById('btn-confirm-pos').addEventListener('click', () => {
-        if (selectedCellIndex === null) {
-            alert("請先選擇一個棋盤格子！");
-            return;
-        }
+        if (selectedCellIndex === null) return alert("請先選擇一個棋盤格子！");
         syncToFirebase({ confirmedPosition: selectedCellIndex });
     });
 
-    // 重設按鈕 (恢復黑框，並清空 Firebase 上的位置)
     document.getElementById('btn-reset-pos').addEventListener('click', () => {
         if (selectedCellIndex !== null) {
             const currentCell = board.querySelector(`[data-index='${selectedCellIndex}']`);
@@ -458,10 +563,7 @@
         syncToFirebase({ confirmedPosition: -1 });
     });
 
-    // --- 2. 倒計時控制器邏輯 ---
-    let timerInterval = null;
-    let totalSeconds = 120 * 60;
-
+    // --- 3. 銀行邏輯 ---
     function formatTime(sec) {
         const h = String(Math.floor(sec / 3600)).padStart(2, '0');
         const m = String(Math.floor((sec % 3600) / 60)).padStart(2, '0');
@@ -469,13 +571,90 @@
         return `${h}:${m}:${s}`;
     }
 
+    function updateDebtUI() {
+        document.getElementById('bank-debt-display').textContent = `$${Math.round(totalDebt)}`;
+        document.getElementById('bank-timer-display').textContent = formatTime(debtSecondsLeft);
+
+        // 同步至 Firebase (供 Display 顯示)
+        syncToFirebase({
+            debt: {
+                principal: principal,
+                totalDebt: Math.round(totalDebt),
+                timerText: formatTime(debtSecondsLeft)
+            },
+            player: playerData
+        });
+    }
+
+    function startDebtTimer() {
+        if (debtTimerInterval) return;
+        debtTimerInterval = setInterval(() => {
+            if (debtSecondsLeft > 0) {
+                debtSecondsLeft--;
+            } else {
+                // 半小時到了，利息增加 15% 並重新計時
+                totalDebt = totalDebt * 1.15;
+                debtSecondsLeft = DEBT_PERIOD;
+            }
+            updateDebtUI();
+        }, 1000);
+    }
+
+    // 按下「輸入」（借錢）
+    document.getElementById('btn-borrow-submit').addEventListener('click', () => {
+        const amount = parseInt(document.getElementById('borrow-amount-input').value) || 0;
+        if (amount <= 0) return alert("請輸入有效的金額！");
+
+        playerData.money += amount;
+        principal += amount;
+        totalDebt += amount; // 首次借錢無加利息
+
+        document.getElementById('borrow-amount-input').value = '';
+        startDebtTimer();
+        updateDebtUI();
+    });
+
+    // 按下「還完」
+    document.getElementById('btn-repay-submit').addEventListener('click', () => {
+        if (totalDebt <= 0) return alert("目前沒有需要償還的債務！");
+
+        playerData.money -= Math.round(totalDebt);
+        principal = 0;
+        totalDebt = 0;
+        debtSecondsLeft = DEBT_PERIOD;
+
+        clearInterval(debtTimerInterval);
+        debtTimerInterval = null;
+
+        updateDebtUI();
+    });
+
+    // 按下「破產」
+    document.getElementById('btn-bankrupt').addEventListener('click', () => {
+        if (confirm("確定要執行破產嗎？這將會清空所有數據！")) {
+            playerData = { money: 0, pass: 0, items: 0, lands: 0 };
+            principal = 0;
+            totalDebt = 0;
+            debtSecondsLeft = DEBT_PERIOD;
+
+            clearInterval(debtTimerInterval);
+            debtTimerInterval = null;
+
+            updateDebtUI();
+        }
+    });
+
+    // --- 4. 遊戲總倒計時 ---
+    let timerInterval = null;
+    let totalSeconds = 120 * 60;
+
     function updateTimerDisplay() {
         const timeText = formatTime(totalSeconds);
         document.getElementById('game-timer-display').textContent = timeText;
         syncToFirebase({ gameTimerText: timeText });
     }
 
-    function startTimer() {
+    document.getElementById('btn-start').addEventListener('click', () => {
         if (timerInterval) return;
         timerInterval = setInterval(() => {
             if (totalSeconds > 0) {
@@ -486,32 +665,27 @@
                 timerInterval = null;
             }
         }, 1000);
-    }
+    });
 
-    function pauseTimer() {
+    document.getElementById('btn-pause').addEventListener('click', () => {
         clearInterval(timerInterval);
         timerInterval = null;
-    }
+    });
 
-    function resetTimer() {
-        pauseTimer();
+    document.getElementById('btn-reset-timer').addEventListener('click', () => {
+        clearInterval(timerInterval);
+        timerInterval = null;
         const inputMin = parseInt(document.getElementById('input-minutes').value) || 120;
         totalSeconds = inputMin * 60;
         updateTimerDisplay();
-    }
+    });
 
-    function addFiveMinutes() {
+    document.getElementById('btn-add-5').addEventListener('click', () => {
         totalSeconds += 5 * 60;
         updateTimerDisplay();
-    }
+    });
 
-    document.getElementById('btn-start').addEventListener('click', startTimer);
-    document.getElementById('btn-pause').addEventListener('click', pauseTimer);
-    document.getElementById('btn-reset-timer').addEventListener('click', resetTimer);
-    document.getElementById('btn-add-5').addEventListener('click', addFiveMinutes);
-    document.getElementById('input-minutes').addEventListener('change', resetTimer);
-
-    // --- 3. 實時時鐘 ---
+    // 時鐘更新
     function updateClock() {
         const now = new Date();
         const hours = String(now.getHours()).padStart(2, '0');
@@ -522,15 +696,11 @@
     setInterval(updateClock, 1000);
     updateClock();
     updateTimerDisplay();
-
-    // --- 4. 切換選單頁面 ---
-    document.querySelectorAll('.menu-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            document.querySelectorAll('.menu-btn').forEach(b => b.classList.remove('active'));
-            e.target.classList.add('active');
-        });
-    });
 </script>
+
+</body>
+</html>
+
 
 </body>
 </html>
