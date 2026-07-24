@@ -6,186 +6,184 @@
     <title>遊戲控制器 (Controller)</title>
     <style>
         :root {
-            --primary-bg: #cdeaf7;
-            --panel-bg: rgba(255, 255, 255, 0.9);
-            --border-color: #000;
-            --text-dark: #1f2937;
-            --accent-green: #10b981;
-            --accent-orange: #f59e0b;
+            --primary-bg: #f3f4f6;
+            --card-bg: #ffffff;
+            --border-color: #000000;
+            --accent-blue: #2563eb;
             --accent-red: #ef4444;
-            --btn-blue: #0284c7;
-            --btn-purple: #8b5cf6;
+            --accent-green: #10b981;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
 
         body {
             background-color: var(--primary-bg);
-            background-image: radial-gradient(circle, #e0f2fe 0%, #bae6fd 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             padding: 15px;
-            color: var(--text-dark);
+            color: #1f2937;
+            max-width: 600px;
+            margin: 0 auto;
         }
 
-        .container { width: 100%; max-width: 1250px; display: flex; flex-direction: column; gap: 12px; }
+        h1, h2 { text-align: center; margin-bottom: 15px; }
 
-        /* 頂部時間與控制列 */
-        .top-row { display: grid; grid-template-columns: 1.2fr 1fr; gap: 15px; height: 70px; }
-        .status-card { background: var(--panel-bg); border-radius: 12px; padding: 8px 15px; display: flex; justify-content: space-around; align-items: center; border: 2px solid var(--border-color); }
-        .status-item .title { font-size: 0.85rem; color: #4b5563; }
-        .status-item .value { font-size: 1.8rem; font-weight: bold; }
+        /* 分頁切換選單 */
+        .nav-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
 
-        .timer-control-card { background: var(--panel-bg); border-radius: 12px; padding: 8px 15px; display: flex; align-items: center; justify-content: space-between; gap: 10px; border: 2px solid var(--border-color); }
-        .input-group { display: flex; flex-direction: column; align-items: center; }
-        .input-group label { font-size: 0.75rem; font-weight: bold; }
-        .input-group input { width: 70px; text-align: center; font-size: 1.2rem; font-weight: bold; border: 2px solid #9ca3af; border-radius: 8px; padding: 2px; }
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            background: #e5e7eb;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+        }
 
-        .btn-group { display: flex; gap: 6px; }
-        .btn { border: 2px solid var(--border-color); border-radius: 8px; padding: 8px 12px; font-weight: bold; color: white; cursor: pointer; font-size: 0.9rem; }
-        .btn-green { background-color: var(--accent-green); }
-        .btn-orange { background-color: var(--accent-orange); }
-        .btn-red { background-color: var(--accent-red); }
-        .btn-darkblue { background-color: #1e3a8a; }
+        .tab-btn.active {
+            background: var(--accent-blue);
+            color: #fff;
+        }
 
-        .player-bar { background: var(--panel-bg); border-radius: 12px; padding: 10px 20px; display: flex; justify-content: space-around; align-items: center; font-size: 1.1rem; font-weight: bold; border: 2px solid var(--border-color); height: 50px; }
-        .val-green { color: var(--accent-green); font-size: 1.3em; font-weight: 800; }
-        .val-orange { color: var(--accent-orange); font-size: 1.2em; font-weight: 800; }
+        /* 內容區塊 */
+        .page-content {
+            display: none;
+            background: var(--card-bg);
+            border: 2.5px solid var(--border-color);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
 
-        /* 主佈局 */
-        .main-layout { display: grid; grid-template-columns: 140px 1fr; gap: 15px; min-height: 550px; }
-        .menu-panel { background: #fff; border: 3px solid var(--border-color); border-radius: 16px; padding: 10px; display: flex; flex-direction: column; gap: 8px; height: fit-content; }
-        .menu-btn { background: #e0f2fe; border: 2px solid #38bdf8; color: #0369a1; font-size: 1.05rem; font-weight: bold; padding: 10px 0; border-radius: 10px; cursor: pointer; text-align: center; }
-        .menu-btn.active { background: var(--accent-green); color: white; border-color: var(--border-color); }
+        .page-content.active {
+            display: block;
+        }
 
-        .content-view { width: 100%; display: none; }
-        .content-view.active { display: block; }
+        .form-group {
+            margin-bottom: 12px;
+        }
 
-        /* 🎬 PAGE 6: 突發樣式 */
-        .event-container { display: flex; flex-direction: column; gap: 15px; max-width: 800px; }
-        .event-card { background: #fff; border: 3.5px solid var(--border-color); border-radius: 20px; padding: 18px 25px; display: flex; flex-direction: column; gap: 12px; }
-        .event-card-title { font-size: 1.2rem; font-weight: bold; border-bottom: 2px solid #ccc; padding-bottom: 5px; }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 4px;
+            font-size: 0.9rem;
+        }
 
-        .event-btn-row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
-        .btn-event-action { border: 2px solid var(--border-color); border-radius: 20px; padding: 8px 22px; font-size: 1rem; font-weight: bold; color: white; cursor: pointer; }
-        .btn-player-toggle { background-color: #1e3a8a; }
-        .btn-video-play { background-color: var(--accent-green); }
-        .btn-video-pause { background-color: var(--accent-red); }
-        .btn-video-reset { background-color: var(--accent-orange); }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ccc;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
 
-        .btn-video-select { background-color: var(--accent-orange); border: 2px solid var(--border-color); border-radius: 20px; padding: 12px; font-size: 1.3rem; font-weight: bold; color: white; cursor: pointer; flex: 1; min-width: 120px; text-align: center; }
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            background: #e5e7eb;
+            transition: background 0.2s;
+            margin-top: 5px;
+        }
 
-        .event-bottom-row { display: grid; grid-template-columns: 1.3fr 1fr; gap: 15px; }
-        .weather-card { background: #fff; border: 3.5px solid var(--border-color); border-radius: 20px; padding: 15px 20px; display: flex; flex-direction: column; gap: 10px; }
-        .weather-timer-box { font-size: 2.2rem; font-weight: 800; }
+        .btn-primary { background: var(--accent-blue); color: white; }
+        .btn-danger { background: var(--accent-red); color: white; }
+        .btn-success { background: var(--accent-green); color: white; }
 
-        .btn-weather-action { border: 2px solid var(--border-color); border-radius: 15px; padding: 5px 12px; font-size: 0.85rem; font-weight: bold; color: white; cursor: pointer; }
-
-        .rule-card { background: #fff; border: 3.5px solid var(--border-color); border-radius: 20px; padding: 15px 20px; display: flex; flex-direction: column; gap: 10px; }
-        .btn-rule-num { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--border-color); background-color: #1e3a8a; color: white; font-size: 1.1rem; font-weight: bold; cursor: pointer; display: flex; justify-content: center; align-items: center; }
-        .btn-rule-num.active { background-color: var(--accent-green); }
-
-        .btn-circle-arrow { width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--border-color); color: white; font-size: 1.4rem; font-weight: bold; display: flex; justify-content: center; align-items: center; cursor: pointer; }
+        .btn:active { transform: scale(0.98); }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="top-row">
-        <div class="status-card">
-            <div class="status-item"><div class="title">遊戲剩餘時間</div><div class="value" id="game-timer-display">00:00:00</div></div>
-            <div class="status-item"><div class="title">現在時間</div><div class="value" id="current-time">00:00:00</div></div>
-        </div>
-        <div class="timer-control-card">
-            <div class="input-group"><label>設定遊戲分鐘</label><input type="number" id="input-minutes" value="120"></div>
-            <div class="btn-group">
-                <button class="btn btn-green" id="btn-start">開始</button>
-                <button class="btn btn-orange" id="btn-pause">暫停</button>
-                <button class="btn btn-red" id="btn-reset-timer">重新</button>
-                <button class="btn btn-darkblue" id="btn-add-5">加時5分鐘</button>
-            </div>
-        </div>
+    <h1>🎮 遊戲 Controller</h1>
+
+    <div class="nav-tabs">
+        <button class="tab-btn active" onclick="switchPage('main-page')">主控制</button>
+        <button class="tab-btn" onclick="switchPage('event-page')">突發事件</button>
+        <button class="tab-btn" onclick="switchPage('media-page')">媒體控制</button>
     </div>
 
-    <div class="player-bar">
-        <div>玩家金額 <span class="val-green" id="ctrl-player-money">$0</span></div>
-        <div>通行證數量 <span class="val-orange" id="ctrl-player-pass">1</span></div>
-        <div>擁有道具 <span class="val-orange" id="ctrl-player-items">1</span></div>
-        <div>擁有土地 <span class="val-orange" id="ctrl-player-lands">1</span></div>
-    </div>
-
-    <div class="main-layout">
-        <div class="menu-panel">
-            <button class="menu-btn" onclick="switchPage('board')">棋盤</button>
-            <button class="menu-btn" onclick="switchPage('bank')">銀行</button>
-            <button class="menu-btn" onclick="switchPage('house')">樓房</button>
-            <button class="menu-btn" onclick="switchPage('subsidy')">資助</button>
-            <button class="menu-btn" onclick="switchPage('shop')">商店</button>
-            <button class="menu-btn active" onclick="switchPage('event')">突發</button>
-            <button class="menu-btn" onclick="switchPage('score')">分數</button>
+    <div id="main-page" class="page-content active">
+        <h2>📍 玩家位置與數據</h2>
+        
+        <div class="form-group">
+            <label>玩家棋盤位置 (0 - 39 格):</label>
+            <input type="number" id="player-pos-input" min="0" max="39" value="0">
+            <button class="btn btn-primary" onclick="updatePosition()">更新位置 (黃框)</button>
         </div>
 
-        <div>
-            <div id="page-event" class="content-view active">
-                <div class="event-container">
-                    <div class="event-card">
-                        <div class="event-card-title">突發</div>
-                        <div class="event-btn-row">
-                            <button class="btn-event-action btn-player-toggle" id="btn-toggle-videoplayer">播放器</button>
-                            <button class="btn-event-action btn-video-play" id="btn-video-play">播放</button>
-                            <button class="btn-event-action btn-video-pause" id="btn-video-pause">暫停</button>
-                            <button class="btn-event-action btn-video-reset" id="btn-video-reset">重設</button>
-                        </div>
-                        <div class="event-btn-row" style="margin-top: 10px;">
-                            <button class="btn-video-select" id="btn-video-1">1</button>
-                            <button class="btn-video-select" id="btn-video-2">2</button>
-                            <button class="btn-video-select" id="btn-video-3">3</button>
-                            <button class="btn-video-select" id="btn-video-4">4</button>
-                        </div>
-                    </div>
+        <hr style="margin: 15px 0;">
 
-                    <div class="event-bottom-row">
-                        <div class="weather-card">
-                            <div class="event-card-title">天文台</div>
-                            <div style="display: flex; align-items: center; justify-content: space-between;">
-                                <div class="weather-timer-box" id="weather-timer-disp">15:00</div>
-                                <button class="btn-event-action" style="background-color: #0284c7;" id="btn-weather-toggle">顯示</button>
-                            </div>
-                            <div class="event-btn-row" style="gap: 6px;">
-                                <button class="btn-weather-action btn-green" id="btn-weather-start">開始</button>
-                                <button class="btn-weather-action btn-orange" id="btn-weather-pause">暫停</button>
-                                <button class="btn-weather-action btn-red" id="btn-weather-reset">重新</button>
-                            </div>
-                        </div>
-
-                        <div class="rule-card">
-                            <div class="event-card-title">Rule</div>
-                            <div style="display: flex; align-items: center; justify-content: space-between;">
-                                <div style="display: flex; flex-direction: column; gap: 8px;">
-                                    <button class="btn-rule-num active" id="btn-rule-1">1</button>
-                                    <button class="btn-rule-num" id="btn-rule-2">2</button>
-                                </div>
-                                <div style="display: flex; gap: 10px;">
-                                    <button class="btn-circle-arrow btn-green" id="btn-rule-prev">↑</button>
-                                    <button class="btn-circle-arrow btn-red" id="btn-rule-next">↓</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="form-group">
+            <label>玩家金額 ($):</label>
+            <input type="number" id="money-input" value="1000">
         </div>
+        <div class="form-group">
+            <label>通行證數量:</label>
+            <input type="number" id="pass-input" value="0">
+        </div>
+        <button class="btn btn-success" onclick="updatePlayerStats()">更新玩家數據</button>
     </div>
-</div>
+
+    <div id="event-page" class="page-content">
+        <h2>⚠️ 突發事件控制</h2>
+        <p style="font-size: 0.85rem; color: #6b7280; margin-bottom: 12px;">觸發事件時會同步切換顯示屏內容。</p>
+
+        <div class="form-group">
+            <label>選擇突發事件類型:</label>
+            <select id="event-type-select">
+                <option value="typhoon">颱風警告</option>
+                <option value="black-rain">黑雨警告</option>
+                <option value="opportunity">幸運機會</option>
+            </select>
+        </div>
+
+        <button class="btn btn-danger" onclick="triggerEvent()">📢 觸發突發事件</button>
+        
+        <button class="btn" style="margin-top: 15px; background: #fbbf24;" onclick="resolveEvent()">✅ 結束/清除突發事件</button>
+    </div>
+
+    <div id="media-page" class="page-content">
+        <h2>🎬 媒體播放器連接</h2>
+        
+        <div class="form-group">
+            <label>媒體類型:</label>
+            <select id="media-type">
+                <option value="video">影片 (Video)</option>
+                <option value="image">圖片 (Image)</option>
+                <option value="audio">背景音樂/音效 (Audio)</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>媒體網址 (URL):</label>
+            <input type="text" id="media-url" placeholder="https://example.com/video.mp4">
+        </div>
+
+        <button class="btn btn-primary" onclick="sendMedia()">▶️ 發送並播放媒體</button>
+        <button class="btn btn-danger" onclick="stopMedia()" style="margin-top: 8px;">⏹️ 關閉顯示屏媒體</button>
+    </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, update, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
+    // ⚙️ 請貼上與 Display 相同的 Firebase 設定
     const firebaseConfig = {
-        "AIzaSyAiEI_WuLV1va-mooABk6e5TmegK-45cAg",
+        apiKey: "AIzaSyAiEI_WuLV1va-mooABk6e5TmegK-45cAg",
   authDomain: "unitepoly-bb65a.firebaseapp.com",
   databaseURL: "https://unitepoly-bb65a-default-rtdb.firebaseio.com",
   projectId: "unitepoly-bb65a",
@@ -196,152 +194,85 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
-    const gameStateRef = ref(db, 'gameState');
 
-    function syncToFirebase(dataObj) {
-        update(gameStateRef, dataObj).catch(err => console.error("Firebase 同步失敗:", err));
-    }
+    // 頁面切換邏輯 (修復卡死問題)
+    window.switchPage = function(pageId) {
+        document.querySelectorAll('.page-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+        
+        document.getElementById(pageId).classList.add('active');
+        event.currentTarget.classList.add('active');
+    };
 
-    // --- 1. 突發影片播放器邏輯 ---
-    let videoState = { visible: false, src: 'Video_1.mp4', action: 'pause' };
+    // 1. 更新玩家黃框位置
+    window.updatePosition = function() {
+        const pos = parseInt(document.getElementById('player-pos-input').value) || 0;
+        update(ref(db, 'gameState'), {
+            confirmedPosition: pos
+        }).then(() => alert(`位置已同步更新至第 ${pos} 格`));
+    };
 
-    document.getElementById('btn-toggle-videoplayer').addEventListener('click', () => {
-        videoState.visible = !videoState.visible;
-        syncToFirebase({ eventVideo: videoState });
-    });
+    // 2. 更新玩家金錢與通行證
+    window.updatePlayerStats = function() {
+        const money = parseInt(document.getElementById('money-input').value) || 0;
+        const pass = parseInt(document.getElementById('pass-input').value) || 0;
 
-    document.getElementById('btn-video-play').addEventListener('click', () => {
-        videoState.action = 'play';
-        syncToFirebase({ eventVideo: videoState });
-    });
+        update(ref(db, 'gameState/player'), {
+            money: money,
+            pass: pass
+        }).then(() => alert("玩家數據已更新"));
+    };
 
-    document.getElementById('btn-video-pause').addEventListener('click', () => {
-        videoState.action = 'pause';
-        syncToFirebase({ eventVideo: videoState });
-    });
-
-    document.getElementById('btn-video-reset').addEventListener('click', () => {
-        videoState.action = 'reset';
-        syncToFirebase({ eventVideo: videoState });
-    });
-
-    function selectVideo(num) {
-        videoState.src = `Video_${num}.mp4`;
-        videoState.visible = true;
-        videoState.action = 'play';
-        syncToFirebase({ eventVideo: videoState });
-    }
-
-    document.getElementById('btn-video-1').addEventListener('click', () => selectVideo(1));
-    document.getElementById('btn-video-2').addEventListener('click', () => selectVideo(2));
-    document.getElementById('btn-video-3').addEventListener('click', () => selectVideo(3));
-    document.getElementById('btn-video-4').addEventListener('click', () => selectVideo(4));
-
-    // --- 2. 天文台 15 分鐘倒數邏輯 ---
-    let weatherSec = 15 * 60;
-    let weatherInterval = null;
-    let weatherState = { visible: false, timerText: '15:00', discount: 1.0 };
-
-    function formatMinSec(sec) {
-        const m = String(Math.floor(sec / 60)).padStart(2, '0');
-        const s = String(sec % 60).padStart(2, '0');
-        return `${m}:${s}`;
-    }
-
-    function updateWeatherDisplay() {
-        const tText = formatMinSec(weatherSec);
-        document.getElementById('weather-timer-disp').textContent = tText;
-        weatherState.timerText = tText;
-        syncToFirebase({ weather: weatherState });
-    }
-
-    document.getElementById('btn-weather-toggle').addEventListener('click', () => {
-        weatherState.visible = !weatherState.visible;
-        syncToFirebase({ weather: weatherState });
-    });
-
-    document.getElementById('btn-weather-start').addEventListener('click', () => {
-        if (weatherInterval) return;
-        weatherState.visible = true;
-        weatherState.discount = 0.7; // 樓價下跌 30%
-        syncToFirebase({ weather: weatherState, housePriceDiscount: 0.7 });
-
-        weatherInterval = setInterval(() => {
-            if (weatherSec > 0) {
-                weatherSec--;
-                updateWeatherDisplay();
-            } else {
-                // 15 分鐘完結：自動隱藏並恢復樓價
-                clearInterval(weatherInterval);
-                weatherInterval = null;
-                weatherState.visible = false;
-                weatherState.discount = 1.0; // 恢復原價
-                syncToFirebase({ weather: weatherState, housePriceDiscount: 1.0 });
-                alert("15分鐘樓價特別優惠已結束，樓價已恢復正常！");
+    // 3. 觸發突發事件
+    window.triggerEvent = function() {
+        const eventType = document.getElementById('event-type-select').value;
+        
+        // 範例：發送對應突發事件的媒體與狀態
+        update(ref(db, 'gameState'), {
+            currentEvent: eventType,
+            media: {
+                type: 'image',
+                url: 'https://via.placeholder.com/800x600?text=Event+' + eventType,
+                loop: false
             }
-        }, 1000);
-    });
+        }).then(() => alert("突發事件已發送至 Display！"));
+    };
 
-    document.getElementById('btn-weather-pause').addEventListener('click', () => {
-        clearInterval(weatherInterval);
-        weatherInterval = null;
-    });
+    // 4. 清除突發事件 (防卡死)
+    window.resolveEvent = function() {
+        update(ref(db, 'gameState'), {
+            currentEvent: null,
+            'media/type': 'none'
+        }).then(() => {
+            alert("突發事件已解除");
+            switchPage('main-page'); // 自動切換回主頁面
+        });
+    };
 
-    document.getElementById('btn-weather-reset').addEventListener('click', () => {
-        clearInterval(weatherInterval);
-        weatherInterval = null;
-        weatherSec = 15 * 60;
-        weatherState.discount = 1.0;
-        updateWeatherDisplay();
-    });
+    // 5. 發送媒體指令至 Display
+    window.sendMedia = function() {
+        const type = document.getElementById('media-type').value;
+        const url = document.getElementById('media-url').value;
 
-    // --- 3. Rule 規則切換邏輯 ---
-    let ruleState = { ruleType: 1, currentPage: 1, totalPages: 8 };
-
-    function syncRuleState() {
-        document.getElementById('btn-rule-1').classList.toggle('active', ruleState.ruleType === 1);
-        document.getElementById('btn-rule-2').classList.toggle('active', ruleState.ruleType === 2);
-        syncToFirebase({ ruleViewer: ruleState });
-    }
-
-    document.getElementById('btn-rule-1').addEventListener('click', () => {
-        ruleState.ruleType = 1;
-        ruleState.currentPage = 1;
-        ruleState.totalPages = 8;
-        syncRuleState();
-    });
-
-    document.getElementById('btn-rule-2').addEventListener('click', () => {
-        ruleState.ruleType = 2;
-        ruleState.currentPage = 1;
-        ruleState.totalPages = 3;
-        syncRuleState();
-    });
-
-    document.getElementById('btn-rule-prev').addEventListener('click', () => {
-        if (ruleState.currentPage > 1) {
-            ruleState.currentPage--;
-            syncRuleState();
+        if (!url) {
+            alert("請先輸入媒體網址 (URL)");
+            return;
         }
-    });
 
-    document.getElementById('btn-rule-next').addEventListener('click', () => {
-        if (ruleState.currentPage < ruleState.totalPages) {
-            ruleState.currentPage++;
-            syncRuleState();
-        }
-    });
+        update(ref(db, 'gameState/media'), {
+            type: type,
+            url: url,
+            loop: true
+        }).then(() => alert("媒體已成功發送至 Display"));
+    };
 
-    // 通用頁面切換
-    window.switchPage = function(pName) {
-        document.querySelectorAll('.menu-btn').forEach(b => b.classList.remove('active'));
-        if (event && event.target) event.target.classList.add('active');
-        document.querySelectorAll('.content-view').forEach(v => v.classList.remove('active'));
-        const target = document.getElementById(`page-${pName}`);
-        if (target) target.classList.add('active');
+    // 6. 關閉媒體播放
+    window.stopMedia = function() {
+        update(ref(db, 'gameState/media'), {
+            type: 'none'
+        }).then(() => alert("已關閉 Display 媒體播放"));
     };
 </script>
+
 </body>
 </html>
-
-
