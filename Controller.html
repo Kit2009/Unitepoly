@@ -34,6 +34,7 @@
             color: var(--text-dark);
         }
 
+        /* 📍 固定的整體外框 */
         .container {
             width: 100%;
             max-width: 1250px;
@@ -42,11 +43,12 @@
             gap: 12px;
         }
 
-        /* 頂部資訊欄 */
+        /* 📌 1. 固定頂部時間欄 */
         .top-row {
             display: grid;
             grid-template-columns: 1.2fr 1fr;
             gap: 15px;
+            height: 70px; /* 固定高度防止移位 */
         }
 
         .status-card {
@@ -106,7 +108,7 @@
         .btn-red { background-color: var(--accent-red); }
         .btn-darkblue { background-color: #1e3a8a; }
 
-        /* 玩家數據欄 */
+        /* 📌 2. 固定玩家數據欄 */
         .player-bar {
             background: var(--panel-bg);
             border-radius: 12px;
@@ -117,16 +119,18 @@
             font-size: 1.1rem;
             font-weight: bold;
             border: 2px solid var(--border-color);
+            height: 50px; /* 固定高度防止移位 */
         }
 
         .val-green { color: var(--accent-green); font-size: 1.3em; font-weight: 800; }
         .val-orange { color: var(--accent-orange); font-size: 1.2em; font-weight: 800; }
 
-        /* 主操作區域 */
+        /* 📌 3. 下方主要操作分頁區 */
         .main-layout {
             display: grid;
             grid-template-columns: 140px 1fr;
             gap: 15px;
+            min-height: 550px; /* 固定高度確保切換時不跳動 */
         }
 
         /* 左側選單 */
@@ -159,7 +163,7 @@
             border-color: var(--border-color);
         }
 
-        /* 右側切換視窗通用容器 */
+        /* 切換分頁通用容器 */
         .content-view {
             width: 100%;
             display: none;
@@ -169,7 +173,7 @@
             display: block;
         }
 
-        /* ------------------ 1. 棋盤頁面樣式 ------------------ */
+        /* ------------------ PAGE 1: 棋盤 ------------------ */
         .board-layout {
             display: grid;
             grid-template-columns: minmax(350px, 1.4fr) 280px;
@@ -215,7 +219,6 @@
             z-index: 10;
         }
 
-        /* 格子 1-40 定位 */
         .cell:nth-child(1)  { grid-column: 1;  grid-row: 1; }
         .cell:nth-child(2)  { grid-column: 2;  grid-row: 1; }
         .cell:nth-child(3)  { grid-column: 3;  grid-row: 1; }
@@ -292,13 +295,8 @@
             cursor: pointer;
         }
 
-        /* ------------------ 2. 銀行頁面樣式 ------------------ */
-        .bank-container {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
+        /* ------------------ PAGE 2: 銀行 ------------------ */
+        .bank-container { display: flex; flex-direction: column; gap: 20px; }
         .bank-card {
             background: #fff;
             border: 3px solid var(--border-color);
@@ -308,25 +306,9 @@
             flex-direction: column;
             gap: 15px;
         }
-
-        .bank-title {
-            font-size: 1.2rem;
-            font-weight: bold;
-            border-bottom: 2px solid #ccc;
-            padding-bottom: 5px;
-        }
-
-        .bank-input-row {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .bank-input-row label {
-            font-weight: bold;
-            font-size: 1.05rem;
-        }
-
+        .bank-title { font-size: 1.2rem; font-weight: bold; border-bottom: 2px solid #ccc; padding-bottom: 5px; }
+        .bank-input-row { display: flex; align-items: center; gap: 15px; }
+        .bank-input-row label { font-weight: bold; font-size: 1.05rem; }
         .bank-input-row input {
             border: 2px solid var(--border-color);
             border-radius: 20px;
@@ -335,7 +317,6 @@
             width: 160px;
             outline: none;
         }
-
         .btn-bank-action {
             border: 2px solid var(--border-color);
             border-radius: 20px;
@@ -345,23 +326,13 @@
             color: white;
             cursor: pointer;
         }
-
         .btn-borrow { background-color: var(--accent-green); }
         .btn-repay { background-color: var(--accent-orange); }
-
-        .bank-status-row {
-            display: flex;
-            align-items: flex-end;
-            gap: 40px;
-            margin-top: 5px;
-        }
-
+        .bank-status-row { display: flex; align-items: flex-end; gap: 40px; margin-top: 5px; }
         .debt-display-box .label { font-size: 0.95rem; font-weight: bold; color: #4b5563; }
         .debt-display-box .value { font-size: 2.2rem; font-weight: 800; color: var(--accent-green); }
-
         .timer-display-box .label { font-size: 0.95rem; font-weight: bold; color: #4b5563; }
         .timer-display-box .value { font-size: 2.2rem; font-weight: 800; color: var(--text-dark); }
-
         .btn-bankrupt {
             background-color: #000;
             color: white;
@@ -373,7 +344,56 @@
             cursor: pointer;
             width: 100%;
             max-width: 400px;
-            text-align: center;
+        }
+
+        /* ------------------ 🎁 PAGE 4: 資助 ------------------ */
+        .subsidy-card {
+            background: #fff;
+            border: 3.5px solid var(--border-color);
+            border-radius: 20px;
+            padding: 20px 30px;
+            max-width: 550px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .subsidy-header {
+            font-size: 1.3rem;
+            font-weight: bold;
+            border-bottom: 2px solid #333;
+            padding-bottom: 8px;
+        }
+
+        .subsidy-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .subsidy-label {
+            font-size: 1.25rem;
+            font-weight: bold;
+            width: 120px;
+        }
+
+        .btn-apply {
+            background-color: var(--accent-green);
+            color: white;
+            font-size: 1rem;
+            font-weight: bold;
+            padding: 6px 24px;
+            border-radius: 20px;
+            border: 2px solid var(--border-color);
+            cursor: pointer;
+        }
+
+        .apply-count-text {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #1f2937;
+            min-width: 120px;
+            text-align: right;
         }
     </style>
 </head>
@@ -435,7 +455,7 @@
                         <div class="land-box">
                             <div style="font-weight: bold; font-size: 0.95rem; margin-bottom: 6px;">已購買土地</div>
                             <hr style="border: none; border-top: 1px solid #ccc; margin-bottom: 10px;">
-                            <div style="font-weight: bold; font-size: 1.1rem;" id="purchased-land-list">埃及</div>
+                            <div style="font-weight: bold; font-size: 1.1rem;">埃及</div>
                         </div>
                         <button class="btn-reset" id="btn-reset-pos">重設</button>
                     </div>
@@ -467,6 +487,30 @@
                     <button class="btn-bankrupt" id="btn-bankrupt">破產</button>
                 </div>
             </div>
+
+            <div id="page-subsidy" class="content-view">
+                <div class="subsidy-card">
+                    <div class="subsidy-header">資助</div>
+
+                    <div class="subsidy-row">
+                        <div class="subsidy-label">綜援</div>
+                        <button class="btn-apply" id="btn-apply-cssa">申請</button>
+                        <div class="apply-count-text">已申請 <span id="count-cssa">0</span> 次</div>
+                    </div>
+
+                    <div class="subsidy-row">
+                        <div class="subsidy-label">全額津貼</div>
+                        <button class="btn-apply" id="btn-apply-allowance">申請</button>
+                        <div class="apply-count-text">已申請 <span id="count-allowance">0</span> 次</div>
+                    </div>
+
+                    <div class="subsidy-row">
+                        <div class="subsidy-label">交通補貼</div>
+                        <button class="btn-apply" id="btn-apply-transport">申請</button>
+                        <div class="apply-count-text">已申請 <span id="count-transport">0</span> 次</div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -489,28 +533,21 @@
     const db = getDatabase(app);
     const gameStateRef = ref(db, 'gameState');
 
-    // 全局狀態
-    let playerData = {
-        money: 0,
-        pass: 1,
-        items: 1,
-        lands: 1
-    };
+    // 玩家數據
+    let playerData = { money: 0, pass: 1, items: 1, lands: 1 };
 
-    let principal = 0;       // 本金
-    let totalDebt = 0;       // 連本帶利應還
-    let debtTimerInterval = null;
-    const DEBT_PERIOD = 30 * 60; // 30 分鐘
-    let debtSecondsLeft = DEBT_PERIOD;
+    // 資助申請次數
+    let subsidyCounts = { cssa: 0, allowance: 0, transport: 0 };
 
     function syncToFirebase(dataObj) {
         update(gameStateRef, dataObj).catch(err => console.error("Firebase 同步失敗:", err));
     }
 
-    // 監聽 Firebase 數據變更以同步本機介面
+    // 監聽 Firebase 更新
     onValue(gameStateRef, (snapshot) => {
         const data = snapshot.val();
         if (!data) return;
+
         if (data.player) {
             playerData = data.player;
             document.getElementById('ctrl-player-money').textContent = `$${playerData.money}`;
@@ -518,19 +555,56 @@
             document.getElementById('ctrl-player-items').textContent = playerData.items;
             document.getElementById('ctrl-player-lands').textContent = playerData.lands;
         }
+
+        if (data.subsidies) {
+            subsidyCounts = data.subsidies;
+            document.getElementById('count-cssa').textContent = subsidyCounts.cssa;
+            document.getElementById('count-allowance').textContent = subsidyCounts.allowance;
+            document.getElementById('count-transport').textContent = subsidyCounts.transport;
+        }
     });
 
-    // --- 1. 頁面切換邏輯 ---
+    // --- 1. 分頁切換 ---
     window.switchPage = function(pageName) {
         document.querySelectorAll('.menu-btn').forEach(btn => btn.classList.remove('active'));
-        event.target.classList.add('active');
+        if (event && event.target) event.target.classList.add('active');
 
         document.querySelectorAll('.content-view').forEach(view => view.classList.remove('active'));
         const targetView = document.getElementById(`page-${pageName}`);
         if (targetView) targetView.classList.add('active');
     };
 
-    // --- 2. 棋盤邏輯 ---
+    // --- 2. 資助申請邏輯 ---
+    // 綜援 (資產 < 3000 -> +1700)
+    document.getElementById('btn-apply-cssa').addEventListener('click', () => {
+        if (playerData.money >= 3000) {
+            alert("不符合申請條件！資產需少於 $3000。");
+            return;
+        }
+        playerData.money += 1700;
+        subsidyCounts.cssa += 1;
+        syncToFirebase({ player: playerData, subsidies: subsidyCounts });
+    });
+
+    // 全額津貼 (資產 < 5000 -> +1500)
+    document.getElementById('btn-apply-allowance').addEventListener('click', () => {
+        if (playerData.money >= 5000) {
+            alert("不符合申請條件！資產需少於 $5000。");
+            return;
+        }
+        playerData.money += 1500;
+        subsidyCounts.allowance += 1;
+        syncToFirebase({ player: playerData, subsidies: subsidyCounts });
+    });
+
+    // 交通補貼 (無限制 -> +1000)
+    document.getElementById('btn-apply-transport').addEventListener('click', () => {
+        playerData.money += 1000;
+        subsidyCounts.transport += 1;
+        syncToFirebase({ player: playerData, subsidies: subsidyCounts });
+    });
+
+    // --- 3. 棋盤繪製邏輯 ---
     let selectedCellIndex = null;
     const board = document.getElementById('game-board');
 
@@ -563,7 +637,7 @@
         syncToFirebase({ confirmedPosition: -1 });
     });
 
-    // --- 3. 銀行邏輯 ---
+    // --- 4. 時間與倒計時邏輯 ---
     function formatTime(sec) {
         const h = String(Math.floor(sec / 3600)).padStart(2, '0');
         const m = String(Math.floor((sec % 3600) / 60)).padStart(2, '0');
@@ -571,80 +645,6 @@
         return `${h}:${m}:${s}`;
     }
 
-    function updateDebtUI() {
-        document.getElementById('bank-debt-display').textContent = `$${Math.round(totalDebt)}`;
-        document.getElementById('bank-timer-display').textContent = formatTime(debtSecondsLeft);
-
-        // 同步至 Firebase (供 Display 顯示)
-        syncToFirebase({
-            debt: {
-                principal: principal,
-                totalDebt: Math.round(totalDebt),
-                timerText: formatTime(debtSecondsLeft)
-            },
-            player: playerData
-        });
-    }
-
-    function startDebtTimer() {
-        if (debtTimerInterval) return;
-        debtTimerInterval = setInterval(() => {
-            if (debtSecondsLeft > 0) {
-                debtSecondsLeft--;
-            } else {
-                // 半小時到了，利息增加 15% 並重新計時
-                totalDebt = totalDebt * 1.15;
-                debtSecondsLeft = DEBT_PERIOD;
-            }
-            updateDebtUI();
-        }, 1000);
-    }
-
-    // 按下「輸入」（借錢）
-    document.getElementById('btn-borrow-submit').addEventListener('click', () => {
-        const amount = parseInt(document.getElementById('borrow-amount-input').value) || 0;
-        if (amount <= 0) return alert("請輸入有效的金額！");
-
-        playerData.money += amount;
-        principal += amount;
-        totalDebt += amount; // 首次借錢無加利息
-
-        document.getElementById('borrow-amount-input').value = '';
-        startDebtTimer();
-        updateDebtUI();
-    });
-
-    // 按下「還完」
-    document.getElementById('btn-repay-submit').addEventListener('click', () => {
-        if (totalDebt <= 0) return alert("目前沒有需要償還的債務！");
-
-        playerData.money -= Math.round(totalDebt);
-        principal = 0;
-        totalDebt = 0;
-        debtSecondsLeft = DEBT_PERIOD;
-
-        clearInterval(debtTimerInterval);
-        debtTimerInterval = null;
-
-        updateDebtUI();
-    });
-
-    // 按下「破產」
-    document.getElementById('btn-bankrupt').addEventListener('click', () => {
-        if (confirm("確定要執行破產嗎？這將會清空所有數據！")) {
-            playerData = { money: 0, pass: 0, items: 0, lands: 0 };
-            principal = 0;
-            totalDebt = 0;
-            debtSecondsLeft = DEBT_PERIOD;
-
-            clearInterval(debtTimerInterval);
-            debtTimerInterval = null;
-
-            updateDebtUI();
-        }
-    });
-
-    // --- 4. 遊戲總倒計時 ---
     let timerInterval = null;
     let totalSeconds = 120 * 60;
 
@@ -685,7 +685,6 @@
         updateTimerDisplay();
     });
 
-    // 時鐘更新
     function updateClock() {
         const now = new Date();
         const hours = String(now.getHours()).padStart(2, '0');
@@ -701,6 +700,3 @@
 </body>
 </html>
 
-
-</body>
-</html>
