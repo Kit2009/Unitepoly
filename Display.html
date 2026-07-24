@@ -285,7 +285,7 @@
 
         .notice-box { text-align: center; padding-top: 5px; min-height: 90px; }
 
-        /* 🎬 媒體播放黑框 */
+        /* 🎬 媒體播放黑框 (位置與棋盤覆蓋) */
         .media-overlay {
             position: absolute;
             top: 0;
@@ -460,13 +460,17 @@
         cellElements.push(cell);
     }
 
-    // 2. 實時監聽 Firebase 的資料變更
+    // 2. 獲取媒體播放器 DOM
+    const mediaBox = document.getElementById('media-box');
+    let lastMediaUrl = ""; // 用於避免重複加載相同媒體文件
+
+    // 3. 實時監聽 Firebase 的資料變更
     const gameStateRef = ref(db, 'gameState');
     onValue(gameStateRef, (snapshot) => {
         const data = snapshot.val();
         if (!data) return;
 
-        // 🟡 2.1 更新玩家黃框位置
+        // 🟡 3.1 更新玩家黃框位置
         cellElements.forEach((cell, idx) => {
             if (data.confirmedPosition === idx) {
                 cell.classList.add('selected');
@@ -475,21 +479,88 @@
             }
         });
 
-        // ⏱️ 2.2 更新遊戲倒計時
+        // ⏱️ 3.2 更新遊戲倒計時
         if (data.gameTimerText) {
             document.getElementById('game-timer-display').textContent = data.gameTimerText;
         }
 
-        // 💵 2.3 更新玩家數據
+        // 💵 3.3 更新玩家數據
         if (data.player) {
             document.getElementById('player-money').textContent = `$${data.player.money || 0}`;
             document.getElementById('player-pass').textContent = data.player.pass || 0;
             document.getElementById('player-items').textContent = data.player.items || 0;
             document.getElementById('player-lands').textContent = data.player.lands || 0;
         }
+
+        // 🎬 3.4 媒體播放器連接處理邏輯
+        if (data.media) {
+            renderMedia(data.media);
+        } else {
+            hideMedia();
+        }
     });
 
-    // 3. 本地時鐘
+    /**
+     * 處理並播放來自 Controller 發送的媒體內容
+     * @param {Object} media - 包含 type ('video'|'image'|'audio'|'none'), url, loop 等參數
+     */
+    function renderMedia(media) {
+        // 如果類型為 none 或沒有提供 url，則關閉媒體播放屏
+        if (!media.type || media.type === 'none' || !media.url) {
+            hideMedia();
+            return;
+        }
+
+        // 如果當前正在播放相同的媒體，且已經在顯示狀態，則無需重複創建元素
+        if (lastMediaUrl === media.url && !mediaBox.classList.contains('hidden')) {
+            return;
+        }
+
+        lastMediaUrl = media.url;
+        mediaBox.innerHTML = ''; // 清空先前的播放內容
+
+        if (media.type === 'video') {
+            mediaBox.classList.remove('hidden');
+            const video = document.createElement('video');
+            video.src = media.url;
+            video.autoplay = true;
+            video.loop = media.loop !== false; // 預設循環播放
+            video.controls = false;            // 隱藏預設按鈕
+            video.playsInline = true;          // 支持移動端內嵌播放
+            video.muted = media.muted || false; // 自動播放規則通常要求 muted，可依據需求設定
+
+            video.play().catch(e => console.warn("影片自動播放受阻:", e));
+            mediaBox.appendChild(video);
+
+        } else if (media.type === 'image') {
+            mediaBox.classList.remove('hidden');
+            const img = document.createElement('img');
+            img.src = media.url;
+            img.alt = "Media Display";
+            mediaBox.appendChild(img);
+
+        } else if (media.type === 'audio') {
+            // 背景音樂/音效：保持遮罩層隱藏，背景靜默播放音訊
+            mediaBox.classList.add('hidden');
+            const audio = document.createElement('audio');
+            audio.src = media.url;
+            audio.autoplay = true;
+            audio.loop = media.loop || false;
+            audio.play().catch(e => console.warn("音訊自動播放受阻:", e));
+            mediaBox.appendChild(audio);
+        }
+    }
+
+    /**
+     * 隱藏媒體屏並重置
+     */
+    function hideMedia() {
+        mediaBox.classList.add('hidden');
+        mediaBox.innerHTML = '';
+        lastMediaUrl = "";
+    }
+
+    // 4. 本地時鐘
     function updateClock() {
         const now = new Date();
         const hours = String(now.getHours()).padStart(2, '0');
@@ -503,3 +574,4 @@
 
 </body>
 </html>
+
