@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>模擬遊戲介面</title>
+    <title>模擬遊戲主介面 (Display)</title>
     <style>
         :root {
             --primary-bg: #cdeaf7;
@@ -13,6 +13,7 @@
             --accent-green: #10b981;
             --accent-orange: #f59e0b;
             --accent-red: #ef4444;
+            --select-yellow: #facc15;
         }
 
         * {
@@ -144,6 +145,15 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            transition: all 0.2s ease;
+        }
+
+        /* 同步 Controller 選擇位置嘅 Highlight 效果 */
+        .cell.selected {
+            border: 4px solid var(--select-yellow) !important;
+            box-shadow: 0 0 10px rgba(250, 204, 21, 0.9);
+            background-color: #fef08a;
+            z-index: 10;
         }
 
         .cell img {
@@ -346,7 +356,6 @@
             display: none !important;
         }
 
-        /* RWD 響應式佈局 */
         @media (max-width: 850px) {
             .main-layout {
                 grid-template-columns: 1fr;
@@ -370,7 +379,7 @@
     <div class="top-row">
         <div class="status-card">
             <div class="status-title">遊戲剩餘時間</div>
-            <div class="status-value-large" id="game-timer">00:00:00</div>
+            <div class="status-value-large" id="game-timer">02:00:00</div>
         </div>
         <div class="status-card">
             <div class="status-title">現在時間</div>
@@ -380,9 +389,9 @@
 
     <div class="player-bar" id="player-bar-container">
         <div>玩家金額 <span class="val-green" id="val-money">$0</span></div>
-        <div>通行證數量 <span class="val-orange" id="val-passes">0</span></div>
+        <div>通行證數量 <span class="val-orange" id="val-passes">1</span></div>
         <div>擁有道具 <span class="val-orange" id="val-items">0</span></div>
-        <div>擁有土地 <span class="val-orange" id="val-lands">0</span></div>
+        <div>擁有土地 <span class="val-orange" id="val-lands">1</span></div>
     </div>
 
     <div class="main-container">
@@ -396,7 +405,7 @@
             <div class="panel">
                 <div class="panel-header">
                     <span>現有房產</span>
-                    <span class="count" id="property-count">0</span>
+                    <span class="count" id="property-count">1</span>
                 </div>
                 <hr style="border: none; border-top: 1px solid #ccc; margin-bottom: 8px;">
                 <div class="table-header">
@@ -404,7 +413,13 @@
                     <span>收入</span>
                     <span>倒計時</span>
                 </div>
-                <div id="property-list"></div>
+                <div id="property-list">
+                    <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 0.95rem; margin-top: 5px;">
+                        <span>埃及</span>
+                        <span style="color: var(--accent-green);">$500</span>
+                        <span>--:--</span>
+                    </div>
+                </div>
             </div>
 
             <div class="right-column">
@@ -412,7 +427,7 @@
                     <div class="panel-header" style="margin-bottom: 4px;">
                         <span>現有道具</span>
                     </div>
-                    <div style="text-align: right; font-size: 0.65rem; color: #6b7280; margin-bottom: 6px;">使用次數</div>
+                    <div style="text-align: right; font-size: 0.65rem; color: #6b7280; margin-bottom: 6px;">可使用次數</div>
                     
                     <div class="item-list">
                         <div class="item-row">
@@ -483,40 +498,35 @@
 </div>
 
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-    // 🔑 1. 替換為你的 Firebase Config
+    // 🔑 帶入與 Controller 完全相同的 Config
     const firebaseConfig = {
         apiKey: "AIzaSyAiEI_WuLV1va-mooABk6e5TmegK-45cAg",
-  authDomain: "unitepoly-bb65a.firebaseapp.com",
-  databaseURL: "https://unitepoly-bb65a-default-rtdb.firebaseio.com",
-  projectId: "unitepoly-bb65a",
-  storageBucket: "unitepoly-bb65a.firebasestorage.app",
-  messagingSenderId: "1014615394934",
-  appId: "1:1014615394934:web:26958994ec19e037742d57"
+        authDomain: "unitepoly-bb65a.firebaseapp.com",
+        databaseURL: "https://unitepoly-bb65a-default-rtdb.firebaseio.com",
+        projectId: "unitepoly-bb65a",
+        storageBucket: "unitepoly-bb65a.firebasestorage.app",
+        messagingSenderId: "1014615394934",
+        appId: "1:1014615394934:web:26958994ec19e037742d57"
     };
 
-    // 2. 初始化 Firebase
+    // 初始化
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
+    const gameStateRef = ref(db, 'gameState');
 
-    // 3. 渲染 40 個棋盤格子
-    const cellImages = [];
+    // 渲染 40 個棋盤格子
     const board = document.getElementById('game-board');
     for (let i = 0; i < 40; i++) {
         const cell = document.createElement('div');
         cell.className = 'cell';
-        if (cellImages[i]) {
-            const img = document.createElement('img');
-            img.src = cellImages[i];
-            img.alt = `格子 ${i + 1}`;
-            cell.appendChild(img);
-        }
+        cell.dataset.index = i;
         board.appendChild(cell);
     }
 
-    // 4. 時鐘功能
+    // 當前時間
     function updateClock() {
         const now = new Date();
         const hours = String(now.getHours()).padStart(2, '0');
@@ -527,38 +537,8 @@
     setInterval(updateClock, 1000);
     updateClock();
 
-    // 5. 債務變數與邏輯
-    let principal = 0;
-    let interestRate = 0.10;
-    let totalDebt = principal * (1 + interestRate);
-    const DEBT_DURATION = 30 * 60;
-    let debtTimeLeft = DEBT_DURATION;
-
-    function updateDebtUI() {
-        document.getElementById('principal-val').textContent = `$${principal.toLocaleString()}`;
-        document.getElementById('total-debt-val').textContent = `$${Math.round(totalDebt).toLocaleString()}`;
-    }
-
-    function updateDebtTimer() {
-        if (debtTimeLeft <= 0) {
-            totalDebt = totalDebt * (1 + interestRate);
-            updateDebtUI();
-            debtTimeLeft = DEBT_DURATION;
-        } else {
-            debtTimeLeft--;
-        }
-
-        const h = String(Math.floor(debtTimeLeft / 3600)).padStart(2, '0');
-        const m = String(Math.floor((debtTimeLeft % 3600) / 60)).padStart(2, '0');
-        const s = String(debtTimeLeft % 60).padStart(2, '0');
-        document.getElementById('debt-timer').textContent = `${h}:${m}:${s}`;
-    }
-    updateDebtUI();
-    setInterval(updateDebtTimer, 1000);
-
-    // 6. 多媒體播放控制
+    // 多媒體播放控制
     const mediaBox = document.getElementById('media-box');
-    
     window.showMedia = function(sourceUrl, isVideo = false) {
         mediaBox.innerHTML = '';
         if (isVideo) {
@@ -585,42 +565,50 @@
         if (e.key === 'Escape') window.hideMedia();
     });
 
-    // 7. 即時數據監聽 (Firebase Realtime Sync)
-    const playerId = "player1";
-    const playerRef = ref(db, 'players/' + playerId);
-
-    onValue(playerRef, (snapshot) => {
+    // 🔄 監聽 Firebase 數據變動（對接 gameState）
+    onValue(gameStateRef, (snapshot) => {
         const data = snapshot.val();
         if (!data) return;
 
-           // 更新玩家主要數據
-        if (data.money !== undefined) document.getElementById('val-money').textContent = `$${data.money.toLocaleString()}`;
-        if (data.passes !== undefined) document.getElementById('val-passes').textContent = data.passes;
-        if (data.items !== undefined) document.getElementById('val-items').textContent = data.items;
-        if (data.lands !== undefined) document.getElementById('val-lands').textContent = data.lands;
+        // 1. 同步玩家基本數據 (player)
+        if (data.player) {
+            document.getElementById('val-money').textContent = `$${(data.player.money || 0).toLocaleString()}`;
+            document.getElementById('val-passes').textContent = data.player.pass ?? 1;
+            document.getElementById('val-items').textContent = data.player.items ?? 0;
+            document.getElementById('val-lands').textContent = data.player.lands ?? 1;
+        }
 
-        // 更新道具數量
-        if (data.itemDice !== undefined) document.getElementById('item-dice').textContent = data.itemDice;
-        if (data.itemJail !== undefined) document.getElementById('item-jail').textContent = data.itemJail;
-        if (data.itemTunnel !== undefined) document.getElementById('item-tunnel').textContent = data.itemTunnel;
+      // 2. 同步道具可使用數量 (items)
+        if (data.items) {
+            document.getElementById('item-dice').textContent = data.items.dice ? data.items.dice.usable : 0;
+            document.getElementById('item-jail').textContent = data.items.jail ? data.items.jail.usable : 0;
+            document.getElementById('item-tunnel').textContent = data.items.tunnel ? data.items.tunnel.usable : 0;
+        }
 
-        // 更新申請次數
-        if (data.applyCSSA !== undefined) document.getElementById('apply-cssa').textContent = data.applyCSSA;
-        if (data.applyFA !== undefined) document.getElementById('apply-fa').textContent = data.applyFA;
-        if (data.applyTA !== undefined) document.getElementById('apply-ta').textContent = data.applyTA;
+        // 3. 同步資助申請次數 (subsidies)
+        if (data.subsidies) {
+            document.getElementById('count-cssa').textContent = data.subsidies.cssa || 0;
+            document.getElementById('count-allowance').textContent = data.subsidies.allowance || 0;
+            document.getElementById('count-transport').textContent = data.subsidies.transport || 0;
+        }
 
-        // 更新本金與債務
-        if (data.principal !== undefined) {
-            principal = data.principal;
-            totalDebt = principal * (1 + interestRate);
-            updateDebtUI();
+        // 4. 同步倒計時文字 (gameTimerText)
+        if (data.gameTimerText) {
+            document.getElementById('game-timer').textContent = data.gameTimerText;
+        }
+
+        // 5. 同步 Controller 選擇嘅玩家棋盤位置 (confirmedPosition)
+        if (data.confirmedPosition !== undefined) {
+            // 先清除所有 Selected 狀態
+            document.querySelectorAll('.cell').forEach(c => c.classList.remove('selected'));
+            
+            // 如果 confirmedPosition 不是 -1，高亮顯示對應格子
+            if (data.confirmedPosition >= 0 && data.confirmedPosition < 40) {
+                const targetCell = board.querySelector(`[data-index='${data.confirmedPosition}']`);
+                if (targetCell) targetCell.classList.add('selected');
+            }
         }
     });
-
-    // 提供全域更新函數供前端操作測試
-    window.updatePlayerData = function(updateObj) {
-        update(ref(db, 'players/' + playerId), updateObj);
-    };
 </script>
 
 </body>
