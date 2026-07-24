@@ -34,7 +34,6 @@
             color: var(--text-dark);
         }
 
-        /* 📍 固定的整體外框 */
         .container {
             width: 100%;
             max-width: 1250px;
@@ -48,7 +47,7 @@
             display: grid;
             grid-template-columns: 1.2fr 1fr;
             gap: 15px;
-            height: 70px; /* 固定高度防止移位 */
+            height: 70px;
         }
 
         .status-card {
@@ -119,7 +118,7 @@
             font-size: 1.1rem;
             font-weight: bold;
             border: 2px solid var(--border-color);
-            height: 50px; /* 固定高度防止移位 */
+            height: 50px;
         }
 
         .val-green { color: var(--accent-green); font-size: 1.3em; font-weight: 800; }
@@ -130,7 +129,7 @@
             display: grid;
             grid-template-columns: 140px 1fr;
             gap: 15px;
-            min-height: 550px; /* 固定高度確保切換時不跳動 */
+            min-height: 550px;
         }
 
         /* 左側選單 */
@@ -346,7 +345,7 @@
             max-width: 400px;
         }
 
-        /* ------------------ 🎁 PAGE 4: 資助 ------------------ */
+        /* ------------------ PAGE 4: 資助 ------------------ */
         .subsidy-card {
             background: #fff;
             border: 3.5px solid var(--border-color);
@@ -394,6 +393,94 @@
             color: #1f2937;
             min-width: 120px;
             text-align: right;
+        }
+
+        /* ------------------ 🛒 PAGE 5: 商店 ------------------ */
+        .shop-card {
+            background: #fff;
+            border: 3.5px solid var(--border-color);
+            border-radius: 20px;
+            padding: 20px 30px;
+            max-width: 680px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .shop-header {
+            font-size: 1.3rem;
+            font-weight: bold;
+            border-bottom: 2px solid #333;
+            padding-bottom: 8px;
+        }
+
+        .shop-subheader-row {
+            display: flex;
+            justify-content: flex-end;
+            gap: 40px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: #4b5563;
+            padding-right: 120px;
+        }
+
+        .shop-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+        }
+
+        .shop-item-info {
+            width: 150px;
+        }
+
+        .shop-item-name {
+            font-size: 1.25rem;
+            font-weight: bold;
+        }
+
+        .shop-item-price {
+            font-size: 0.85rem;
+            color: #6b7280;
+            font-weight: bold;
+        }
+
+        .btn-shop-buy {
+            background-color: var(--accent-green);
+            color: white;
+            font-size: 0.95rem;
+            font-weight: bold;
+            padding: 5px 20px;
+            border-radius: 20px;
+            border: 2px solid var(--border-color);
+            cursor: pointer;
+        }
+
+        .shop-count-box {
+            font-size: 1.1rem;
+            font-weight: bold;
+            width: 60px;
+            text-align: center;
+        }
+
+        .btn-shop-use {
+            background-color: var(--accent-orange);
+            color: white;
+            font-size: 0.95rem;
+            font-weight: bold;
+            padding: 5px 24px;
+            border-radius: 20px;
+            border: 2px solid var(--border-color);
+            cursor: pointer;
+            width: 90px;
+            text-align: center;
+        }
+
+        .btn-shop-use:disabled {
+            background-color: #d1d5db;
+            border-color: #9ca3af;
+            cursor: not-allowed;
         }
     </style>
 </head>
@@ -491,24 +578,72 @@
             <div id="page-subsidy" class="content-view">
                 <div class="subsidy-card">
                     <div class="subsidy-header">資助</div>
-
                     <div class="subsidy-row">
                         <div class="subsidy-label">綜援</div>
                         <button class="btn-apply" id="btn-apply-cssa">申請</button>
                         <div class="apply-count-text">已申請 <span id="count-cssa">0</span> 次</div>
                     </div>
-
                     <div class="subsidy-row">
                         <div class="subsidy-label">全額津貼</div>
                         <button class="btn-apply" id="btn-apply-allowance">申請</button>
                         <div class="apply-count-text">已申請 <span id="count-allowance">0</span> 次</div>
                     </div>
-
                     <div class="subsidy-row">
                         <div class="subsidy-label">交通補貼</div>
                         <button class="btn-apply" id="btn-apply-transport">申請</button>
                         <div class="apply-count-text">已申請 <span id="count-transport">0</span> 次</div>
                     </div>
+                </div>
+            </div>
+
+            <div id="page-shop" class="content-view">
+                <div class="shop-card">
+                    <div class="shop-header">道具</div>
+                    <div class="shop-subheader-row">
+                        <div>已購買</div>
+                        <div>可使用</div>
+                    </div>
+
+                    <div class="shop-row">
+                        <div class="shop-item-info">
+                            <div class="shop-item-name">金骰子</div>
+                            <div class="shop-item-price">$2000</div>
+                        </div>
+                        <button class="btn-shop-buy" id="btn-buy-dice">購買</button>
+                        <div class="shop-count-box"><span id="purchased-dice">0</span> 次</div>
+                        <div class="shop-count-box"><span id="usable-dice">0</span> 次</div>
+                        <button class="btn-shop-use" id="btn-use-dice">使用</button>
+                    </div>
+
+                    <div class="shop-row">
+                        <div class="shop-item-info">
+                            <div class="shop-item-name">監獄解放卡</div>
+                            <div class="shop-item-price">$1000</div>
+                        </div>
+                        <button class="btn-shop-buy" id="btn-buy-jail">購買</button>
+                        <div class="shop-count-box"><span id="purchased-jail">0</span> 次</div>
+                        <div class="shop-count-box"><span id="usable-jail">0</span> 次</div>
+                        <button class="btn-shop-use" id="btn-use-jail">使用</button>
+                    </div>
+
+                    <div class="shop-row">
+                        <div class="shop-item-info">
+                            <div class="shop-item-name">隧道卡</div>
+                            <div class="shop-item-price">$2000</div>
+                        </div>
+                        <button class="btn-shop-buy" id="btn-buy-tunnel">購買</button>
+                        <div class="shop-count-box"><span id="purchased-tunnel">0</span> 次</div>
+                        <div class="shop-count-box"><span id="usable-tunnel">0</span> 次</div>
+                        <button class="btn-shop-use" id="btn-use-tunnel">使用</button>
+                    </div>
+
+                    <div class="shop-row">
+                        <div class="shop-item-info">
+                            <div class="shop-item-name">通行證</div>
+                            <div class="shop-item-price">$6000</div>
+                        </div>
+                        <button class="btn-shop-buy" id="btn-buy-pass">購買</button>
+                        <div style="width: 200px;"></div> </div>
                 </div>
             </div>
         </div>
@@ -520,7 +655,7 @@
     import { getDatabase, ref, update, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
     const firebaseConfig = {
-        apiKey: "AIzaSyAiEI_WuLV1va-mooABk6e5TmegK-45cAg",
+     apiKey: "AIzaSyAiEI_WuLV1va-mooABk6e5TmegK-45cAg",
   authDomain: "unitepoly-bb65a.firebaseapp.com",
   databaseURL: "https://unitepoly-bb65a-default-rtdb.firebaseio.com",
   projectId: "unitepoly-bb65a",
@@ -536,14 +671,18 @@
     // 玩家數據
     let playerData = { money: 0, pass: 1, items: 1, lands: 1 };
 
-    // 資助申請次數
-    let subsidyCounts = { cssa: 0, allowance: 0, transport: 0 };
+    // 道具狀態數據
+    let itemsData = {
+        dice: { purchased: 0, usable: 0, price: 2000 },
+        jail: { purchased: 0, usable: 0, price: 1000 },
+        tunnel: { purchased: 0, usable: 0, price: 2000 }
+    };
 
     function syncToFirebase(dataObj) {
         update(gameStateRef, dataObj).catch(err => console.error("Firebase 同步失敗:", err));
     }
 
-    // 監聽 Firebase 更新
+    // 監聽 Firebase 數據更新
     onValue(gameStateRef, (snapshot) => {
         const data = snapshot.val();
         if (!data) return;
@@ -556,11 +695,15 @@
             document.getElementById('ctrl-player-lands').textContent = playerData.lands;
         }
 
-        if (data.subsidies) {
-            subsidyCounts = data.subsidies;
-            document.getElementById('count-cssa').textContent = subsidyCounts.cssa;
-            document.getElementById('count-allowance').textContent = subsidyCounts.allowance;
-            document.getElementById('count-transport').textContent = subsidyCounts.transport;
+        if (data.items) {
+            itemsData = data.items;
+            // 更新 UI 數據
+            document.getElementById('purchased-dice').textContent = itemsData.dice.purchased;
+            document.getElementById('usable-dice').textContent = itemsData.dice.usable;
+            document.getElementById('purchased-jail').textContent = itemsData.jail.purchased;
+            document.getElementById('usable-jail').textContent = itemsData.jail.usable;
+            document.getElementById('purchased-tunnel').textContent = itemsData.tunnel.purchased;
+            document.getElementById('usable-tunnel').textContent = itemsData.tunnel.usable;
         }
     });
 
@@ -574,34 +717,59 @@
         if (targetView) targetView.classList.add('active');
     };
 
-    // --- 2. 資助申請邏輯 ---
-    // 綜援 (資產 < 3000 -> +1700)
-    document.getElementById('btn-apply-cssa').addEventListener('click', () => {
-        if (playerData.money >= 3000) {
-            alert("不符合申請條件！資產需少於 $3000。");
+    // --- 2. 商店購買與使用邏輯 ---
+    function updateShopState() {
+        // 更新「擁有道具」總數（可使用的總次數）
+        playerData.items = itemsData.dice.usable + itemsData.jail.usable + itemsData.tunnel.usable;
+        syncToFirebase({ player: playerData, items: itemsData });
+    }
+
+    // 通用購買邏輯
+    function buyItem(itemKey, addUsableCount) {
+        const item = itemsData[itemKey];
+        if (playerData.money < item.price) {
+            alert(`金額不足！需要 $${item.price}`);
             return;
         }
-        playerData.money += 1700;
-        subsidyCounts.cssa += 1;
-        syncToFirebase({ player: playerData, subsidies: subsidyCounts });
-    });
+        playerData.money -= item.price;
+        item.purchased += 1;
+        item.usable += addUsableCount;
+        updateShopState();
+    }
 
-    // 全額津貼 (資產 < 5000 -> +1500)
-    document.getElementById('btn-apply-allowance').addEventListener('click', () => {
-        if (playerData.money >= 5000) {
-            alert("不符合申請條件！資產需少於 $5000。");
+    // 通用使用邏輯
+    function useItem(itemKey) {
+        const item = itemsData[itemKey];
+        if (item.usable <= 0) {
+            alert("目前沒有可以使用的該道具！");
             return;
         }
-        playerData.money += 1500;
-        subsidyCounts.allowance += 1;
-        syncToFirebase({ player: playerData, subsidies: subsidyCounts });
-    });
+        item.usable -= 1;
+        updateShopState();
+    }
 
-    // 交通補貼 (無限制 -> +1000)
-    document.getElementById('btn-apply-transport').addEventListener('click', () => {
-        playerData.money += 1000;
-        subsidyCounts.transport += 1;
-        syncToFirebase({ player: playerData, subsidies: subsidyCounts });
+    // 金骰子 ($2000, 買1送3次)
+    document.getElementById('btn-buy-dice').addEventListener('click', () => buyItem('dice', 3));
+    document.getElementById('btn-use-dice').addEventListener('click', () => useItem('dice'));
+
+    // 監獄解放卡 ($1000, 買1送1次)
+    document.getElementById('btn-buy-jail').addEventListener('click', () => buyItem('jail', 1));
+    document.getElementById('btn-use-jail').addEventListener('click', () => useItem('jail'));
+
+    // 隧道卡 ($2000, 買1送1次)
+    document.getElementById('btn-buy-tunnel').addEventListener('click', () => buyItem('tunnel', 1));
+    document.getElementById('btn-use-tunnel').addEventListener('click', () => useItem('tunnel'));
+
+    // 通行證 ($6000, 直接加通行證數目)
+    document.getElementById('btn-buy-pass').addEventListener('click', () => {
+        const price = 6000;
+        if (playerData.money < price) {
+            alert("金額不足！需要 $6000");
+            return;
+        }
+        playerData.money -= price;
+        playerData.pass += 1;
+        syncToFirebase({ player: playerData });
     });
 
     // --- 3. 棋盤繪製邏輯 ---
@@ -698,5 +866,7 @@
 </script>
 
 </body>
+</html>
+
 </html>
 
