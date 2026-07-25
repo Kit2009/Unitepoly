@@ -406,153 +406,133 @@
 </div>
 
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
+    // 使用正確且對應的資料庫網址
     const firebaseConfig = {
-        databaseURL: "https://unitepoly-bb65a-default-rtdb.asia-southeast1.firebasedatabase.app/"
+       apiKey: "AIzaSyAiEI_WuLV1va-mooABk6e5TmegK-45cAg",
+  authDomain: "unitepoly-bb65a.firebaseapp.com",
+  databaseURL: "https://unitepoly-bb65a-default-rtdb.firebaseio.com",
+  projectId: "unitepoly-bb65a",
+  storageBucket: "unitepoly-bb65a.firebasestorage.app",
+  messagingSenderId: "1014615394934",
+  appId: "1:1014615394934:web:26958994ec19e037742d57"
     };
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
     const gameStateRef = ref(db, 'gameState');
 
-    const board = document.getElementById('board');
-
-    // 初始化 40 個格子
+    const board = document.getElementById('game-board');
     for (let i = 0; i < 40; i++) {
         const cell = document.createElement('div');
         cell.className = 'cell';
         cell.dataset.index = i;
         board.appendChild(cell);
     }
-    const centerDiv = document.createElement('div');
-    centerDiv.className = 'board-center';
-    board.appendChild(centerDiv);
+
+    function updateClock() {
+        const now = new Date();
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const seconds = String(now.getSeconds()).padStart(2, '0');
+        document.getElementById('current-time').textContent = `${hours}:${minutes}:${seconds}`;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
 
     onValue(gameStateRef, (snapshot) => {
         const data = snapshot.val();
         if (!data) return;
 
-        // 1. 同步玩家基本資料 (金錢、通行證)
-        if (data.playerData) {
-            const moneyEl = document.getElementById('disp-player-money');
-            if (moneyEl) moneyEl.textContent = `$${data.playerData.money || 0}`;
-            
-            const passEl = document.getElementById('disp-player-pass');
-            if (passEl) passEl.textContent = data.playerData.pass || 0;
+        // 1. 同步上方遊戲剩餘時間
+        if (data.gameTimerText) {
+            document.getElementById('disp-game-timer').textContent = data.gameTimerText;
+        } else if (data.gameTimer) {
+            document.getElementById('disp-game-timer').textContent = data.gameTimer;
         }
 
-        // 2. 清除地圖上的舊狀態
-        board.querySelectorAll('.cell').forEach(c => {
-            c.classList.remove('has-land', 'has-player', 'has-player.has-land');
-        });
+        // 2. 同步玩家數據
+        if (data.player) {
+            document.getElementById('disp-money').textContent = `$${data.player.money || 0}`;
+            document.getElementById('disp-pass').textContent = data.player.pass || 0;
+            document.getElementById('disp-items').textContent = data.player.items || 0;
+            document.getElementById('disp-lands').textContent = data.player.lands || 0;
+            document.getElementById('disp-land-count').textContent = data.player.lands || 0;
+        }
 
-        // 3. 渲染土地狀態
+        if (data.items) {
+            document.getElementById('disp-dice-uses').textContent = data.items.dice?.usable || 0;
+            document.getElementById('disp-jail-uses').textContent = data.items.jail?.usable || 0;
+            document.getElementById('disp-tunnel-uses').textContent = data.items.tunnel?.usable || 0;
+        }
+
+        if (data.bank) {
+            document.getElementById('disp-principal-val').textContent = `$${(data.bank.borrowed || 0).toLocaleString()}`;
+            document.getElementById('disp-total-debt-val').textContent = `$${(data.bank.totalDebt || 0).toLocaleString()}`;
+            document.getElementById('disp-debt-timer').textContent = data.bank.debtTimerText || "00:30:00";
+        }
+
+        if (data.subsidies) {
+            document.getElementById('disp-cssa-count').textContent = data.subsidies.cssa || 0;
+            document.getElementById('disp-allowance-count').textContent = data.subsidies.allowance || 0;
+            document.getElementById('disp-transport-count').textContent = data.subsidies.transport || 0;
+        }
+
+        // 3. 棋盤重置與即時玩家位置高亮同步
+        document.querySelectorAll('.cell').forEach(cell => cell.classList.remove('has-player', 'has-land'));
+
         if (data.landsData) {
             Object.values(data.landsData).forEach(land => {
                 if (land.owned && land.index !== undefined) {
                     const targetLandCell = board.querySelector(`[data-index='${land.index}']`);
-                    if (targetLandCell) {
-                        targetLandCell.classList.add('has-land');
-                    }
+                    if (targetLandCell) targetLandCell.classList.add('has-land');
                 }
             });
         }
 
-        // 4. 標記玩家位置 (支援 confirmedPosition 或 position)
-        const currentPos = data.confirmedPosition !== undefined ? data.confirmedPosition : data.position;
-        if (currentPos !== undefined && currentPos >= 0) {
-            const playerCell = board.querySelector(`[data-index='${currentPos}']`);
-            if (playerCell) {
-                playerCell.classList.add('has-player');
-            }
+        let pos = undefined;
+        if (data.confirmedPosition !== undefined) pos = data.confirmedPosition;
+        else if (data.position !== undefined) pos = data.position;
+        else if (data.player && data.player.position !== undefined) pos = data.player.position;
+
+        if (pos !== undefined && pos !== null && pos >= 0) {
+            const playerCell = board.querySelector(`[data-index='${pos}']`);
+            if (playerCell) playerCell.classList.add('has-player');
         }
 
-        // 5. 渲染「現有房產」列表
+        // 4. 房產列表渲染
         const houseContainer = document.getElementById('disp-house-container');
-        if (houseContainer) {
-            houseContainer.innerHTML = '';
-            if (data.landsData) {
-                Object.entries(data.landsData).forEach(([name, land]) => {
-                    if (land.built) {
-                        const row = document.createElement('div');
-                        row.className = 'house-item-row';
-                        const timerSec = land.timer || 1200;
-                        const mins = String(Math.floor(timerSec / 60)).padStart(2, '0');
-                        const secs = String(timerSec % 60).padStart(2, '0');
-
-                        row.innerHTML = `
-                            <span>${name}</span>
-                            <span style="color: var(--accent-green);">+$${land.income}</span>
-                            <span>${mins}:${secs}</span>
-                        `;
-                        houseContainer.appendChild(row);
-                    }
-                });
-            }
+        houseContainer.innerHTML = '';
+        if (data.landsData) {
+            Object.entries(data.landsData).forEach(([name, land]) => {
+                if (land.built) {
+                    const row = document.createElement('div');
+                    row.className = 'house-item-row';
+                    const timerSec = land.timer || 1200;
+                    const mins = String(Math.floor(timerSec / 60)).padStart(2, '0');
+                    const secs = String(timerSec % 60).padStart(2, '0');
+                    row.innerHTML = `
+                        <span>${name}</span>
+                        <span style="color: var(--accent-green);">+$${land.income}</span>
+                        <span>${mins}:${secs}</span>
+                    `;
+                    houseContainer.appendChild(row);
+                }
+            });
         }
 
-        // 6. 同步現有道具次數 (金骰子、監獄解放卡、隧道卡)
-        if (data.items) {
-            const diceUses = document.getElementById('disp-dice-uses');
-            if (diceUses) diceUses.textContent = data.items.dice?.usable || 0;
-
-            const jailUses = document.getElementById('disp-jail-uses');
-            if (jailUses) jailUses.textContent = data.items.jail?.usable || 0;
-
-            const tunnelUses = document.getElementById('disp-tunnel-uses');
-            if (tunnelUses) tunnelUses.textContent = data.items.tunnel?.usable || 0;
-        }
-
-        // 7. 同步銀行債務狀態
-        if (data.bank) {
-            const debtTimer = document.getElementById('disp-debt-timer');
-            if (debtTimer) debtTimer.textContent = data.bank.debtTimerText || "00:00:00";
-
-            const principalVal = document.getElementById('disp-principal-val');
-            if (principalVal) principalVal.textContent = `$${data.bank.principal || 0}`;
-
-            const totalDebtVal = document.getElementById('disp-total-debt-val');
-            if (totalDebtVal) totalDebtVal.textContent = `$${data.bank.totalDebt || 0}`;
-        }
-
-        // 8. 同步福利津貼次數 (綜援、全津、交補)
-        if (data.subsidies) {
-            const cssaCount = document.getElementById('disp-cssa-count');
-            if (cssaCount) cssaCount.textContent = data.subsidies.cssa || 0;
-
-            const allowanceCount = document.getElementById('disp-allowance-count');
-            if (allowanceCount) allowanceCount.textContent = data.subsidies.allowance || 0;
-
-            const transportCount = document.getElementById('disp-transport-count');
-            if (transportCount) transportCount.textContent = data.subsidies.transport || 0;
-        }
-
-        // 9. 同步天文台通知狀態
-        const noticeContent = document.getElementById('notice-content');
-        if (data.observatoryState) {
-            if (data.observatoryState.visible) {
-                if (noticeContent) noticeContent.classList.remove('hidden');
-                const timeEl = document.querySelector('.notice-time');
-                if (timeEl) timeEl.textContent = data.observatoryState.timerText || "00:00";
-            } else {
-                if (noticeContent) noticeContent.classList.add('hidden');
-            }
-        }
-
-        // 10. 媒體播放狀態同步
+        // 5. 媒體播放狀態同步
         const mediaBox = document.getElementById('media-box');
-        if (mediaBox) {
-            if (data.mediaState && data.mediaState.visible) {
-                mediaBox.classList.remove('hidden');
-                mediaBox.innerHTML = data.mediaState.type === 'video'
-                    ? `<video src="${data.mediaState.src}" autoplay ${data.mediaState.playing ? 'controls' : ''}></video>`
-                    : `<img src="${data.mediaState.src}" alt="media">`;
-            } else {
-                mediaBox.classList.add('hidden');
-                mediaBox.innerHTML = '';
-            }
+        if (data.mediaState && data.mediaState.visible) {
+            mediaBox.classList.remove('hidden');
+            mediaBox.innerHTML = data.mediaState.type === 'video'
+                ? `<video src="${data.mediaState.src}" autoplay ${data.mediaState.playing ? 'controls' : ''}></video>`
+                : `<img src="${data.mediaState.src}" alt="media">`;
+        } else {
+            mediaBox.classList.add('hidden');
+            mediaBox.innerHTML = '';
         }
     });
 </script>
