@@ -42,7 +42,6 @@
             gap: 12px;
         }
 
-        /* 📌 1. 固定頂部時間欄 */
         .top-row {
             display: grid;
             grid-template-columns: 1.2fr 1fr;
@@ -107,7 +106,6 @@
         .btn-red { background-color: var(--accent-red); }
         .btn-darkblue { background-color: #1e3a8a; }
 
-        /* 📌 2. 固定玩家數據欄 */
         .player-bar {
             background: var(--panel-bg);
             border-radius: 12px;
@@ -124,7 +122,6 @@
         .val-green { color: var(--accent-green); font-size: 1.3em; font-weight: 800; }
         .val-orange { color: var(--accent-orange); font-size: 1.2em; font-weight: 800; }
 
-        /* 📌 3. 主操作分頁區 */
         .main-layout {
             display: grid;
             grid-template-columns: 140px 1fr;
@@ -170,7 +167,7 @@
             display: block;
         }
 
-        /* ------------------ PAGE 1: 棋盤 ------------------ */
+        /* 棋盤排版 */
         .board-layout {
             display: grid;
             grid-template-columns: minmax(350px, 1.4fr) 280px;
@@ -193,7 +190,7 @@
         .board-center {
             grid-column: 2 / 11;
             grid-row: 2 / 11;
-            background-image: url('center-image.jpg');
+            background-image: url('center-image.jpg'); /* 棋盤中間大圖 */
             background-size: cover;
             background-position: center;
             border-radius: 8px;
@@ -203,19 +200,23 @@
         .cell {
             border: 2px solid var(--border-color);
             border-radius: 5px;
-            background: rgba(255, 255, 255, 0.9);
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
             cursor: pointer;
             display: flex;
             justify-content: center;
             align-items: center;
+            position: relative;
         }
 
         .cell.selected {
             border: 4px solid var(--select-yellow) !important;
-            box-shadow: 0 0 8px rgba(250, 204, 21, 0.8);
+            box-shadow: 0 0 10px rgba(250, 204, 21, 1);
             z-index: 10;
         }
 
+        /* 40 個格子的網格定位 */
         .cell:nth-child(1)  { grid-column: 1;  grid-row: 1; }
         .cell:nth-child(2)  { grid-column: 2;  grid-row: 1; }
         .cell:nth-child(3)  { grid-column: 3;  grid-row: 1; }
@@ -292,7 +293,7 @@
             cursor: pointer;
         }
 
-        /* ------------------ PAGE 2: 銀行 ------------------ */
+        /* 銀行頁面樣式 */
         .bank-container { display: flex; flex-direction: column; gap: 20px; }
         .bank-card {
             background: #fff;
@@ -343,7 +344,7 @@
             max-width: 400px;
         }
 
-        /* ------------------ PAGE 4: 資助 ------------------ */
+        /* 資助頁面樣式 */
         .subsidy-card {
             background: #fff;
             border: 3.5px solid var(--border-color);
@@ -354,26 +355,9 @@
             flex-direction: column;
             gap: 20px;
         }
-
-        .subsidy-header {
-            font-size: 1.3rem;
-            font-weight: bold;
-            border-bottom: 2px solid #333;
-            padding-bottom: 8px;
-        }
-
-        .subsidy-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .subsidy-label {
-            font-size: 1.25rem;
-            font-weight: bold;
-            width: 120px;
-        }
-
+        .subsidy-header { font-size: 1.3rem; font-weight: bold; border-bottom: 2px solid #333; padding-bottom: 8px; }
+        .subsidy-row { display: flex; align-items: center; justify-content: space-between; }
+        .subsidy-label { font-size: 1.25rem; font-weight: bold; width: 120px; }
         .btn-apply {
             background-color: var(--accent-green);
             color: white;
@@ -384,16 +368,9 @@
             border: 2px solid var(--border-color);
             cursor: pointer;
         }
+        .apply-count-text { font-size: 1.1rem; font-weight: bold; color: #1f2937; min-width: 120px; text-align: right; }
 
-        .apply-count-text {
-            font-size: 1.1rem;
-            font-weight: bold;
-            color: #1f2937;
-            min-width: 120px;
-            text-align: right;
-        }
-
-        /* ------------------ PAGE 5: 商店 ------------------ */
+        /* 商店頁面樣式 */
         .shop-card {
             background: #fff;
             border: 3.5px solid var(--border-color);
@@ -404,35 +381,12 @@
             flex-direction: column;
             gap: 15px;
         }
-
-        .shop-header {
-            font-size: 1.3rem;
-            font-weight: bold;
-            border-bottom: 2px solid #333;
-            padding-bottom: 8px;
-        }
-
-        .shop-subheader-row {
-            display: flex;
-            justify-content: flex-end;
-            gap: 40px;
-            font-size: 0.85rem;
-            font-weight: bold;
-            color: #4b5563;
-            padding-right: 120px;
-        }
-
-        .shop-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 15px;
-        }
-
+        .shop-header { font-size: 1.3rem; font-weight: bold; border-bottom: 2px solid #333; padding-bottom: 8px; }
+        .shop-subheader-row { display: flex; justify-content: flex-end; gap: 40px; font-size: 0.85rem; font-weight: bold; color: #4b5563; padding-right: 120px; }
+        .shop-row { display: flex; align-items: center; justify-content: space-between; gap: 15px; }
         .shop-item-info { width: 150px; }
         .shop-item-name { font-size: 1.25rem; font-weight: bold; }
         .shop-item-price { font-size: 0.85rem; color: #6b7280; font-weight: bold; }
-
         .btn-shop-buy {
             background-color: var(--accent-green);
             color: white;
@@ -443,14 +397,7 @@
             border: 2px solid var(--border-color);
             cursor: pointer;
         }
-
-        .shop-count-box {
-            font-size: 1.1rem;
-            font-weight: bold;
-            width: 60px;
-            text-align: center;
-        }
-
+        .shop-count-box { font-size: 1.1rem; font-weight: bold; width: 60px; text-align: center; }
         .btn-shop-use {
             background-color: var(--accent-orange);
             color: white;
@@ -464,14 +411,8 @@
             text-align: center;
         }
 
-        /* ------------------ 💯 PAGE 7: 分數 ------------------ */
-        .score-container {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            max-width: 750px;
-        }
-
+        /* 分數頁面樣式 */
+        .score-container { display: flex; flex-direction: column; gap: 15px; max-width: 750px; }
         .score-card {
             background: #fff;
             border: 3.5px solid var(--border-color);
@@ -481,20 +422,8 @@
             flex-direction: column;
             gap: 12px;
         }
-
-        .score-section-title {
-            font-size: 1.15rem;
-            font-weight: bold;
-            border-bottom: 2px solid #ccc;
-            padding-bottom: 5px;
-        }
-
-        .score-row {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
+        .score-section-title { font-size: 1.15rem; font-weight: bold; border-bottom: 2px solid #ccc; padding-bottom: 5px; }
+        .score-row { display: flex; align-items: center; gap: 12px; }
         .score-input {
             border: 2px solid var(--border-color);
             border-radius: 20px;
@@ -504,7 +433,6 @@
             outline: none;
             font-weight: bold;
         }
-
         .btn-score {
             border: 2px solid var(--border-color);
             border-radius: 20px;
@@ -514,12 +442,10 @@
             color: white;
             cursor: pointer;
         }
-
         .btn-score-add { background-color: var(--accent-green); }
         .btn-score-sub { background-color: var(--accent-red); }
         .btn-score-mod { background-color: var(--accent-orange); }
         .btn-score-yeah { background-color: var(--accent-orange); }
-
         .btn-tax {
             background-color: var(--accent-orange);
             color: white;
@@ -530,26 +456,9 @@
             font-weight: bold;
             cursor: pointer;
         }
-
-        .pass-control-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .pass-left-group {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .pass-val-box {
-            font-size: 2rem;
-            font-weight: 800;
-            width: 60px;
-            text-align: center;
-        }
-
+        .pass-control-row { display: flex; align-items: center; justify-content: space-between; }
+        .pass-left-group { display: flex; align-items: center; gap: 15px; }
+        .pass-val-box { font-size: 2rem; font-weight: 800; width: 60px; text-align: center; }
         .btn-circle-arrow {
             width: 45px;
             height: 45px;
@@ -563,10 +472,8 @@
             align-items: center;
             cursor: pointer;
         }
-
         .btn-arrow-up { background-color: var(--accent-green); }
         .btn-arrow-down { background-color: var(--accent-red); }
-
         .btn-global-reset {
             background-color: #000;
             color: white;
@@ -603,7 +510,7 @@
                 <button class="btn btn-green" id="btn-start">開始</button>
                 <button class="btn btn-orange" id="btn-pause">暫停</button>
                 <button class="btn btn-red" id="btn-reset-timer">重新</button>
-               <button class="btn btn-darkblue" id="btn-add-5">加時5分鐘</button>
+                <button class="btn btn-darkblue" id="btn-add-5">加時5分鐘</button>
             </div>
         </div>
     </div>
@@ -611,19 +518,17 @@
     <div class="player-bar">
         <div>玩家金額 <span class="val-green" id="ctrl-player-money">$0</span></div>
         <div>通行證數量 <span class="val-orange" id="ctrl-player-pass">1</span></div>
-        <div>擁有道具 <span class="val-orange" id="ctrl-player-items">1</span></div>
+        <div>擁有道具 <span class="val-orange" id="ctrl-player-items">0</span></div>
         <div>擁有土地 <span class="val-orange" id="ctrl-player-lands">1</span></div>
     </div>
 
     <div class="main-layout">
         <div class="menu-panel">
-            <button class="menu-btn active" onclick="switchPage('board')">棋盤</button>
-            <button class="menu-btn" onclick="switchPage('bank')">銀行</button>
-            <button class="menu-btn" onclick="switchPage('house')">樓房</button>
-            <button class="menu-btn" onclick="switchPage('subsidy')">資助</button>
-            <button class="menu-btn" onclick="switchPage('shop')">商店</button>
-            <button class="menu-btn" onclick="switchPage('event')">突發</button>
-            <button class="menu-btn" onclick="switchPage('score')">分數</button>
+            <button class="menu-btn active" data-page="board">棋盤</button>
+            <button class="menu-btn" data-page="bank">銀行</button>
+            <button class="menu-btn" data-page="subsidy">資助</button>
+            <button class="menu-btn" data-page="shop">商店</button>
+            <button class="menu-btn" data-page="score">分數</button>
         </div>
 
         <div>
@@ -651,16 +556,16 @@
                         <div class="bank-input-row">
                             <label>輸入金額</label>
                             <input type="number" id="borrow-amount-input" placeholder="0">
-                            <button class="btn-bank-action btn-borrow" id="btn-borrow-submit">輸入</button>
+                            <button class="btn-bank-action btn-borrow" id="btn-borrow-submit">借款</button>
                             <button class="btn-bank-action btn-repay" id="btn-repay-submit">還完</button>
                         </div>
                         <div class="bank-status-row">
                             <div class="debt-display-box">
-                                <div class="label">還幾多</div>
-                                <div class="value" id="bank-debt-display">$00000</div>
+                                <div class="label">還幾多 (含20%利息)</div>
+                                <div class="value" id="bank-debt-display">$0</div>
                             </div>
                             <div class="timer-display-box">
-                                <div class="label">倒計時</div>
+                                <div class="label">還款倒計時</div>
                                 <div class="value" id="bank-timer-display">00:00:00</div>
                             </div>
                         </div>
@@ -788,36 +693,94 @@
 
     const firebaseConfig = {
         apiKey: "AIzaSyAiEI_WuLV1va-mooABk6e5TmegK-45cAg",
-  authDomain: "unitepoly-bb65a.firebaseapp.com",
-  databaseURL: "https://unitepoly-bb65a-default-rtdb.firebaseio.com",
-  projectId: "unitepoly-bb65a",
-  storageBucket: "unitepoly-bb65a.firebasestorage.app",
-  messagingSenderId: "1014615394934",
-  appId: "1:1014615394934:web:26958994ec19e037742d57"
+        authDomain: "unitepoly-bb65a.firebaseapp.com",
+        databaseURL: "https://unitepoly-bb65a-default-rtdb.firebaseio.com",
+        projectId: "unitepoly-bb65a",
+        storageBucket: "unitepoly-bb65a.firebasestorage.app",
+        messagingSenderId: "1014615394934",
+        appId: "1:1014615394934:web:26958994ec19e037742d57"
     };
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
     const gameStateRef = ref(db, 'gameState');
 
-    // 玩家數據
-    let playerData = { money: 0, pass: 1, items: 1, lands: 1 };
+    // 💡 40 個格子的指令圖片網址 (請自行填入圖片檔名或網絡圖片網址)
+    const tileImages = [
+        'images/tile_0.png', 'images/tile_1.png', 'images/tile_2.png', 'images/tile_3.png',
+        'images/tile_4.png', 'images/tile_5.png', 'images/tile_6.png', 'images/tile_7.png',
+        'images/tile_8.png', 'images/tile_9.png', 'images/tile_10.png', 'images/tile_11.png',
+        'images/tile_12.png', 'images/tile_13.png', 'images/tile_14.png', 'images/tile_15.png',
+        'images/tile_16.png', 'images/tile_17.png', 'images/tile_18.png', 'images/tile_19.png',
+        'images/tile_20.png', 'images/tile_21.png', 'images/tile_22.png', 'images/tile_23.png',
+        'images/tile_24.png', 'images/tile_25.png', 'images/tile_26.png', 'images/tile_27.png',
+        'images/tile_28.png', 'images/tile_29.png', 'images/tile_30.png', 'images/tile_31.png',
+        'images/tile_32.png', 'images/tile_33.png', 'images/tile_34.png', 'images/tile_35.png',
+        'images/tile_36.png', 'images/tile_37.png', 'images/tile_38.png', 'images/tile_39.png'
+    ];
 
-    // 道具狀態數據
+    let playerData = { money: 0, pass: 1, items: 0, lands: 1 };
     let itemsData = {
         dice: { purchased: 0, usable: 0, price: 2000 },
         jail: { purchased: 0, usable: 0, price: 1000 },
         tunnel: { purchased: 0, usable: 0, price: 2000 }
     };
-
-    // 資助申請次數
+    let bankData = { borrowed: 0, totalDebt: 0, debtTimerText: "00:00:00" };
     let subsidyCounts = { cssa: 0, allowance: 0, transport: 0 };
+
+    let debtInterval = null;
+    let debtSeconds = 30 * 60;
 
     function syncToFirebase(dataObj) {
         update(gameStateRef, dataObj).catch(err => console.error("Firebase 同步失敗:", err));
     }
 
-    // 監聽 Firebase 數據更新
+    function formatTime(sec) {
+        const h = String(Math.floor(sec / 3600)).padStart(2, '0');
+        const m = String(Math.floor((sec % 3600) / 60)).padStart(2, '0');
+        const s = String(sec % 60).padStart(2, '0');
+        return `${h}:${m}:${s}`;
+    }
+
+    // 選單頁面切換
+    document.querySelectorAll('.menu-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const pageName = e.currentTarget.dataset.page;
+            document.querySelectorAll('.menu-btn').forEach(b => b.classList.remove('active'));
+            e.currentTarget.classList.add('active');
+
+            document.querySelectorAll('.content-view').forEach(view => view.classList.remove('active'));
+            const targetView = document.getElementById(`page-${pageName}`);
+            if (targetView) targetView.classList.add('active');
+        });
+    });
+
+    // 建立 40 個格子並渲染圖片
+    let selectedCellIndex = null;
+    const board = document.getElementById('game-board');
+
+    for (let i = 0; i < 40; i++) {
+        const cell = document.createElement('div');
+        cell.className = 'cell';
+        cell.dataset.index = i;
+        
+        // 設定圖片背景
+        if (tileImages[i]) {
+            cell.style.backgroundImage = `url('${tileImages[i]}')`;
+        }
+
+        cell.addEventListener('click', () => {
+            if (selectedCellIndex !== null) {
+                const prevCell = board.querySelector(`[data-index='${selectedCellIndex}']`);
+                if (prevCell) prevCell.classList.remove('selected');
+            }
+            selectedCellIndex = i;
+            cell.classList.add('selected');
+        });
+        board.appendChild(cell);
+    }
+
+    // 監聽 Firebase 數據
     onValue(gameStateRef, (snapshot) => {
         const data = snapshot.val();
         if (!data) return;
@@ -833,122 +796,127 @@
 
         if (data.items) {
             itemsData = data.items;
-            document.getElementById('purchased-dice').textContent = itemsData.dice.purchased;
-            document.getElementById('usable-dice').textContent = itemsData.dice.usable;
-            document.getElementById('purchased-jail').textContent = itemsData.jail.purchased;
-            document.getElementById('usable-jail').textContent = itemsData.jail.usable;
-            document.getElementById('purchased-tunnel').textContent = itemsData.tunnel.purchased;
-            document.getElementById('usable-tunnel').textContent = itemsData.tunnel.usable;
+            document.getElementById('purchased-dice').textContent = itemsData.dice.purchased || 0;
+            document.getElementById('usable-dice').textContent = itemsData.dice.usable || 0;
+            document.getElementById('purchased-jail').textContent = itemsData.jail.purchased || 0;
+            document.getElementById('usable-jail').textContent = itemsData.jail.usable || 0;
+            document.getElementById('purchased-tunnel').textContent = itemsData.tunnel.purchased || 0;
+            document.getElementById('usable-tunnel').textContent = itemsData.tunnel.usable || 0;
+        }
+
+        if (data.bank) {
+            bankData = data.bank;
+            document.getElementById('bank-debt-display').textContent = `$${bankData.totalDebt || 0}`;
+            document.getElementById('bank-timer-display').textContent = bankData.debtTimerText || "00:00:00";
         }
 
         if (data.subsidies) {
             subsidyCounts = data.subsidies;
-            document.getElementById('count-cssa').textContent = subsidyCounts.cssa;
-            document.getElementById('count-allowance').textContent = subsidyCounts.allowance;
-            document.getElementById('count-transport').textContent = subsidyCounts.transport;
+            document.getElementById('count-cssa').textContent = subsidyCounts.cssa || 0;
+            document.getElementById('count-allowance').textContent = subsidyCounts.allowance || 0;
+            document.getElementById('count-transport').textContent = subsidyCounts.transport || 0;
         }
     });
 
-    // --- 1. 分頁切換 ---
-    window.switchPage = function(pageName) {
-        document.querySelectorAll('.menu-btn').forEach(btn => btn.classList.remove('active'));
-        if (event && event.target) event.target.classList.add('active');
+    // 銀行邏輯
+    function startDebtTimer() {
+        if (debtInterval) clearInterval(debtInterval);
+        debtInterval = setInterval(() => {
+            if (debtSeconds > 0) {
+                debtSeconds--;
+                bankData.debtTimerText = formatTime(debtSeconds);
+            } else {
+                clearInterval(debtInterval);
+                debtInterval = null;
+                bankData.debtTimerText = "已逾期!";
+            }
+            document.getElementById('bank-timer-display').textContent = bankData.debtTimerText;
+            syncToFirebase({ bank: bankData });
+        }, 1000);
+    }
 
-        document.querySelectorAll('.content-view').forEach(view => view.classList.remove('active'));
-        const targetView = document.getElementById(`page-${pageName}`);
-        if (targetView) targetView.classList.add('active');
-    };
+    function stopDebtTimer() {
+        if (debtInterval) {
+            clearInterval(debtInterval);
+            debtInterval = null;
+        }
+        debtSeconds = 30 * 60;
+        bankData.debtTimerText = "00:00:00";
+        document.getElementById('bank-timer-display').textContent = bankData.debtTimerText;
+    }
 
-    // --- 2. 分數頁面邏輯 ---
+    document.getElementById('btn-borrow-submit').addEventListener('click', () => {
+        const amount = parseInt(document.getElementById('borrow-amount-input').value) || 0;
+        if (amount <= 0) return alert("請輸入有效的借款金額！");
+        playerData.money += amount;
+        bankData.borrowed += amount;
+        bankData.totalDebt = Math.floor(bankData.borrowed * 1.2);
+        debtSeconds = 30 * 60;
+        startDebtTimer();
+        syncToFirebase({ player: playerData, bank: bankData });
+        document.getElementById('borrow-amount-input').value = '';
+    });
+
+    document.getElementById('btn-repay-submit').addEventListener('click', () => {
+        if (bankData.totalDebt <= 0) return alert("目前沒有債務！");
+        if (playerData.money < bankData.totalDebt) return alert("玩家金額不足以還清債務！");
+        playerData.money -= bankData.totalDebt;
+        bankData.borrowed = 0;
+        bankData.totalDebt = 0;
+        stopDebtTimer();
+        syncToFirebase({ player: playerData, bank: bankData });
+    });
+
+    document.getElementById('btn-bankrupt').addEventListener('click', () => {
+        if (confirm("確定宣告破產？玩家金額將會清零，債務亦會解除！")) {
+            playerData.money = 0;
+            bankData.borrowed = 0;
+            bankData.totalDebt = 0;
+            stopDebtTimer();
+            syncToFirebase({ player: playerData, bank: bankData });
+        }
+    });
+
+    // 分數管理邏輯
     function getScoreInputVal() {
         const val = parseInt(document.getElementById('score-money-input').value);
         return isNaN(val) ? 0 : val;
     }
 
-    // 金錢：加 / 減 / 改 / 耶
-    document.getElementById('btn-money-add').addEventListener('click', () => {
-        playerData.money += getScoreInputVal();
-        syncToFirebase({ player: playerData });
-    });
+    document.getElementById('btn-money-add').addEventListener('click', () => { playerData.money += getScoreInputVal(); syncToFirebase({ player: playerData }); });
+    document.getElementById('btn-money-sub').addEventListener('click', () => { playerData.money = Math.max(0, playerData.money - getScoreInputVal()); syncToFirebase({ player: playerData }); });
+    document.getElementById('btn-money-mod').addEventListener('click', () => { playerData.money = Math.max(0, getScoreInputVal()); syncToFirebase({ player: playerData }); });
+    document.getElementById('btn-money-yeah').addEventListener('click', () => { playerData.money += 1000; syncToFirebase({ player: playerData }); });
 
-    document.getElementById('btn-money-sub').addEventListener('click', () => {
-        playerData.money = Math.max(0, playerData.money - getScoreInputVal());
-        syncToFirebase({ player: playerData });
-    });
+    document.getElementById('btn-tax-1000').addEventListener('click', () => { playerData.money = Math.max(0, playerData.money - 1000); syncToFirebase({ player: playerData }); });
+    document.getElementById('btn-tax-500').addEventListener('click', () => { playerData.money = Math.max(0, playerData.money - 500); syncToFirebase({ player: playerData }); });
+    document.getElementById('btn-tax-10pct').addEventListener('click', () => { playerData.money = Math.floor(playerData.money * 0.9); syncToFirebase({ player: playerData }); });
 
-    document.getElementById('btn-money-mod').addEventListener('click', () => {
-        playerData.money = Math.max(0, getScoreInputVal());
-        syncToFirebase({ player: playerData });
-    });
+    document.getElementById('btn-task-easy').addEventListener('click', () => { playerData.money += 1000; syncToFirebase({ player: playerData }); });
+    document.getElementById('btn-task-mid').addEventListener('click', () => { playerData.money += 2500; syncToFirebase({ player: playerData }); });
+    document.getElementById('btn-task-hard').addEventListener('click', () => { playerData.money += 4000; syncToFirebase({ player: playerData }); });
 
-    document.getElementById('btn-money-yeah').addEventListener('click', () => {
-        playerData.money += 1000;
-        syncToFirebase({ player: playerData });
-    });
+    document.getElementById('btn-pass-inc').addEventListener('click', () => { playerData.pass += 1; syncToFirebase({ player: playerData }); });
+    document.getElementById('btn-pass-dec').addEventListener('click', () => { if (playerData.pass > 0) playerData.pass -= 1; syncToFirebase({ player: playerData }); });
 
-    // 交稅：薪俸稅 (-$1000, -$500, -10%)
-    document.getElementById('btn-tax-1000').addEventListener('click', () => {
-        playerData.money = Math.max(0, playerData.money - 1000);
-        syncToFirebase({ player: playerData });
-    });
-
-    document.getElementById('btn-tax-500').addEventListener('click', () => {
-        playerData.money = Math.max(0, playerData.money - 500);
-        syncToFirebase({ player: playerData });
-    });
-
-    document.getElementById('btn-tax-10pct').addEventListener('click', () => {
-        playerData.money = Math.floor(playerData.money * 0.9);
-        syncToFirebase({ player: playerData });
-    });
-
-    // Task 任務獎勵 (+1000, +2500, +4000)
-    document.getElementById('btn-task-easy').addEventListener('click', () => {
-        playerData.money += 1000;
-        syncToFirebase({ player: playerData });
-    });
-
-    document.getElementById('btn-task-mid').addEventListener('click', () => {
-        playerData.money += 2500;
-        syncToFirebase({ player: playerData });
-    });
-
-    document.getElementById('btn-task-hard').addEventListener('click', () => {
-        playerData.money += 4000;
-        syncToFirebase({ player: playerData });
-    });
-
-    // 通行證加減控制
-    document.getElementById('btn-pass-inc').addEventListener('click', () => {
-        playerData.pass += 1;
-        syncToFirebase({ player: playerData });
-    });
-
-    document.getElementById('btn-pass-dec').addEventListener('click', () => {
-        if (playerData.pass > 0) {
-            playerData.pass -= 1;
-            syncToFirebase({ player: playerData });
-        }
-    });
-
-    // 🔴 全局 Reset 重設所有數據
     document.getElementById('btn-global-reset').addEventListener('click', () => {
-        if (confirm("確定要重設所有遊戲數據嗎？此操作無法復原！")) {
-            const initialData = {
+        if (confirm("確定要重設所有遊戲數據嗎？")) {
+            stopDebtTimer();
+            set(gameStateRef, {
                 player: { money: 0, pass: 1, items: 0, lands: 1 },
                 items: {
                     dice: { purchased: 0, usable: 0, price: 2000 },
                     jail: { purchased: 0, usable: 0, price: 1000 },
                     tunnel: { purchased: 0, usable: 0, price: 2000 }
                 },
+                bank: { borrowed: 0, totalDebt: 0, debtTimerText: "00:00:00" },
                 subsidies: { cssa: 0, allowance: 0, transport: 0 },
                 confirmedPosition: -1
-            };
-            set(gameStateRef, initialData);
+            });
         }
     });
 
-    // --- 3. 資助頁面邏輯 ---
+    // 資助申請邏輯
     document.getElementById('btn-apply-cssa').addEventListener('click', () => {
         if (playerData.money >= 3000) return alert("不符合申請條件！資產需少於 $3000。");
         playerData.money += 1700;
@@ -969,9 +937,9 @@
         syncToFirebase({ player: playerData, subsidies: subsidyCounts });
     });
 
-    // --- 4. 商店購買與使用邏輯 ---
+    // 商店邏輯
     function updateShopState() {
-        playerData.items = itemsData.dice.usable + itemsData.jail.usable + itemsData.tunnel.usable;
+        playerData.items = (itemsData.dice.usable || 0) + (itemsData.jail.usable || 0) + (itemsData.tunnel.usable || 0);
         syncToFirebase({ player: playerData, items: itemsData });
     }
 
@@ -979,14 +947,14 @@
         const item = itemsData[itemKey];
         if (playerData.money < item.price) return alert(`金額不足！需要 $${item.price}`);
         playerData.money -= item.price;
-        item.purchased += 1;
-        item.usable += addUsableCount;
+        item.purchased = (item.purchased || 0) + 1;
+        item.usable = (item.usable || 0) + addUsableCount;
         updateShopState();
     }
 
     function useItem(itemKey) {
         const item = itemsData[itemKey];
-        if (item.usable <= 0) return alert("目前沒有可以使用的該道具！");
+        if (!item.usable || item.usable <= 0) return alert("目前沒有可以使用的該道具！");
         item.usable -= 1;
         updateShopState();
     }
@@ -1004,25 +972,7 @@
         syncToFirebase({ player: playerData });
     });
 
-    // --- 5. 棋盤繪製 ---
-    let selectedCellIndex = null;
-    const board = document.getElementById('game-board');
-
-    for (let i = 0; i < 40; i++) {
-        const cell = document.createElement('div');
-        cell.className = 'cell';
-        cell.dataset.index = i;
-        cell.addEventListener('click', () => {
-            if (selectedCellIndex !== null) {
-                const prevCell = board.querySelector(`[data-index='${selectedCellIndex}']`);
-                if (prevCell) prevCell.classList.remove('selected');
-            }
-            selectedCellIndex = i;
-            cell.classList.add('selected');
-        });
-        board.appendChild(cell);
-    }
-
+    // 棋盤定位邏輯
     document.getElementById('btn-confirm-pos').addEventListener('click', () => {
         if (selectedCellIndex === null) return alert("請先選擇一個棋盤格子！");
         syncToFirebase({ confirmedPosition: selectedCellIndex });
@@ -1037,14 +987,7 @@
         syncToFirebase({ confirmedPosition: -1 });
     });
 
-    // --- 6. 時間與倒計時邏輯 ---
-    function formatTime(sec) {
-        const h = String(Math.floor(sec / 3600)).padStart(2, '0');
-        const m = String(Math.floor((sec % 3600) / 60)).padStart(2, '0');
-        const s = String(sec % 60).padStart(2, '0');
-        return `${h}:${m}:${s}`;
-    }
-
+    // 時間邏輯
     let timerInterval = null;
     let totalSeconds = 120 * 60;
 
@@ -1099,3 +1042,4 @@
 
 </body>
 </html>
+
