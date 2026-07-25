@@ -1683,6 +1683,35 @@
     });
 
     renderLandChips();
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+<script>
+    // 💡 請確保這組 firebaseConfig 與你的 Display 內的一模一樣
+    const firebaseConfig = {
+        apiKey: "AIzaSyAiEI_WuLV1va-mooABk6e5TmegK-45cAg",
+  authDomain: "unitepoly-bb65a.firebaseapp.com",
+  databaseURL: "https://unitepoly-bb65a-default-rtdb.firebaseio.com",
+  projectId: "unitepoly-bb65a",
+  storageBucket: "unitepoly-bb65a.firebasestorage.app",
+  messagingSenderId: "1014615394934",
+  appId: "1:1014615394934:web:26958994ec19e037742d57"
+    };
+
+    // 初始化 Firebase
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
+    const db = firebase.database();
+    const gameStateRef = db.ref('gameState');
+
+    // 正確的資料同步函數
+    function syncToFirebase(dataObj) {
+        gameStateRef.update(dataObj).catch(err => console.error("Firebase 同步失敗:", err));
+    }
+
+    // --- 之後保留 Controller (3).html 裏面原本所有的遊戲邏輯、按鈕事件、計時器等完整代碼 ---
+</script>
+
 </script>
 
 </body>
