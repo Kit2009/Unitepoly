@@ -941,31 +941,25 @@
     </div>
 </div>
 
-   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-<script>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getDatabase, ref, update, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
+    // 原本正確的 Firebase 設定
     const firebaseConfig = {
         apiKey: "AIzaSyAiEI_WuLV1va-mooABk6e5TmegK-45cAg",
-  authDomain: "unitepoly-bb65a.firebaseapp.com",
-  databaseURL: "https://unitepoly-bb65a-default-rtdb.firebaseio.com",
-  projectId: "unitepoly-bb65a",
-  storageBucket: "unitepoly-bb65a.firebasestorage.app",
-  messagingSenderId: "1014615394934",
-  appId: "1:1014615394934:web:26958994ec19e037742d57"
+        authDomain: "unitepoly-bb65a.firebaseapp.com",
+        databaseURL: "https://unitepoly-bb65a-default-rtdb.firebaseio.com",
+        projectId: "unitepoly-bb65a",
+        storageBucket: "unitepoly-bb65a.firebasestorage.app",
+        messagingSenderId: "1014615394934",
+        appId: "1:1014615394934:web:26958994ec19e037742d57"
     };
 
-    // 初始化 Firebase
-    if (!firebase.apps.length) {
-        firebase.initializeApp(firebaseConfig);
-    }
-    const db = firebase.database();
-    const gameStateRef = db.ref('gameState');
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const gameStateRef = ref(db, 'gameState');
 
-    // 修改同步函數，改用兼容版的 .update()
-    function syncToFirebase(dataObj) {
-        gameStateRef.update(dataObj).catch(err => console.error("Firebase 同步失敗:", err));
-    }
     // 40 個格子的詳細設定 (包含對應圖片路徑 bgImage)
     const LAND_CONFIG = {
         0:  { name: "Task", isSpecial: true, bgImage: "images/cell_0.png" },
@@ -1033,6 +1027,8 @@
     let observatoryState = { visible: false, timerSeconds: 15 * 60, running: false, discountActive: false };
     let obsInterval = null;
 
+    let ruleState = { currentCard: 1, visible: true };
+
     let debtInterval = null;
     let debtElapsedSeconds = 0;
 
@@ -1065,7 +1061,7 @@
         });
     });
 
-    // 渲染 40 格棋盤（純圖片代替文字，用 title 作為滑鼠懸停提示）
+    // 渲染 40 格棋盤
     let selectedCellIndex = null;
     const board = document.getElementById('game-board');
     for (let i = 0; i < 40; i++) {
@@ -1075,7 +1071,7 @@
         
         const config = LAND_CONFIG[i];
         if (config) {
-            cell.title = config.name; // 滑鼠懸停時可看到名稱
+            cell.title = config.name;
             if (config.bgImage) {
                 cell.style.backgroundImage = `url('${config.bgImage}')`;
             }
@@ -1156,8 +1152,10 @@
 
     // 買地
     function executeBuyLand(idx) {
+        if (idx === null || idx === undefined) return alert("請先選擇土地格子！");
         const config = LAND_CONFIG[idx];
-        if (!config || config.isSpecial) return;
+        if (!config || config.isSpecial) return alert("無法在功能格子上買地！");
+        if (landsData[config.name]?.owned) return alert("這塊土地已被購買！");
         if (playerData.money < config.price) return alert("金額不足以購買此土地！");
         playerData.money -= config.price;
         playerData.lands = (playerData.lands || 0) + 1;
@@ -1179,8 +1177,10 @@
 
     // 起樓
     function executeBuildHouse(idx) {
+        if (idx === null || idx === undefined) return alert("請先選擇土地格子！");
         const config = LAND_CONFIG[idx];
         if (!config || !landsData[config.name] || !landsData[config.name].owned) return alert("請先擁有土地！");
+        if (landsData[config.name].built) return alert("該土地已經建有樓房！");
         if (playerData.money < config.buildCost) return alert("金額不足起樓！");
         playerData.money -= config.buildCost;
         landsData[config.name].built = true;
@@ -1193,6 +1193,7 @@
 
     // 拆樓
     function executeDemolishHouse(idx) {
+        if (idx === null || idx === undefined) return alert("請先選擇土地格子！");
         const config = LAND_CONFIG[idx];
         if (!config || !landsData[config.name] || !landsData[config.name].built) return alert("該土地未起樓！");
         landsData[config.name].built = false;
@@ -1204,8 +1205,9 @@
 
     // 賣地 / 賣樓
     function executeSellLand(idx) {
+        if (idx === null || idx === undefined) return alert("請先選擇土地格子！");
         const config = LAND_CONFIG[idx];
-        if (!config || !landsData[config.name]) return;
+        if (!config || !landsData[config.name]) return alert("未擁有此土地！");
         const land = landsData[config.name];
         
         let refund = 0;
@@ -1231,6 +1233,11 @@
     document.getElementById('btn-build-house').addEventListener('click', () => executeBuildHouse(selectedCellIndex));
     document.getElementById('btn-sell-land').addEventListener('click', () => executeSellLand(selectedCellIndex));
 
+    document.getElementById('btn-building-buy').addEventListener('click', () => executeBuyLand(selectedCellIndex));
+    document.getElementById('btn-building-build').addEventListener('click', () => executeBuildHouse(selectedCellIndex));
+    document.getElementById('btn-building-demolish').addEventListener('click', () => executeDemolishHouse(selectedCellIndex));
+    document.getElementById('btn-building-sell').addEventListener('click', () => executeSellLand(selectedCellIndex));
+
     function renderLandChips() {
         const container = document.getElementById('land-chip-container');
         if (!container) return;
@@ -1253,6 +1260,10 @@
                 btn.style.backgroundColor = '#9ca3af';
             }
 
+            if (selectedCellIndex === parseInt(idx)) {
+                btn.classList.add('active');
+            }
+
             btn.addEventListener('click', () => {
                 document.querySelectorAll('.btn-land-chip').forEach(c => c.classList.remove('active'));
                 btn.classList.add('active');
@@ -1262,11 +1273,6 @@
             container.appendChild(btn);
         });
     }
-
-    document.getElementById('btn-building-buy').addEventListener('click', () => executeBuyLand(selectedCellIndex));
-    document.getElementById('btn-building-build').addEventListener('click', () => executeBuildHouse(selectedCellIndex));
-    document.getElementById('btn-building-demolish').addEventListener('click', () => executeDemolishHouse(selectedCellIndex));
-    document.getElementById('btn-building-sell').addEventListener('click', () => executeSellLand(selectedCellIndex));
 
     function startHouseTimer(landName) {
         if (houseTimers[landName]) clearInterval(houseTimers[landName]);
@@ -1288,6 +1294,8 @@
     function renderBuildingLists() {
         const ownedLandsContainer = document.getElementById('owned-lands-list');
         const ownedHousesContainer = document.getElementById('owned-houses-list');
+        if (!ownedLandsContainer || !ownedHousesContainer) return;
+        
         ownedLandsContainer.innerHTML = '';
         ownedHousesContainer.innerHTML = '';
 
@@ -1305,7 +1313,7 @@
                 const secs = String(item.timer % 60).padStart(2, '0');
                 tr.innerHTML = `
                     <td>${name}</td>
-                    <td style="color:var(--accent-green);">+${item.income}</td>
+                    <td style="color:var(--accent-green);">+$${item.income}</td>
                     <td>${mins}:${secs}</td>
                 `;
                 ownedHousesContainer.appendChild(tr);
@@ -1343,6 +1351,26 @@
         });
     });
 
+    // 突發頁面 - 規則卡切換
+    document.getElementById('btn-rule-1').addEventListener('click', () => {
+        ruleState.currentCard = 1;
+        syncToFirebase({ ruleState });
+    });
+    document.getElementById('btn-rule-2').addEventListener('click', () => {
+        ruleState.currentCard = 2;
+        syncToFirebase({ ruleState });
+    });
+    document.getElementById('btn-rule-prev').addEventListener('click', () => {
+        if (ruleState.currentCard > 1) {
+            ruleState.currentCard--;
+            syncToFirebase({ ruleState });
+        }
+    });
+    document.getElementById('btn-rule-next').addEventListener('click', () => {
+        ruleState.currentCard++;
+        syncToFirebase({ ruleState });
+    });
+
     // 天文台倒計時控制
     function startObservatoryTimer() {
         if (obsInterval) clearInterval(obsInterval);
@@ -1378,7 +1406,7 @@
         syncToFirebase({ observatoryState });
     });
 
-    // 商店頁面 - 道具與通行證（購買通行證後直接加到 playerData.pass）
+    // 商店頁面 - 道具與通行證
     function updateShopState() {
         playerData.items = (itemsData.dice.usable || 0) + (itemsData.jail.usable || 0) + (itemsData.tunnel.usable || 0);
         syncToFirebase({ playerData, items: itemsData });
@@ -1405,7 +1433,7 @@
         if (playerData.money < price) return alert(`金額不足！需要 $${price}`);
         playerData.money -= price;
         itemsData.pass.purchased = (itemsData.pass.purchased || 0) + 1;
-        playerData.pass = (playerData.pass || 0) + 1; // 💡 購買通行證後直接加進通行證總數
+        playerData.pass = (playerData.pass || 0) + 1;
         syncToFirebase({ playerData, items: itemsData });
     });
 
@@ -1439,7 +1467,7 @@
         syncToFirebase({ playerData, subsidies: subsidyCounts });
     });
 
-    // 銀行頁面邏輯（頭半個鐘免息，之後每半個鐘加收借錢 15% 利息）
+    // 銀行頁面邏輯
     function startDebtTimer() {
         if (debtInterval) clearInterval(debtInterval);
         debtElapsedSeconds = 0;
@@ -1574,7 +1602,10 @@
                     tunnel: { purchased: 0, usable: 0, price: 3000 }
                 },
                 bank: { borrowed: 0, totalDebt: 0, debtTimerText: "00:00:00" },
-                subsidies: { cssa: 0, allowance: 0, transport: 0 }
+                subsidies: { cssa: 0, allowance: 0, transport: 0 },
+                ruleState: { currentCard: 1, visible: true },
+                mediaState: { visible: false, playing: false, src: "", type: "video", resetSignal: 0 },
+                observatoryState: { visible: false, timerSeconds: 15 * 60, running: false, discountActive: false }
             });
         }
     });
@@ -1680,38 +1711,15 @@
             observatoryState = data.observatoryState;
             document.getElementById('obs-timer-display').textContent = formatShortTime(observatoryState.timerSeconds);
         }
+
+        if (data.ruleState) {
+            ruleState = data.ruleState;
+            document.getElementById('btn-rule-1')?.classList.toggle('active', ruleState.currentCard === 1);
+            document.getElementById('btn-rule-2')?.classList.toggle('active', ruleState.currentCard === 2);
+        }
     });
 
     renderLandChips();
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-<script>
-    // 💡 請確保這組 firebaseConfig 與你的 Display 內的一模一樣
-    const firebaseConfig = {
-        apiKey: "AIzaSyAiEI_WuLV1va-mooABk6e5TmegK-45cAg",
-  authDomain: "unitepoly-bb65a.firebaseapp.com",
-  databaseURL: "https://unitepoly-bb65a-default-rtdb.firebaseio.com",
-  projectId: "unitepoly-bb65a",
-  storageBucket: "unitepoly-bb65a.firebasestorage.app",
-  messagingSenderId: "1014615394934",
-  appId: "1:1014615394934:web:26958994ec19e037742d57"
-    };
-
-    // 初始化 Firebase
-    if (!firebase.apps.length) {
-        firebase.initializeApp(firebaseConfig);
-    }
-    const db = firebase.database();
-    const gameStateRef = db.ref('gameState');
-
-    // 正確的資料同步函數
-    function syncToFirebase(dataObj) {
-        gameStateRef.update(dataObj).catch(err => console.error("Firebase 同步失敗:", err));
-    }
-
-    // --- 之後保留 Controller (3).html 裏面原本所有的遊戲邏輯、按鈕事件、計時器等完整代碼 ---
-</script>
-
 </script>
 
 </body>
