@@ -34,480 +34,430 @@
             color: var(--text-dark);
         }
 
-        .container {
+        /* 滿版響應式容器 (16:9 比例) */
+        .app-container {
             width: 100%;
-            max-width: 1200px;
+            max-width: 1600px;
+            aspect-ratio: 16 / 9;
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(10px);
+            border: 3px solid var(--border-color);
+            border-radius: 20px;
+            padding: clamp(10px, 1.5vw, 20px);
             display: flex;
             flex-direction: column;
-            gap: clamp(12px, 1.8vw, 18px);
-            position: relative;
+            gap: clamp(10px, 1.2vw, 20px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            overflow: hidden;
         }
 
-        .top-row {
+        /* 頂部玩家資訊列 */
+        .top-bar {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: clamp(10px, 1.5vw, 15px);
+            grid-template-columns: repeat(4, 1fr);
+            gap: clamp(10px, 1.5vw, 20px);
+            height: 12%;
         }
 
-        .status-card {
+        .info-card {
             background: var(--panel-bg);
-            border-radius: 12px;
-            padding: 10px 15px;
-            text-align: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
             border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 8px 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 2px 2px 0px var(--border-color);
         }
 
-        .status-title {
-            font-size: clamp(0.85rem, 1vw, 1rem);
+        .info-card .label {
+            font-size: clamp(0.75rem, 1vw, 1rem);
+            font-weight: 700;
             color: #4b5563;
             margin-bottom: 2px;
         }
 
-        .status-value-large {
-            font-size: clamp(1.5rem, 2.5vw, 2.2rem);
-            font-weight: bold;
-            letter-spacing: 1px;
+        .info-card .value {
+            font-size: clamp(1.1rem, 1.8vw, 2rem);
+            font-weight: 900;
+            color: var(--text-dark);
         }
 
-        .player-bar {
-            background: var(--panel-bg);
-            border-radius: 14px;
-            padding: 16px 24px;
+        .value.money { color: #047857; }
+
+        /* 主內容分欄 (左 7 : 右 3) */
+        .main-content {
             display: flex;
-            flex-wrap: wrap;
-            justify-content: space-around;
+            gap: clamp(10px, 1.5vw, 20px);
+            height: 86%;
+        }
+
+        /* 左側：棋盤區 (佔 70%) */
+        .board-section {
+            flex: 7;
+            background: var(--panel-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 3px 3px 0px var(--border-color);
+            position: relative;
+        }
+
+        .section-title {
+            font-size: clamp(0.9rem, 1.2vw, 1.2rem);
+            font-weight: 800;
+            margin-bottom: 8px;
+            display: flex;
             align-items: center;
-            gap: 15px;
-            font-size: clamp(1.1rem, 1.4vw, 1.3rem);
-            font-weight: bold;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.08);
-            border: 3px solid var(--border-color);
+            gap: 8px;
         }
 
-        .val-green { color: var(--accent-green); font-size: 1.3em; font-weight: 800; }
-        .val-orange { color: var(--accent-orange); font-size: 1.25em; font-weight: 800; }
-
-        .main-container { position: relative; width: 100%; }
-
-        .main-layout {
-            display: grid;
-            grid-template-columns: minmax(350px, 1.6fr) minmax(200px, 0.8fr) minmax(200px, 0.8fr);
-            gap: clamp(12px, 1.8vw, 18px);
-        }
-
-        .board {
-            background: #fff;
-            border: 3.5px solid var(--border-color);
-            border-radius: 18px;
-            aspect-ratio: 1 / 1;
+        /* 棋盤 Grid 格子佈局 */
+        .board-grid {
+            flex: 1;
             display: grid;
             grid-template-columns: repeat(11, 1fr);
             grid-template-rows: repeat(11, 1fr);
-            padding: 5px;
-            gap: 3px;
-            position: relative;
-            width: 100%;
+            gap: 2px;
+            background-color: var(--border-color);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 2px;
         }
 
+        /* 棋盤單一格子外觀 */
+        .board-cell {
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-size: clamp(0.5rem, 0.65vw, 0.8rem);
+            font-weight: 700;
+            text-align: center;
+            padding: 2px;
+            position: relative;
+            user-select: none;
+            line-height: 1.1;
+            word-break: break-all;
+        }
+
+        /* 外圍圈格子 (1~40格) */
+        .board-cell.outer-cell {
+            background-color: #f8fafc;
+        }
+
+        /* 中央空心區域 */
         .board-center {
             grid-column: 2 / 11;
             grid-row: 2 / 11;
-            background-image: url('center-image.jpg');
-            background-size: cover;
-            background-position: center;
-            border-radius: 8px;
-            border: 1px dashed #ccc;
-        }
-
-        .cell {
-            border: 1.5px solid var(--border-color);
-            border-radius: 4px;
-            background: rgba(255, 255, 255, 0.9);
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            z-index: 1;
-            overflow: hidden;
+            background-color: rgba(224, 242, 254, 0.3);
             display: flex;
             justify-content: center;
             align-items: center;
+            font-size: clamp(1.2rem, 2.5vw, 3rem);
+            font-weight: 900;
+            color: rgba(30, 58, 138, 0.2);
+            letter-spacing: 4px;
             position: relative;
         }
 
-        .cell.has-land {
-            border: 4px solid var(--accent-green) !important;
-            box-shadow: 0 0 10px rgba(16, 185, 129, 0.8);
-            z-index: 5;
-        }
-
-        .cell.has-player {
-            border: 4px solid var(--select-yellow) !important;
-            box-shadow: 0 0 12px rgba(250, 204, 21, 1);
+        /* 玩家棋子高亮樣式 */
+        .board-cell.active-player {
+            background-color: var(--select-yellow) !important;
+            border: 2px solid var(--border-color);
             z-index: 10;
+            box-shadow: inset 0 0 0 2px #d97706;
+            animation: pulse 1.5s infinite;
         }
 
-        .cell.has-player.has-land {
-            animation: swapBorder 1s step-end infinite;
+        /* 土地被購買高亮樣式 */
+        .board-cell.owned-land {
+            box-shadow: inset 0 0 0 2px var(--accent-green);
         }
 
-        @keyframes swapBorder {
-            0% { border-color: var(--select-yellow) !important; box-shadow: 0 0 12px rgba(250, 204, 21, 1); }
-            50% { border-color: var(--accent-green) !important; box-shadow: 0 0 12px rgba(16, 185, 129, 1); }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+            100% { transform: scale(1); }
         }
 
-        .cell:nth-child(1)  { grid-column: 1;  grid-row: 1; }
-        .cell:nth-child(2)  { grid-column: 2;  grid-row: 1; }
-        .cell:nth-child(3)  { grid-column: 3;  grid-row: 1; }
-        .cell:nth-child(4)  { grid-column: 4;  grid-row: 1; }
-        .cell:nth-child(5)  { grid-column: 5;  grid-row: 1; }
-        .cell:nth-child(6)  { grid-column: 6;  grid-row: 1; }
-        .cell:nth-child(7)  { grid-column: 7;  grid-row: 1; }
-        .cell:nth-child(8)  { grid-column: 8;  grid-row: 1; }
-        .cell:nth-child(9)  { grid-column: 9;  grid-row: 1; }
-        .cell:nth-child(10) { grid-column: 10; grid-row: 1; }
-        .cell:nth-child(11) { grid-column: 11; grid-row: 1; }
-        .cell:nth-child(12) { grid-column: 11; grid-row: 2; }
-        .cell:nth-child(13) { grid-column: 11; grid-row: 3; }
-        .cell:nth-child(14) { grid-column: 11; grid-row: 4; }
-        .cell:nth-child(15) { grid-column: 11; grid-row: 5; }
-        .cell:nth-child(16) { grid-column: 11; grid-row: 6; }
-        .cell:nth-child(17) { grid-column: 11; grid-row: 7; }
-        .cell:nth-child(18) { grid-column: 11; grid-row: 8; }
-        .cell:nth-child(19) { grid-column: 11; grid-row: 9; }
-        .cell:nth-child(20) { grid-column: 11; grid-row: 10; }
-        .cell:nth-child(21) { grid-column: 11; grid-row: 11; }
-        .cell:nth-child(22) { grid-column: 10; grid-row: 11; }
-        .cell:nth-child(23) { grid-column: 9;  grid-row: 11; }
-        .cell:nth-child(24) { grid-column: 8;  grid-row: 11; }
-        .cell:nth-child(25) { grid-column: 7;  grid-row: 11; }
-        .cell:nth-child(26) { grid-column: 6;  grid-row: 11; }
-        .cell:nth-child(27) { grid-column: 5;  grid-row: 11; }
-        .cell:nth-child(28) { grid-column: 4;  grid-row: 11; }
-        .cell:nth-child(29) { grid-column: 3;  grid-row: 11; }
-        .cell:nth-child(30) { grid-column: 2;  grid-row: 11; }
-        .cell:nth-child(31) { grid-column: 1;  grid-row: 11; }
-        .cell:nth-child(32) { grid-column: 1;  grid-row: 10; }
-        .cell:nth-child(33) { grid-column: 1;  grid-row: 9; }
-        .cell:nth-child(34) { grid-column: 1;  grid-row: 8; }
-        .cell:nth-child(35) { grid-column: 1;  grid-row: 7; }
-        .cell:nth-child(36) { grid-column: 1;  grid-row: 6; }
-        .cell:nth-child(37) { grid-column: 1;  grid-row: 5; }
-        .cell:nth-child(38) { grid-column: 1;  grid-row: 4; }
-        .cell:nth-child(39) { grid-column: 1;  grid-row: 3; }
-        .cell:nth-child(40) { grid-column: 1;  grid-row: 2; }
+        /* 右側：狀態與清單區 (佔 30%) */
+        .status-section {
+            flex: 3;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(8px, 1vw, 12px);
+        }
 
-        .panel {
-            background: #fff;
-            border: 3px solid var(--border-color);
-            border-radius: 16px;
-            padding: 14px;
+        .status-card {
+            background: var(--panel-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: clamp(8px, 1vw, 12px);
+            box-shadow: 2px 2px 0px var(--border-color);
             display: flex;
             flex-direction: column;
         }
 
-        .panel-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-weight: bold;
-            font-size: 1.05rem;
-            margin-bottom: 10px;
+        /* 1. 天文台警告 */
+        .card-observatory {
+            flex: 1.2;
+            background: #fff7ed;
+            border-color: #ea580c;
         }
 
-        .panel-header .count { font-size: 1.35rem; color: var(--accent-orange); }
+        /* 2. 樓房/土地監測 */
+        .card-houses {
+            flex: 2.5;
+            overflow: hidden;
+        }
 
-        .table-header {
+        .house-list {
+            flex: 1;
+            overflow-y: auto;
             display: flex;
-            justify-content: space-between;
-            font-size: 0.8rem;
-            color: #6b7280;
-            margin-bottom: 8px;
-            padding: 0 4px;
+            flex-direction: column;
+            gap: 6px;
+            padding-right: 4px;
+            margin-top: 6px;
         }
 
         .house-item-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 0.85rem;
-            font-weight: bold;
-            padding: 4px 0;
-            border-bottom: 1px dashed #eee;
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 6px 10px;
+            font-size: clamp(0.7rem, 0.85vw, 0.9rem);
+            font-weight: 700;
         }
 
-        .item-list { display: flex; flex-direction: column; gap: 12px; }
-        .item-row { display: flex; justify-content: space-between; align-items: center; }
-        .item-info .title { font-weight: bold; font-size: 0.95rem; }
-        .item-info .price { font-size: 0.75rem; color: #6b7280; }
-        .item-uses { font-size: 1.25rem; font-weight: bold; color: var(--accent-orange); }
-
-        .right-column { display: flex; flex-direction: column; gap: 10px; }
-        .sub-panel { background: #fff; border: 3px solid var(--border-color); border-radius: 16px; padding: 12px 14px; }
-
-        .apply-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.9rem;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-        .apply-row .val { color: var(--accent-orange); font-size: 1.05rem; }
-
-        .debt-title {
-            font-weight: bold;
-            font-size: 0.95rem;
-            margin-bottom: 6px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        /* 3. 破產銀行債務 */
+        .card-bank {
+            flex: 1.2;
+            background: #fef2f2;
+            border-color: #dc2626;
         }
 
-        .debt-timer-badge {
-            font-size: 0.8rem;
-            color: var(--accent-red);
-            font-weight: bold;
-            background: #fee2e2;
-            padding: 2px 6px;
-            border-radius: 4px;
-        }
-
-        .debt-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.85rem;
-            font-weight: bold;
-            margin-bottom: 3px;
-        }
-        .val-red { color: var(--accent-red); font-size: 0.95rem; }
-
-        .notice-box { text-align: center; padding-top: 5px; min-height: 90px; }
-        .notice-title { font-size: 1rem; font-weight: bold; margin: 2px 0; }
-        .notice-time { font-size: 1.1rem; font-weight: bold; }
-
+        /* 媒體播放視訊框 Overlay */
         .media-overlay {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #000;
-            border-radius: 20px;
+            inset: 10px;
+            background: rgba(0, 0, 0, 0.85);
+            border-radius: 12px;
             z-index: 100;
             display: flex;
             justify-content: center;
             align-items: center;
+            color: #fff;
             overflow: hidden;
-            border: 3.5px solid var(--border-color);
         }
 
-        .media-overlay video,
-        .media-overlay img { width: 100%; height: 100%; object-fit: contain; }
-        .hidden { display: none !important; }
+        .media-overlay.hidden {
+            display: none;
+        }
 
-        @media (max-width: 850px) {
-            .main-layout { grid-template-columns: 1fr; }
-            .right-column { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
-            .player-bar { justify-content: space-between; }
+        .media-overlay img, .media-overlay video {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="top-row">
-        <div class="status-card">
-            <div class="status-title">遊戲剩餘時間</div>
-            <div class="status-value-large" id="disp-game-timer">02:00:00</div>
+<div class="app-container">
+    <header class="top-bar">
+        <div class="info-card">
+            <span class="label">玩家金額</span>
+            <span class="value money" id="disp-player-money">$10,000</span>
         </div>
-        <div class="status-card">
-            <div class="status-title">現在時間</div>
-            <div class="status-value-large" id="current-time">00:00:00</div>
+        <div class="info-card">
+            <span class="label">通行證數量</span>
+            <span class="value" id="disp-player-passes">0</span>
         </div>
-    </div>
+        <div class="info-card">
+            <span class="label">擁有道具</span>
+            <span class="value" id="disp-player-items">0</span>
+        </div>
+        <div class="info-card">
+            <span class="label">擁有土地</span>
+            <span class="value" id="disp-player-lands">0</span>
+        </div>
+    </header>
 
-    <div class="player-bar">
-        <div>玩家金額 <span class="val-green" id="disp-money">$0</span></div>
-        <div>通行證數量 <span class="val-orange" id="disp-pass">0</span></div>
-        <div>擁有道具 <span class="val-orange" id="disp-items">0</span></div>
-        <div>擁有土地 <span class="val-orange" id="disp-lands">0</span></div>
-    </div>
+    <main class="main-content">
+        <section class="board-section">
+            <div class="section-title">
+                <span>🎲 實時地圖棋盤</span>
+            </div>
+            
+            <div class="board-grid" id="board-container">
+                </div>
 
-    <div class="main-container">
-        <div class="media-overlay hidden" id="media-box"></div>
+            <div id="media-box" class="media-overlay hidden">
+                </div>
+        </section>
 
-        <div class="main-layout">
-            <div class="board" id="game-board">
-                <div class="board-center"></div>
+        <aside class="status-section">
+            <div class="status-card card-observatory">
+                <div class="section-title" style="color: #c2410c;">
+                    <span>🌀 天文台警告標誌</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 5px;">
+                    <span id="disp-obs-signal" style="font-size: clamp(1rem, 1.4vw, 1.5rem); font-weight: 900; color: #ea580c;">無信號</span>
+                    <span id="disp-obs-timer" style="font-size: clamp(0.9rem, 1.1vw, 1.2rem); font-weight: 800; background: #fff; padding: 2px 8px; border-radius: 6px; border: 1px solid #ea580c;">00:00</span>
+                </div>
             </div>
 
-            <div class="panel">
-                <div class="panel-header">
-                    <span>現有房產</span>
-                    <span class="count" id="disp-land-count">0</span>
+            <div class="status-card card-houses">
+                <div class="section-title">
+                    <span>🏠 已建樓房收益監測</span>
                 </div>
-                <hr style="border: none; border-top: 1px solid #ccc; margin-bottom: 8px;">
-                <div class="table-header">
-                    <span>地方</span>
-                    <span>收入</span>
-                    <span>倒計時</span>
+                <div class="house-list" id="disp-house-container">
+                    <div style="text-align: center; color: #6b7280; font-size: 0.85rem; margin-top: 10px;">尚無興建樓房</div>
                 </div>
-                <div id="disp-house-container" style="display:flex; flex-direction:column; gap:4px;"></div>
             </div>
 
-            <div class="right-column">
-                <div class="panel" style="flex: 1;">
-                    <div class="panel-header" style="margin-bottom: 4px;"><span>現有道具</span></div>
-                    <div style="text-align: right; font-size: 0.65rem; color: #6b7280; margin-bottom: 6px;">使用次數</div>
-                    <div class="item-list">
-                        <div class="item-row">
-                            <div class="item-info"><div class="title">金骰子</div><div class="price">$2000</div></div>
-                            <div class="item-uses" id="disp-dice-uses">0</div>
-                        </div>
-                        <div class="item-row">
-                            <div class="item-info"><div class="title">監獄解放卡</div><div class="price">$1000</div></div>
-                            <div class="item-uses" id="disp-jail-uses">0</div>
-                        </div>
-                        <div class="item-row">
-                            <div class="item-info"><div class="title">隧道卡</div><div class="price">$2000</div></div>
-                            <div class="item-uses" id="disp-tunnel-uses">0</div>
-                        </div>
+            <div class="status-card card-bank">
+                <div class="section-title" style="color: #b91c1c;">
+                    <span>🏦 破產銀行債務狀況</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 5px;">
+                    <div>
+                        <div style="font-size: 0.75rem; color: #7f1d1d; font-weight: 700;">總債務累計</div>
+                        <div id="disp-bank-debt" style="font-size: clamp(1.1rem, 1.5vw, 1.6rem); font-weight: 900; color: #dc2626;">$0</div>
                     </div>
-                </div>
-
-                <div class="sub-panel">
-                    <div class="debt-title">
-                        <span>債務狀態</span>
-                        <span class="debt-timer-badge" id="disp-debt-timer">00:30:00</span>
-                    </div>
-                    <div class="debt-row"><span>借款金額</span><span id="disp-principal-val">$0</span></div>
-                    <div class="debt-row"><span>連本帶利應還</span><span class="val-red" id="disp-total-debt-val">$0</span></div>
-                </div>
-
-                <div class="sub-panel">
-                    <div class="apply-row"><span>申請綜援次數</span><span class="val" id="disp-cssa-count">0</span></div>
-                    <div class="apply-row"><span>申請全津次數</span><span class="val" id="disp-allowance-count">0</span></div>
-                    <div class="apply-row" style="margin-bottom: 0;"><span>申請交補次數</span><span class="val" id="disp-transport-count">0</span></div>
-                </div>
-
-                <div class="sub-panel notice-box">
-                    <div id="notice-content" class="hidden">
-                        <div style="text-align: left; font-weight: bold; font-size: 1.1rem;">?</div>
-                        <hr style="border: none; border-top: 1px solid #000; margin: 2px 0 6px 0;">
-                        <div class="notice-title">天文台通知</div>
-                        <div class="notice-time">00:00</div>
+                    <div style="text-align: right;">
+                        <div style="font-size: 0.75rem; color: #7f1d1d; font-weight: 700;">清繳剩餘時間</div>
+                        <div id="disp-bank-timer" style="font-size: clamp(0.9rem, 1.1vw, 1.2rem); font-weight: 800; background: #fff; padding: 2px 6px; border-radius: 6px; border: 1px solid #dc2626;">00:00:00</div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
+        </aside>
+    </main>
 </div>
 
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-    // 使用正確且對應的資料庫網址
     const firebaseConfig = {
-       apiKey: "AIzaSyAiEI_WuLV1va-mooABk6e5TmegK-45cAg",
-  authDomain: "unitepoly-bb65a.firebaseapp.com",
-  databaseURL: "https://unitepoly-bb65a-default-rtdb.firebaseio.com",
-  projectId: "unitepoly-bb65a",
-  storageBucket: "unitepoly-bb65a.firebasestorage.app",
-  messagingSenderId: "1014615394934",
-  appId: "1:1014615394934:web:26958994ec19e037742d57"
+        databaseURL: "https://hong-kong-monopoly-default-rtdb.asia-southeast1.firebasedatabase.app/"
     };
 
     const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-    const gameStateRef = ref(db, 'gameState');
+    const database = getDatabase(app);
+    const gameRef = ref(database, 'gameState');
 
-    const board = document.getElementById('game-board');
-    for (let i = 0; i < 40; i++) {
-        const cell = document.createElement('div');
-        cell.className = 'cell';
-        cell.dataset.index = i;
-        board.appendChild(cell);
+    // 地塊名稱地圖 (0 - 39)
+    const boardCellNames = [
+        "起點", "灣仔", "社區中心", "銅鑼灣", "繳稅", "中環碼頭", "尖沙咀", "機會", "旺角", "深水埗",
+        "監獄", "九龍塘", "電力公司", "沙田", "大埔", "火車站", "屯門", "命運", "元朗", "荃灣",
+        "免費停車", "西貢", "機會", "赤柱", "石澳", "機場", "數碼港", "科學園", "自來水廠", "中環",
+        "探監", "長洲", "南丫島", "命運", "大嶼山", "港口", "昂坪", "機會", "淺水灣", "太平山"
+    ];
+
+    // 初始化 11x11 棋盤渲染
+    function renderBoard(playerPos = null, landsData = null) {
+        const boardContainer = document.getElementById('board-container');
+        boardContainer.innerHTML = '';
+
+        // 生成 11x11 Grid 地圖索引映射
+        const gridMap = {};
+        for (let i = 0; i < 11; i++) gridMap[`0,${i}`] = i;              // 上邊 (0 ~ 10)
+        for (let i = 1; i < 11; i++) gridMap[`${i},10`] = 10 + i;        // 右邊 (11 ~ 20)
+        for (let i = 9; i >= 0; i--) gridMap[`10,${i}`] = 30 - i;        // 下邊 (21 ~ 30)
+        for (let i = 9; i >= 1; i--) gridMap[`${i},0`] = 40 - i;         // 左邊 (31 ~ 39)
+
+        for (let r = 0; r < 11; r++) {
+            for (let c = 0; c < 11; c++) {
+                // 中央區域 (非外圍圈)
+                if (r > 0 && r < 10 && c > 0 && c < 10) {
+                    if (r === 1 && c === 1) {
+                        const center = document.createElement('div');
+                        center.className = 'board-center';
+                        center.textContent = 'HONG KONG';
+                        boardContainer.appendChild(center);
+                    }
+                    continue;
+                }
+
+                const cellIndex = gridMap[`${r},${c}`];
+                const cell = document.createElement('div');
+                cell.className = 'board-cell outer-cell';
+                
+                const landName = boardCellNames[cellIndex] || `格子 ${cellIndex + 1}`;
+                
+                let cellHtml = `<span>${landName}</span>`;
+
+                // 檢查土地擁有狀態與興建狀況
+                if (landsData && landsData[landName]) {
+                    const landInfo = landsData[landName];
+                    if (landInfo.owned) {
+                        cell.classList.add('owned-land');
+                    }
+                    if (landInfo.built) {
+                        cellHtml += `<span style="color: var(--accent-green); font-size: 0.65rem;">🏠</span>`;
+                    }
+                }
+
+                cell.innerHTML = cellHtml;
+
+                // 高亮玩家當前位置
+                if (playerPos === cellIndex) {
+                    cell.classList.add('active-player');
+                }
+
+                boardContainer.appendChild(cell);
+            }
+        }
     }
 
-    function updateClock() {
-        const now = new Date();
-        const hours = String(now.getHours()).padStart(2, '0');
-        const minutes = String(now.getMinutes()).padStart(2, '0');
-        const seconds = String(now.getSeconds()).padStart(2, '0');
-        document.getElementById('current-time').textContent = `${hours}:${minutes}:${seconds}`;
-    }
-    setInterval(updateClock, 1000);
-    updateClock();
+    // 初次初始化空棋盤
+    renderBoard();
 
-    onValue(gameStateRef, (snapshot) => {
+    // 實時監聽 Firebase 數據同步
+    onValue(gameRef, (snapshot) => {
         const data = snapshot.val();
         if (!data) return;
 
-        // 1. 同步上方遊戲剩餘時間
-        if (data.gameTimerText) {
-            document.getElementById('disp-game-timer').textContent = data.gameTimerText;
-        } else if (data.gameTimer) {
-            document.getElementById('disp-game-timer').textContent = data.gameTimer;
-        }
-
-        // 2. 同步玩家數據
+        // 1. 同步玩家基本資訊 (金額, 通行證, 道具, 土地)
         if (data.player) {
-            document.getElementById('disp-money').textContent = `$${data.player.money || 0}`;
-            document.getElementById('disp-pass').textContent = data.player.pass || 0;
-            document.getElementById('disp-items').textContent = data.player.items || 0;
-            document.getElementById('disp-lands').textContent = data.player.lands || 0;
-            document.getElementById('disp-land-count').textContent = data.player.lands || 0;
+            document.getElementById('disp-player-money').textContent = `$${(data.player.money ?? 0).toLocaleString()}`;
+            document.getElementById('disp-player-passes').textContent = data.player.passes ?? data.player.pass ?? 0;
+            document.getElementById('disp-player-items').textContent = data.player.items ?? 0;
+            document.getElementById('disp-player-lands').textContent = data.player.lands ?? 0;
         }
 
-        if (data.items) {
-            document.getElementById('disp-dice-uses').textContent = data.items.dice?.usable || 0;
-            document.getElementById('disp-jail-uses').textContent = data.items.jail?.usable || 0;
-            document.getElementById('disp-tunnel-uses').textContent = data.items.tunnel?.usable || 0;
+        // 2. 重新渲染棋盤 (更新玩家位置與土地狀態)
+        const currentPos = (data.playerPos !== undefined && data.playerPos !== null) ? Number(data.playerPos) : null;
+        renderBoard(currentPos, data.landsData);
+
+        // 3. 天文台狀態同步
+        if (data.observatoryState) {
+            document.getElementById('disp-obs-signal').textContent = data.observatoryState.signal || "無信號";
+            const sec = data.observatoryState.timerSeconds || 0;
+            const m = String(Math.floor(sec / 60)).padStart(2, '0');
+            const s = String(sec % 60).padStart(2, '0');
+            document.getElementById('disp-obs-timer').textContent = `${m}:${s}`;
         }
 
-        if (data.bank) {
-            document.getElementById('disp-principal-val').textContent = `$${(data.bank.borrowed || 0).toLocaleString()}`;
-            document.getElementById('disp-total-debt-val').textContent = `$${(data.bank.totalDebt || 0).toLocaleString()}`;
-            document.getElementById('disp-debt-timer').textContent = data.bank.debtTimerText || "00:30:00";
-        }
-
-        if (data.subsidies) {
-            document.getElementById('disp-cssa-count').textContent = data.subsidies.cssa || 0;
-            document.getElementById('disp-allowance-count').textContent = data.subsidies.allowance || 0;
-            document.getElementById('disp-transport-count').textContent = data.subsidies.transport || 0;
-        }
-
-        // 3. 棋盤重置與即時玩家位置高亮同步
-        document.querySelectorAll('.cell').forEach(cell => cell.classList.remove('has-player', 'has-land'));
-
-        if (data.landsData) {
-            Object.values(data.landsData).forEach(land => {
-                if (land.owned && land.index !== undefined) {
-                    const targetLandCell = board.querySelector(`[data-index='${land.index}']`);
-                    if (targetLandCell) targetLandCell.classList.add('has-land');
-                }
-            });
-        }
-
-        let pos = undefined;
-        if (data.confirmedPosition !== undefined) pos = data.confirmedPosition;
-        else if (data.position !== undefined) pos = data.position;
-        else if (data.player && data.player.position !== undefined) pos = data.player.position;
-
-        if (pos !== undefined && pos !== null && pos >= 0) {
-            const playerCell = board.querySelector(`[data-index='${pos}']`);
-            if (playerCell) playerCell.classList.add('has-player');
-        }
-
-        // 4. 房產列表渲染
+        // 4. 樓房/土地監測清單同步
         const houseContainer = document.getElementById('disp-house-container');
         houseContainer.innerHTML = '';
+        let hasBuilding = false;
+
         if (data.landsData) {
             Object.entries(data.landsData).forEach(([name, land]) => {
                 if (land.built) {
+                    hasBuilding = true;
                     const row = document.createElement('div');
                     row.className = 'house-item-row';
                     const timerSec = land.timer || 1200;
@@ -515,7 +465,7 @@
                     const secs = String(timerSec % 60).padStart(2, '0');
                     row.innerHTML = `
                         <span>${name}</span>
-                        <span style="color: var(--accent-green);">+$${land.income}</span>
+                        <span style="color: var(--accent-green);">$${land.income || 1000}</span>
                         <span>${mins}:${secs}</span>
                     `;
                     houseContainer.appendChild(row);
@@ -523,7 +473,17 @@
             });
         }
 
-        // 5. 媒體播放狀態同步
+        if (!hasBuilding) {
+            houseContainer.innerHTML = `<div style="text-align: center; color: #6b7280; font-size: 0.85rem; margin-top: 10px;">尚無興建樓房</div>`;
+        }
+
+        // 5. 破產銀行數據同步
+        if (data.bank) {
+            document.getElementById('disp-bank-debt').textContent = `$${(data.bank.totalDebt || 0).toLocaleString()}`;
+            document.getElementById('disp-bank-timer').textContent = data.bank.debtTimerText || "00:00:00";
+        }
+
+        // 6. 媒體播放狀態同步
         const mediaBox = document.getElementById('media-box');
         if (data.mediaState && data.mediaState.visible) {
             mediaBox.classList.remove('hidden');
