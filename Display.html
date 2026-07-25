@@ -165,7 +165,7 @@
             z-index: 10;
         }
 
-        /* 🟢🟡 同一個位置時：隔 0.5 秒變換黃色同綠色 */
+        /* 同一個位置時：隔 0.5 秒變換黃色同綠色 */
         .cell.has-player.has-land {
             animation: swapBorder 1s step-end infinite;
         }
@@ -259,7 +259,6 @@
             padding: 0 4px;
         }
 
-        /* 房產列單條樣式 */
         .house-item-row {
             display: flex;
             justify-content: space-between;
@@ -356,21 +355,19 @@
             font-weight: bold;
         }
 
-        /* 🎬 媒體播放黑框 */
+        /* 全螢幕媒體播放器 */
         .media-overlay {
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
+            width: 100vw;
+            height: 100vh;
             background-color: #000;
-            border-radius: 20px;
-            z-index: 100;
+            z-index: 9999;
             display: flex;
             justify-content: center;
             align-items: center;
             overflow: hidden;
-            border: 3.5px solid var(--border-color);
         }
 
         .media-overlay video,
@@ -384,7 +381,6 @@
             display: none !important;
         }
 
-        /* RWD 響應式佈局 */
         @media (max-width: 850px) {
             .main-layout {
                 grid-template-columns: 1fr;
@@ -403,6 +399,8 @@
     </style>
 </head>
 <body>
+
+<div class="media-overlay hidden" id="media-box"></div>
 
 <div class="container">
     <div class="top-row">
@@ -424,8 +422,6 @@
     </div>
 
     <div class="main-container">
-        <div class="media-overlay hidden" id="media-box"></div>
-
         <div class="main-layout">
             <div class="board" id="game-board">
                 <div class="board-center"></div>
@@ -512,7 +508,7 @@
                         <div style="text-align: left; font-weight: bold; font-size: 1.1rem;">?</div>
                         <hr style="border: none; border-top: 1px solid #000; margin: 2px 0 6px 0;">
                         <div class="notice-title">天文台通知</div>
-                        <div class="notice-time">00:00</div>
+                        <div class="notice-time" id="disp-obs-timer">15:00</div>
                     </div>
                 </div>
             </div>
@@ -524,7 +520,6 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-    // 🔥 Firebase 設定
     const firebaseConfig = {
         apiKey: "AIzaSyAiEI_WuLV1va-mooABk6e5TmegK-45cAg",
         authDomain: "unitepoly-bb65a.firebaseapp.com",
@@ -539,7 +534,6 @@
     const db = getDatabase(app);
     const gameStateRef = ref(db, 'gameState');
 
-    // 💡 1. 自訂 40 個格子的圖片路徑
     const cellImages = [
         '', '', '', '', '', '', '', '', '', '',
         '', '', '', '', '', '', '', '', '', '',
@@ -547,7 +541,6 @@
         '', '', '', '', '', '', '', '', '', ''
     ];
 
-    // 💡 2. 動態渲染 40 個格子
     const board = document.getElementById('game-board');
     for (let i = 0; i < 40; i++) {
         const cell = document.createElement('div');
@@ -561,7 +554,6 @@
         board.appendChild(cell);
     }
 
-    // 💡 3. 更新實時時間
     function updateClock() {
         const now = new Date();
         const hours = String(now.getHours()).padStart(2, '0');
@@ -572,23 +564,55 @@
     setInterval(updateClock, 1000);
     updateClock();
 
-    // 💡 4. Firebase 資料即時同步
+    let lastResetSignal = null;
+
     onValue(gameStateRef, (snapshot) => {
         const data = snapshot.val();
         if (!data) return;
 
-        // 🎬 4.1 控制 Controller 觸發的媒體播放器顯示/隱藏
+        // 🎬 1. 多媒體播放器
         const mediaBox = document.getElementById('media-box');
-        if (data.media && data.media.active && data.media.url) {
+        if (data.mediaState && data.mediaState.visible && data.mediaState.src) {
             mediaBox.classList.remove('hidden');
-            if (data.media.type === 'video') {
-                mediaBox.innerHTML = `<video src="${data.media.url}" autoplay ${data.media.loop ? 'loop' : ''} controls></video>`;
-            } else if (data.media.type === 'image') {
-                mediaBox.innerHTML = `<img src="${data.media.url}" />`;
+
+            const isNewSignal = (data.mediaState.resetSignal !== lastResetSignal);
+            if (isNewSignal || !mediaBox.firstElementChild) {
+                lastResetSignal = data.mediaState.resetSignal;
+                if (data.mediaState.type === 'video') {
+                    mediaBox.innerHTML = `<video id="active-video" src="${data.mediaState.src}" controls></video>`;
+                } else {
+                    mediaBox.innerHTML = `<img src="${data.mediaState.src}" />`;
+                }
+            }
+
+            const videoElem = document.getElementById('active-video');
+            if (videoElem) {
+                if (data.mediaState.playing) {
+                    videoElem.play().catch(() => {});
+                } else {
+                    videoElem.pause();
+                }
             }
         } else {
             mediaBox.classList.add('hidden');
             mediaBox.innerHTML = '';
+        }
+
+        // 🌤️ 2. 天文台通知卡
+        const noticeContent = document.getElementById('notice-content');
+        if (data.observatoryState) {
+            if (data.observatoryState.visible) {
+                noticeContent.classList.remove('hidden');
+            } else {
+                noticeContent.classList.add('hidden');
+            }
+
+            if (data.observatoryState.timerSeconds !== undefined) {
+                const sec = data.observatoryState.timerSeconds;
+                const m = String(Math.floor(sec / 60)).padStart(2, '0');
+                const s = String(sec % 60).padStart(2, '0');
+                document.getElementById('disp-obs-timer').textContent = `${m}:${s}`;
+            }
         }
 
         // 遊戲剩餘時間
@@ -596,14 +620,28 @@
             document.getElementById('disp-game-timer').textContent = data.gameTimerText;
         }
 
-        // 玩家基礎數據
-        if (data.player) {
-            document.getElementById('disp-money').textContent = `$${data.player.money || 0}`;
-            document.getElementById('disp-pass').textContent = data.player.pass || 0;
-            document.getElementById('disp-items').textContent = data.player.items || 0;
-            document.getElementById('disp-lands').textContent = data.player.lands || 0;
-            document.getElementById('disp-land-count').textContent = data.player.lands || 0;
+        // 計算實時土地數量與起樓數量
+        let ownedLandsCount = 0;
+        let builtHousesCount = 0;
+        if (data.landsData) {
+            Object.values(data.landsData).forEach(land => {
+                if (land.owned) ownedLandsCount++;
+                if (land.built) builtHousesCount++;
+            });
         }
+
+        // 玩家基礎數據
+        if (data.playerData) {
+            document.getElementById('disp-money').textContent = `$${data.playerData.money || 0}`;
+            document.getElementById('disp-pass').textContent = data.playerData.pass || 0;
+            document.getElementById('disp-items').textContent = data.playerData.items || 0;
+        }
+        
+        // 實時更新「擁有土地」數量
+        document.getElementById('disp-lands').textContent = ownedLandsCount;
+
+        // 實時更新「現有房產」數目 (即已起樓的數量)
+        document.getElementById('disp-land-count').textContent = builtHousesCount;
 
         // 道具使用次數
         if (data.items) {
@@ -612,7 +650,7 @@
             document.getElementById('disp-tunnel-uses').textContent = data.items.tunnel?.usable || 0;
         }
 
-        // 銀行債務與利息數據同步
+        // 銀行債務數據
         if (data.bank) {
             document.getElementById('disp-principal-val').textContent = `$${(data.bank.borrowed || 0).toLocaleString()}`;
             document.getElementById('disp-total-debt-val').textContent = `$${(data.bank.totalDebt || 0).toLocaleString()}`;
@@ -626,10 +664,9 @@
             document.getElementById('disp-transport-count').textContent = data.subsidies.transport || 0;
         }
 
-        // 棋盤渲染：清除所有高亮邊框
+        // 棋盤高亮
         document.querySelectorAll('.cell').forEach(cell => cell.classList.remove('has-player', 'has-land'));
 
-        // 1. 標記買地的綠色邊框
         if (data.landsData) {
             Object.values(data.landsData).forEach(land => {
                 if (land.owned && land.index !== undefined) {
@@ -641,7 +678,6 @@
             });
         }
 
-        // 2. 標記玩家位置的黃色邊框 (重疊時 CSS 自動觸發 0.5 秒交替閃爍)
         if (data.confirmedPosition !== undefined && data.confirmedPosition >= 0) {
             const playerCell = board.querySelector(`[data-index='${data.confirmedPosition}']`);
             if (playerCell) {
@@ -649,7 +685,7 @@
             }
         }
 
-        // 3. 渲染「現有房產」列表
+        // 現有房產列表渲染
         const houseContainer = document.getElementById('disp-house-container');
         houseContainer.innerHTML = '';
         if (data.landsData) {
