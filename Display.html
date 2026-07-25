@@ -16,37 +16,172 @@
             --select-yellow: #facc15;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        body { background-color: var(--primary-bg); background-image: radial-gradient(circle, #e0f2fe 0%, #bae6fd 100%); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: clamp(10px, 2vw, 20px); color: var(--text-dark); }
-        .container { width: 100%; max-width: 1200px; display: flex; flex-direction: column; gap: clamp(12px, 1.8vw, 18px); position: relative; }
-
-        .top-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: clamp(10px, 1.5vw, 15px); }
-        .status-card { background: var(--panel-bg); border-radius: 12px; padding: 10px 15px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border: 2px solid var(--border-color); }
-        .status-title { font-size: clamp(0.85rem, 1vw, 1rem); color: #4b5563; margin-bottom: 2px; }
-        .status-value-large { font-size: clamp(1.5rem, 2.5vw, 2.2rem); font-weight: bold; letter-spacing: 1px; }
-
-        .player-bar { background: var(--panel-bg); border-radius: 14px; padding: 16px 24px; display: flex; flex-wrap: wrap; justify-content: space-around; align-items: center; gap: 15px; font-size: clamp(1.1rem, 1.4vw, 1.3rem); font-weight: bold; border: 3px solid var(--border-color); }
-        .val-green { color: var(--accent-green); font-size: 1.3em; font-weight: 800; }
-        .val-orange { color: var(--accent-orange); font-size: 1.25em; font-weight: 800; }
-
-        .main-layout { display: grid; grid-template-columns: minmax(350px, 1.6fr) minmax(200px, 0.8fr) minmax(200px, 0.8fr); gap: clamp(12px, 1.8vw, 18px); }
-        .board { background: #fff; border: 3.5px solid var(--border-color); border-radius: 18px; aspect-ratio: 1/1; display: grid; grid-template-columns: repeat(11, 1fr); grid-template-rows: repeat(11, 1fr); padding: 5px; gap: 3px; position: relative; width: 100%; }
-        .board-center { grid-column: 2 / 11; grid-row: 2 / 11; background-image: url('center-image.jpg'); background-size: cover; background-position: center; border-radius: 8px; border: 1px dashed #ccc; }
-
-        .cell { border: 1.5px solid var(--border-color); border-radius: 4px; background: rgba(255, 255, 255, 0.9); background-size: cover; background-position: center; z-index: 1; overflow: hidden; display: flex; justify-content: center; align-items: center; position: relative; }
-
-        /* 格子狀態樣式 */
-        .cell.has-land { border: 4px solid var(--accent-green) !important; box-shadow: 0 0 10px rgba(16, 185, 129, 0.8); z-index: 5; }
-        .cell.has-player { border: 4px solid var(--select-yellow) !important; box-shadow: 0 0 12px rgba(250, 204, 21, 1); z-index: 10; }
-
-        /* 重疊交替閃爍動畫 (0.5秒變換黃綠邊框) */
-        .cell.has-player.has-land { animation: flashBorder 1s infinite alternate; }
-        @keyframes flashBorder {
-            0%, 49% { border-color: var(--select-yellow) !important; box-shadow: 0 0 12px rgba(250, 204, 21, 1); }
-            50%, 100% { border-color: var(--accent-green) !important; box-shadow: 0 0 12px rgba(16, 185, 129, 1); }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
         }
 
-        /* 40 格定位 */
+        body {
+            background-color: var(--primary-bg);
+            background-image: radial-gradient(circle, #e0f2fe 0%, #bae6fd 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: clamp(10px, 2vw, 20px);
+            color: var(--text-dark);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(12px, 1.8vw, 18px);
+            position: relative;
+        }
+
+        /* 頂部資訊欄 */
+        .top-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: clamp(10px, 1.5vw, 15px);
+        }
+
+        .status-card {
+            background: var(--panel-bg);
+            border-radius: 12px;
+            padding: 10px 15px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border: 2px solid var(--border-color);
+        }
+
+        .status-title {
+            font-size: clamp(0.85rem, 1vw, 1rem);
+            color: #4b5563;
+            margin-bottom: 2px;
+        }
+
+        .status-value-large {
+            font-size: clamp(1.5rem, 2.5vw, 2.2rem);
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        /* 玩家數據欄 */
+        .player-bar {
+            background: var(--panel-bg);
+            border-radius: 14px;
+            padding: 16px 24px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            align-items: center;
+            gap: 15px;
+            font-size: clamp(1.1rem, 1.4vw, 1.3rem);
+            font-weight: bold;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.08);
+            border: 3px solid var(--border-color);
+        }
+
+        .val-green { 
+            color: var(--accent-green); 
+            font-size: 1.3em;
+            font-weight: 800;
+        }
+        
+        .val-orange { 
+            color: var(--accent-orange); 
+            font-size: 1.25em;
+            font-weight: 800;
+        }
+
+        .main-container {
+            position: relative;
+            width: 100%;
+        }
+
+        /* 主佈局 */
+        .main-layout {
+            display: grid;
+            grid-template-columns: minmax(350px, 1.6fr) minmax(200px, 0.8fr) minmax(200px, 0.8fr);
+            gap: clamp(12px, 1.8vw, 18px);
+        }
+
+        /* 11x11 棋盤 */
+        .board {
+            background: #fff;
+            border: 3.5px solid var(--border-color);
+            border-radius: 18px;
+            aspect-ratio: 1 / 1;
+            display: grid;
+            grid-template-columns: repeat(11, 1fr);
+            grid-template-rows: repeat(11, 1fr);
+            padding: 5px;
+            gap: 3px;
+            position: relative;
+            width: 100%;
+        }
+
+        .board-center {
+            grid-column: 2 / 11;
+            grid-row: 2 / 11;
+            background-image: url('center-image.jpg');
+            background-size: cover;
+            background-position: center;
+            border-radius: 8px;
+            border: 1px dashed #ccc;
+        }
+
+        .cell {
+            border: 1.5px solid var(--border-color);
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.9);
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: 1;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        /* 買地邊框（綠色底/框） */
+        .cell.has-land {
+            border: 4px solid var(--accent-green) !important;
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.8);
+            z-index: 5;
+        }
+
+        /* 玩家位置高亮黃框 */
+        .cell.has-player {
+            border: 4px solid var(--select-yellow) !important;
+            box-shadow: 0 0 12px rgba(250, 204, 21, 1);
+            z-index: 10;
+        }
+
+        /* 🟢🟡 同一個位置時：隔 0.5 秒變換黃色同綠色 */
+        .cell.has-player.has-land {
+            animation: swapBorder 1s step-end infinite;
+        }
+
+        @keyframes swapBorder {
+            0% {
+                border-color: var(--select-yellow) !important;
+                box-shadow: 0 0 12px rgba(250, 204, 21, 1);
+            }
+            50% {
+                border-color: var(--accent-green) !important;
+                box-shadow: 0 0 12px rgba(16, 185, 129, 1);
+            }
+        }
+
+        /* 格子 1-40 定位 */
         .cell:nth-child(1)  { grid-column: 1;  grid-row: 1; }
         .cell:nth-child(2)  { grid-column: 2;  grid-row: 1; }
         .cell:nth-child(3)  { grid-column: 3;  grid-row: 1; }
@@ -58,6 +193,7 @@
         .cell:nth-child(9)  { grid-column: 9;  grid-row: 1; }
         .cell:nth-child(10) { grid-column: 10; grid-row: 1; }
         .cell:nth-child(11) { grid-column: 11; grid-row: 1; }
+
         .cell:nth-child(12) { grid-column: 11; grid-row: 2; }
         .cell:nth-child(13) { grid-column: 11; grid-row: 3; }
         .cell:nth-child(14) { grid-column: 11; grid-row: 4; }
@@ -67,6 +203,7 @@
         .cell:nth-child(18) { grid-column: 11; grid-row: 8; }
         .cell:nth-child(19) { grid-column: 11; grid-row: 9; }
         .cell:nth-child(20) { grid-column: 11; grid-row: 10; }
+
         .cell:nth-child(21) { grid-column: 11; grid-row: 11; }
         .cell:nth-child(22) { grid-column: 10; grid-row: 11; }
         .cell:nth-child(23) { grid-column: 9;  grid-row: 11; }
@@ -78,6 +215,7 @@
         .cell:nth-child(29) { grid-column: 3;  grid-row: 11; }
         .cell:nth-child(30) { grid-column: 2;  grid-row: 11; }
         .cell:nth-child(31) { grid-column: 1;  grid-row: 11; }
+
         .cell:nth-child(32) { grid-column: 1;  grid-row: 10; }
         .cell:nth-child(33) { grid-column: 1;  grid-row: 9; }
         .cell:nth-child(34) { grid-column: 1;  grid-row: 8; }
@@ -88,16 +226,180 @@
         .cell:nth-child(39) { grid-column: 1;  grid-row: 3; }
         .cell:nth-child(40) { grid-column: 1;  grid-row: 2; }
 
-        .panel { background: #fff; border: 3px solid var(--border-color); border-radius: 16px; padding: 14px; display: flex; flex-direction: column; }
-        .panel-header { display: flex; justify-content: space-between; align-items: center; font-weight: bold; font-size: 1.05rem; margin-bottom: 10px; }
-        .panel-header .count { font-size: 1.35rem; color: var(--accent-orange); }
-        .table-header { display: flex; justify-content: space-between; font-size: 0.8rem; color: #6b7280; margin-bottom: 8px; padding: 0 4px; }
+        /* 面板通用樣式 */
+        .panel {
+            background: #fff;
+            border: 3px solid var(--border-color);
+            border-radius: 16px;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+        }
 
-        .house-row { display: flex; justify-content: space-between; font-size: 0.9rem; font-weight: bold; padding: 4px 0; border-bottom: 1px dashed #eee; }
-        .right-column { display: flex; flex-direction: column; gap: 10px; }
-        .sub-panel { background: #fff; border: 3px solid var(--border-color); border-radius: 16px; padding: 12px 14px; }
-        .apply-row { display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem; font-weight: bold; margin-bottom: 5px; }
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+            font-size: 1.05rem;
+            margin-bottom: 10px;
+        }
+
+        .panel-header .count {
+            font-size: 1.35rem;
+            color: var(--accent-orange);
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: #6b7280;
+            margin-bottom: 8px;
+            padding: 0 4px;
+        }
+
+        /* 房產列單條樣式 */
+        .house-item-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            font-weight: bold;
+            padding: 4px 0;
+            border-bottom: 1px dashed #eee;
+        }
+
+        .item-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .item-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .item-info .title { font-weight: bold; font-size: 0.95rem; }
+        .item-info .price { font-size: 0.75rem; color: #6b7280; }
+        .item-uses { font-size: 1.25rem; font-weight: bold; color: var(--accent-orange); }
+
+        .right-column {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .sub-panel {
+            background: #fff;
+            border: 3px solid var(--border-color);
+            border-radius: 16px;
+            padding: 12px 14px;
+        }
+
+        .apply-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
         .apply-row .val { color: var(--accent-orange); font-size: 1.05rem; }
+
+        .debt-title {
+            font-weight: bold;
+            font-size: 0.95rem;
+            margin-bottom: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .debt-timer-badge {
+            font-size: 0.8rem;
+            color: var(--accent-red);
+            font-weight: bold;
+            background: #fee2e2;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .debt-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            font-weight: bold;
+            margin-bottom: 3px;
+        }
+
+        .val-red { color: var(--accent-red); font-size: 0.95rem; }
+
+        .notice-box {
+            text-align: center;
+            padding-top: 5px;
+            min-height: 90px;
+        }
+
+        .notice-title {
+            font-size: 1rem;
+            font-weight: bold;
+            margin: 2px 0;
+        }
+
+        .notice-time {
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+
+        /* 🎬 媒體播放黑框 */
+        .media-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            border-radius: 20px;
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            border: 3.5px solid var(--border-color);
+        }
+
+        .media-overlay video,
+        .media-overlay img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* RWD 響應式佈局 */
+        @media (max-width: 850px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .right-column {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+                gap: 10px;
+            }
+
+            .player-bar {
+                justify-content: space-between;
+            }
+        }
     </style>
 </head>
 <body>
@@ -121,30 +423,98 @@
         <div>擁有土地 <span class="val-orange" id="disp-lands">0</span></div>
     </div>
 
-    <div class="main-layout">
-        <div class="board" id="game-board">
-            <div class="board-center"></div>
-        </div>
+    <div class="main-container">
+        <div class="media-overlay hidden" id="media-box"></div>
 
-        <div class="panel">
-            <div class="panel-header">
-                <span>現有房產</span>
-                <span class="count" id="disp-land-count">0</span>
+        <div class="main-layout">
+            <div class="board" id="game-board">
+                <div class="board-center"></div>
             </div>
-            <hr style="border: none; border-top: 1px solid #ccc; margin-bottom: 8px;">
-            <div class="table-header">
-                <span>地方</span>
-                <span>收入</span>
-                <span>倒計時</span>
-            </div>
-            <div id="disp-house-list" style="display:flex; flex-direction:column; gap:6px;"></div>
-        </div>
 
-        <div class="right-column">
-            <div class="sub-panel">
-                <div class="apply-row"><span>申請綜援次數</span><span class="val" id="disp-cssa-count">0</span></div>
-                <div class="apply-row"><span>申請全津次數</span><span class="val" id="disp-allowance-count">0</span></div>
-                <div class="apply-row"><span>申請交補次數</span><span class="val" id="disp-transport-count">0</span></div>
+            <div class="panel">
+                <div class="panel-header">
+                    <span>現有房產</span>
+                    <span class="count" id="disp-land-count">0</span>
+                </div>
+                <hr style="border: none; border-top: 1px solid #ccc; margin-bottom: 8px;">
+                <div class="table-header">
+                    <span>地方</span>
+                    <span>收入</span>
+                    <span>倒計時</span>
+                </div>
+                <div id="disp-house-container" style="display:flex; flex-direction:column; gap:4px;"></div>
+            </div>
+
+            <div class="right-column">
+                <div class="panel" style="flex: 1;">
+                    <div class="panel-header" style="margin-bottom: 4px;">
+                        <span>現有道具</span>
+                    </div>
+                    <div style="text-align: right; font-size: 0.65rem; color: #6b7280; margin-bottom: 6px;">使用次數</div>
+                    
+                    <div class="item-list">
+                        <div class="item-row">
+                            <div class="item-info">
+                                <div class="title">金骰子</div>
+                                <div class="price">$2000</div>
+                            </div>
+                            <div class="item-uses" id="disp-dice-uses">0</div>
+                        </div>
+                        <div class="item-row">
+                            <div class="item-info">
+                                <div class="title">監獄解放卡</div>
+                                <div class="price">$1000</div>
+                            </div>
+                            <div class="item-uses" id="disp-jail-uses">0</div>
+                        </div>
+                        <div class="item-row">
+                            <div class="item-info">
+                                <div class="title">隧道卡</div>
+                                <div class="price">$2000</div>
+                            </div>
+                            <div class="item-uses" id="disp-tunnel-uses">0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sub-panel">
+                    <div class="debt-title">
+                        <span>債務狀態</span>
+                        <span class="debt-timer-badge" id="disp-debt-timer">00:30:00</span>
+                    </div>
+                    <div class="debt-row">
+                        <span>借款金額</span>
+                        <span id="disp-principal-val">$0</span>
+                    </div>
+                    <div class="debt-row">
+                        <span>連本帶利應還</span>
+                        <span class="val-red" id="disp-total-debt-val">$0</span>
+                    </div>
+                </div>
+
+                <div class="sub-panel">
+                    <div class="apply-row">
+                        <span>申請綜援次數</span>
+                        <span class="val" id="disp-cssa-count">0</span>
+                    </div>
+                    <div class="apply-row">
+                        <span>申請全津次數</span>
+                        <span class="val" id="disp-allowance-count">0</span>
+                    </div>
+                    <div class="apply-row" style="margin-bottom: 0;">
+                        <span>申請交補次數</span>
+                        <span class="val" id="disp-transport-count">0</span>
+                    </div>
+                </div>
+
+                <div class="sub-panel notice-box">
+                    <div id="notice-content" class="hidden">
+                        <div style="text-align: left; font-weight: bold; font-size: 1.1rem;">?</div>
+                        <hr style="border: none; border-top: 1px solid #000; margin: 2px 0 6px 0;">
+                        <div class="notice-title">天文台通知</div>
+                        <div class="notice-time">00:00</div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -154,6 +524,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
+    // 🔥 Firebase 設定
     const firebaseConfig = {
         apiKey: "AIzaSyAiEI_WuLV1va-mooABk6e5TmegK-45cAg",
         authDomain: "unitepoly-bb65a.firebaseapp.com",
@@ -168,17 +539,48 @@
     const db = getDatabase(app);
     const gameStateRef = ref(db, 'gameState');
 
+    // 💡 1. 自訂 40 個格子的圖片路徑
+    const cellImages = [
+        '', '', '', '', '', '', '', '', '', '',
+        '', '', '', '', '', '', '', '', '', '',
+        '', '', '', '', '', '', '', '', '', '',
+        '', '', '', '', '', '', '', '', '', ''
+    ];
+
+    // 💡 2. 動態渲染 40 個格子
     const board = document.getElementById('game-board');
     for (let i = 0; i < 40; i++) {
         const cell = document.createElement('div');
         cell.className = 'cell';
         cell.dataset.index = i;
+
+        if (cellImages[i]) {
+            cell.style.backgroundImage = `url('${cellImages[i]}')`;
+        }
+
         board.appendChild(cell);
     }
 
+    // 💡 3. 更新實時時間
+    function updateClock() {
+        const now = new Date();
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const seconds = String(now.getSeconds()).padStart(2, '0');
+        document.getElementById('current-time').textContent = `${hours}:${minutes}:${seconds}`;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // 💡 4. Firebase 資料即時同步
     onValue(gameStateRef, (snapshot) => {
         const data = snapshot.val();
         if (!data) return;
+
+        // 遊戲剩餘時間
+        if (data.gameTimerText) {
+            document.getElementById('disp-game-timer').textContent = data.gameTimerText;
+        }
 
         // 玩家基礎數據
         if (data.player) {
@@ -189,45 +591,68 @@
             document.getElementById('disp-land-count').textContent = data.player.lands || 0;
         }
 
-        // 土地綠邊框與玩家黃邊框渲染
-        const cells = board.querySelectorAll('.cell');
-        cells.forEach(c => {
-            c.classList.remove('has-land', 'has-player');
-        });
+        // 道具使用次數
+        if (data.items) {
+            document.getElementById('disp-dice-uses').textContent = data.items.dice?.usable || 0;
+            document.getElementById('disp-jail-uses').textContent = data.items.jail?.usable || 0;
+            document.getElementById('disp-tunnel-uses').textContent = data.items.tunnel?.usable || 0;
+        }
 
-        // 標記土地 (綠邊框)
+        // 銀行債務與利息數據同步
+        if (data.bank) {
+            document.getElementById('disp-principal-val').textContent = `$${(data.bank.borrowed || 0).toLocaleString()}`;
+            document.getElementById('disp-total-debt-val').textContent = `$${(data.bank.totalDebt || 0).toLocaleString()}`;
+            document.getElementById('disp-debt-timer').textContent = data.bank.debtTimerText || "00:30:00";
+        }
+
+        // 申請資助次數
+        if (data.subsidies) {
+            document.getElementById('disp-cssa-count').textContent = data.subsidies.cssa || 0;
+            document.getElementById('disp-allowance-count').textContent = data.subsidies.allowance || 0;
+            document.getElementById('disp-transport-count').textContent = data.subsidies.transport || 0;
+        }
+
+        // 棋盤渲染：清除所有高亮邊框
+        document.querySelectorAll('.cell').forEach(cell => cell.classList.remove('has-player', 'has-land'));
+
+        // 1. 標記買地的綠色邊框
         if (data.landsData) {
-            Object.values(data.landsData).forEach(l => {
-                if (l.owned && l.index !== undefined) {
-                    const targetCell = board.querySelector(`[data-index='${l.index}']`);
-                    if (targetCell) targetCell.classList.add('has-land');
+            Object.values(data.landsData).forEach(land => {
+                if (land.owned && land.index !== undefined) {
+                    const targetLandCell = board.querySelector(`[data-index='${land.index}']`);
+                    if (targetLandCell) {
+                        targetLandCell.classList.add('has-land');
+                    }
                 }
             });
         }
 
-        // 標記玩家位置 (黃邊框，重疊時由 CSS 觸發動畫)
+        // 2. 標記玩家位置的黃色邊框 (重疊時 CSS 自動觸發 0.5 秒交替閃爍)
         if (data.confirmedPosition !== undefined && data.confirmedPosition >= 0) {
             const playerCell = board.querySelector(`[data-index='${data.confirmedPosition}']`);
-            if (playerCell) playerCell.classList.add('has-player');
+            if (playerCell) {
+                playerCell.classList.add('has-player');
+            }
         }
 
-        // 渲染「現有房產」列表及 20 分鐘倒計時
-        const houseListContainer = document.getElementById('disp-house-list');
-        houseListContainer.innerHTML = '';
+        // 3. 渲染「現有房產」列表
+        const houseContainer = document.getElementById('disp-house-container');
+        houseContainer.innerHTML = '';
         if (data.landsData) {
-            Object.entries(data.landsData).forEach(([name, l]) => {
-                if (l.built) {
+            Object.entries(data.landsData).forEach(([name, land]) => {
+                if (land.built) {
                     const row = document.createElement('div');
-                    row.className = 'house-row';
-                    const minutes = String(Math.floor((l.timer || 1200) / 60)).padStart(2, '0');
-                    const seconds = String((l.timer || 1200) % 60).padStart(2, '0');
-                    
+                    row.className = 'house-item-row';
+                    const timerSec = land.timer || 1200;
+                    const mins = String(Math.floor(timerSec / 60)).padStart(2, '0');
+                    const secs = String(timerSec % 60).padStart(2, '0');
+
                     row.innerHTML = `
                         <span>${name}</span>
-                        <span style="color:var(--accent-green);">+${l.income}</span>
-                        <span>${minutes}:${seconds}</span>
+                        <span style="color: var(--accent-green);">+$${land.income}</span>
+                        <span>${mins}:${secs}</span>
                     `;
-                    houseListContainer.appendChild(row);
+                    houseContainer.appendChild(row);
                 }
             });
         }
