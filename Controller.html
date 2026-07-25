@@ -14,6 +14,7 @@
             --accent-orange: #f59e0b;
             --accent-red: #ef4444;
             --select-yellow: #facc15;
+            --btn-darkblue: #1e3a8a;
         }
 
         * {
@@ -104,7 +105,7 @@
         .btn-green { background-color: var(--accent-green); }
         .btn-orange { background-color: var(--accent-orange); }
         .btn-red { background-color: var(--accent-red); }
-        .btn-darkblue { background-color: #1e3a8a; }
+        .btn-darkblue { background-color: var(--btn-darkblue); }
 
         .player-bar {
             background: var(--panel-bg);
@@ -190,7 +191,7 @@
         .board-center {
             grid-column: 2 / 11;
             grid-row: 2 / 11;
-            background-image: url('bg_poly.png'); /* 棋盤中間大圖 */
+            background-image: url('center-image.jpg');
             background-size: cover;
             background-position: center;
             border-radius: 8px;
@@ -276,10 +277,23 @@
 
         .land-box {
             background: #fff;
-            border: 3px solid var(--border-color);
+            border: 3.5px solid var(--border-color);
             border-radius: 16px;
             padding: 12px;
             flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .btn-action-small {
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 6px 12px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            font-size: 0.85rem;
         }
 
         .btn-reset {
@@ -343,6 +357,66 @@
             width: 100%;
             max-width: 400px;
         }
+
+        /* 樓房頁面樣式 */
+        .building-container { display: flex; flex-direction: column; gap: 15px; }
+        .card-panel {
+            background: #fff;
+            border: 3.5px solid var(--border-color);
+            border-radius: 20px;
+            padding: 15px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .panel-header-title { font-size: 1.1rem; font-weight: bold; border-bottom: 2px solid #333; padding-bottom: 5px; }
+        .land-btn-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .btn-land-chip {
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 8px 14px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+        .btn-land-chip.active {
+            outline: 3px solid #facc15;
+            box-shadow: 0 0 8px rgba(250, 204, 21, 0.8);
+        }
+        .action-row { display: flex; gap: 10px; margin-top: 5px; }
+        .btn-large-action {
+            flex: 1;
+            padding: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: white;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .building-tables-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .table-box {
+            background: #fff;
+            border: 3.5px solid var(--border-color);
+            border-radius: 16px;
+            padding: 12px;
+            min-height: 200px;
+        }
+        .table-title { font-weight: bold; font-size: 1.05rem; margin-bottom: 8px; border-bottom: 2px solid #ccc; padding-bottom: 4px;}
+        .list-item { font-size: 1.2rem; font-weight: bold; padding: 4px 0; }
+        .house-table { width: 100%; border-collapse: collapse; text-align: left; }
+        .house-table th, .house-table td { padding: 4px 8px; font-weight: bold; }
 
         /* 資助頁面樣式 */
         .subsidy-card {
@@ -410,6 +484,95 @@
             width: 90px;
             text-align: center;
         }
+
+        /* 突發頁面樣式 */
+        .contingency-container { display: flex; flex-direction: column; gap: 12px; }
+        .contingency-top-card {
+            background: #fff;
+            border: 3.5px solid var(--border-color);
+            border-radius: 20px;
+            padding: 15px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .contingency-title { font-size: 1.1rem; font-weight: bold; border-bottom: 2px solid #ccc; padding-bottom: 4px; }
+        .media-ctrl-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+        .btn-media {
+            padding: 12px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: white;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            cursor: pointer;
+            text-align: center;
+        }
+        .video-btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .btn-video-num {
+            background-color: #eab308;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            padding: 12px;
+            border-radius: 14px;
+            border: 2px solid var(--border-color);
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .contingency-bottom-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 12px;
+        }
+        .obs-card {
+            background: #fff;
+            border: 3.5px solid var(--border-color);
+            border-radius: 20px;
+            padding: 12px 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .obs-timer-row { display: flex; align-items: center; gap: 10px; margin-top: 5px; }
+        .obs-time-text { font-size: 2.2rem; font-weight: 800; color: #1e3a8a; }
+        .btn-blue-sm {
+            background-color: #1e3a8a;
+            color: white;
+            font-size: 0.8rem;
+            font-weight: bold;
+            padding: 6px 10px;
+            border-radius: 8px;
+            border: 2px solid var(--border-color);
+            cursor: pointer;
+        }
+
+        .rule-card {
+            background: #fff;
+            border: 3.5px solid var(--border-color);
+            border-radius: 20px;
+            padding: 12px 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .rule-ctrl-row { display: flex; align-items: center; gap: 10px; }
+        .rule-btn-stack { display: flex; flex-direction: column; gap: 6px; }
+        .btn-rule-circle {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: #1e3a8a;
+            color: white;
+            font-weight: bold;
+            border: 2px solid var(--border-color);
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .btn-rule-circle.active { background-color: var(--accent-green); }
 
         /* 分數頁面樣式 */
         .score-container { display: flex; flex-direction: column; gap: 15px; max-width: 750px; }
@@ -519,15 +682,17 @@
         <div>玩家金額 <span class="val-green" id="ctrl-player-money">$0</span></div>
         <div>通行證數量 <span class="val-orange" id="ctrl-player-pass">1</span></div>
         <div>擁有道具 <span class="val-orange" id="ctrl-player-items">0</span></div>
-        <div>擁有土地 <span class="val-orange" id="ctrl-player-lands">1</span></div>
+        <div>擁有土地 <span class="val-orange" id="ctrl-player-lands">0</span></div>
     </div>
 
     <div class="main-layout">
         <div class="menu-panel">
             <button class="menu-btn active" data-page="board">棋盤</button>
             <button class="menu-btn" data-page="bank">銀行</button>
+            <button class="menu-btn" data-page="building">樓房</button>
             <button class="menu-btn" data-page="subsidy">資助</button>
             <button class="menu-btn" data-page="shop">商店</button>
+            <button class="menu-btn" data-page="contingency">突發</button>
             <button class="menu-btn" data-page="score">分數</button>
         </div>
 
@@ -539,12 +704,23 @@
                     </div>
                     <div class="right-column">
                         <button class="btn-confirm" id="btn-confirm-pos">確定玩家位置</button>
+                        
                         <div class="land-box">
-                            <div style="font-weight: bold; font-size: 0.95rem; margin-bottom: 6px;">已購買土地</div>
-                            <hr style="border: none; border-top: 1px solid #ccc; margin-bottom: 10px;">
-                            <div style="font-weight: bold; font-size: 1.1rem;">埃及</div>
+                            <div style="font-weight: bold; font-size: 0.95rem;" id="land-title">請選擇格子</div>
+                            <hr style="border: none; border-top: 1px solid #ccc;">
+                            
+                            <div id="land-info-display" style="font-size: 0.85rem; display: flex; flex-direction: column; gap: 4px;">
+                                <div>選擇棋盤格子以操作土地</div>
+                            </div>
+
+                            <div id="land-ctrl-btns" style="display: flex; flex-direction: column; gap: 5px; margin-top: 5px;">
+                                <button class="btn-action-small btn-green" id="btn-buy-land" style="display:none;">購買土地</button>
+                                <button class="btn-action-small btn-orange" id="btn-build-house" style="display:none;">起樓</button>
+                                <button class="btn-action-small btn-red" id="btn-sell-land" style="display:none;">賣出土地</button>
+                            </div>
                         </div>
-                        <button class="btn-reset" id="btn-reset-pos">重設</button>
+
+                        <button class="btn-reset" id="btn-reset-pos">重設位置</button>
                     </div>
                 </div>
             </div>
@@ -571,6 +747,42 @@
                         </div>
                     </div>
                     <button class="btn-bankrupt" id="btn-bankrupt">破產</button>
+                </div>
+            </div>
+
+            <div id="page-building" class="content-view">
+                <div class="building-container">
+                    <div class="card-panel">
+                        <div class="panel-header-title">土地狀態</div>
+                        <div class="land-btn-grid" id="land-chip-container">
+                            </div>
+                        <div class="action-row">
+                            <button class="btn-large-action btn-green" id="btn-building-buy">買地</button>
+                            <button class="btn-large-action btn-orange" id="btn-building-build">起樓</button>
+                            <button class="btn-large-action btn-darkblue" id="btn-building-demolish">拆樓</button>
+                            <button class="btn-large-action btn-red" id="btn-building-sell">賣地</button>
+                        </div>
+                    </div>
+
+                    <div class="building-tables-grid">
+                        <div class="table-box">
+                            <div class="table-title">已有土地</div>
+                            <div id="owned-lands-list"></div>
+                        </div>
+                        <div class="table-box">
+                            <div class="table-title">已有樓房</div>
+                            <table class="house-table">
+                                <thead>
+                                    <tr>
+                                        <th>地方</th>
+                                        <th>收入</th>
+                                        <th>倒計時</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="owned-houses-list"></tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -643,6 +855,51 @@
                 </div>
             </div>
 
+            <div id="page-contingency" class="content-view">
+                <div class="contingency-container">
+                    <div class="contingency-top-card">
+                        <div class="contingency-title">突發</div>
+                        <div class="media-ctrl-row">
+                            <button class="btn-media btn-darkblue" id="btn-toggle-player">播放器</button>
+                            <button class="btn-media btn-green" id="btn-media-play">播放</button>
+                            <button class="btn-media btn-red" id="btn-media-pause">暫停</button>
+                            <button class="btn-media btn-orange" id="btn-media-reset">重設</button>
+                        </div>
+                        <div class="video-btn-grid">
+                            <button class="btn-video-num" id="btn-video-1">1</button>
+                            <button class="btn-video-num" id="btn-video-2">2</button>
+                            <button class="btn-video-num" id="btn-video-3">3</button>
+                            <button class="btn-video-num" id="btn-video-4">4</button>
+                        </div>
+                    </div>
+
+                    <div class="contingency-bottom-grid">
+                        <div class="obs-card">
+                            <div class="contingency-title">天文台</div>
+                            <div class="obs-timer-row">
+                                <div class="obs-time-text" id="obs-timer-display">15:00</div>
+                                <button class="btn-blue-sm" id="btn-obs-toggle">顯示</button>
+                                <button class="btn-action-small btn-green" id="btn-obs-start">開始</button>
+                                <button class="btn-action-small btn-orange" id="btn-obs-pause">暫停</button>
+                                <button class="btn-action-small btn-red" id="btn-obs-reset">重新</button>
+                            </div>
+                        </div>
+
+                        <div class="rule-card">
+                            <div class="contingency-title">Rule</div>
+                            <div class="rule-ctrl-row">
+                                <div class="rule-btn-stack">
+                                    <button class="btn-rule-circle active" id="btn-rule-1">1</button>
+                                    <button class="btn-rule-circle" id="btn-rule-2">2</button>
+                                </div>
+                                <button class="btn-circle-arrow btn-arrow-up" id="btn-rule-prev">↑</button>
+                                <button class="btn-circle-arrow btn-arrow-down" id="btn-rule-next">↓</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div id="page-score" class="content-view">
                 <div class="score-container">
                     <div class="score-card">
@@ -705,7 +962,6 @@
     const db = getDatabase(app);
     const gameStateRef = ref(db, 'gameState');
 
-    // 💡 40 個格子的指令圖片網址 (請自行填入圖片檔名或網絡圖片網址)
     const tileImages = [
         'images/tile_0.png', 'images/tile_1.png', 'images/tile_2.png', 'images/tile_3.png',
         'images/tile_4.png', 'images/tile_5.png', 'images/tile_6.png', 'images/tile_7.png',
@@ -719,7 +975,23 @@
         'images/tile_36.png', 'images/tile_37.png', 'images/tile_38.png', 'images/tile_39.png'
     ];
 
-    let playerData = { money: 0, pass: 1, items: 0, lands: 1 };
+    const LAND_CONFIG = {
+        1: { name: "埃及", price: 1000, buildCost: 1000, income: 1200, color: "#10b981" },
+        2: { name: "以色列", price: 1200, buildCost: 1200, income: 1400, color: "#10b981" },
+        3: { name: "巴比倫", price: 1500, buildCost: 1500, income: 1600, color: "#10b981" },
+        4: { name: "耶路撒冷", price: 1800, buildCost: 1800, income: 1800, color: "#f59e0b" },
+        5: { name: "加利利海旁", price: 2000, buildCost: 2000, income: 2000, color: "#f59e0b" },
+        6: { name: "伊甸園", price: 2200, buildCost: 2200, income: 2200, color: "#f59e0b" },
+        7: { name: "羅馬", price: 2500, buildCost: 2500, income: 2500, color: "#f59e0b" },
+        8: { name: "雅典", price: 2800, buildCost: 2800, income: 2800, color: "#f59e0b" },
+        9: { name: "伯利恆", price: 3000, buildCost: 3000, income: 3000, color: "#1e3a8a" },
+        10: { name: "拿撒勒", price: 3500, buildCost: 3500, income: 3500, color: "#1e3a8a" }
+    };
+
+    let landsData = {};
+    let houseTimers = {};
+
+    let playerData = { money: 0, pass: 1, items: 0, lands: 0 };
     let itemsData = {
         dice: { purchased: 0, usable: 0, price: 2000 },
         jail: { purchased: 0, usable: 0, price: 1000 },
@@ -727,6 +999,42 @@
     };
     let bankData = { borrowed: 0, totalDebt: 0, debtTimerText: "00:00:00" };
     let subsidyCounts = { cssa: 0, allowance: 0, transport: 0 };
+
+    // 播放器與多媒體數據
+    let mediaState = {
+        visible: false,
+        playing: false,
+        src: "",
+        type: "video", // video or image
+        resetSignal: 0
+    };
+
+    // 影片來源設定檔
+    const videoSources = {
+        1: "videos/event1.mp4",
+        2: "videos/event2.mp4",
+        3: "videos/event3.mp4",
+        4: "videos/event4.mp4"
+    };
+
+    // 天文台狀態與連動倒計時
+    let observatoryState = {
+        visible: false,
+        timerSeconds: 15 * 60,
+        running: false,
+        discountActive: false
+    };
+    let obsInterval = null;
+
+    // 規則圖卡狀態
+    let ruleState = {
+        set: 1,
+        pageIndex: 1,
+        images: {
+            1: ["images/rule1_1.png", "images/rule1_2.png"],
+            2: ["images/rule2_1.png", "images/rule2_2.png"]
+        }
+    };
 
     let debtInterval = null;
     let debtSeconds = 30 * 60;
@@ -742,7 +1050,13 @@
         return `${h}:${m}:${s}`;
     }
 
-    // 選單頁面切換
+    function formatShortTime(sec) {
+        const m = String(Math.floor(sec / 60)).padStart(2, '0');
+        const s = String(sec % 60).padStart(2, '0');
+        return `${m}:${s}`;
+    }
+
+    // 切換分頁選單
     document.querySelectorAll('.menu-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
             const pageName = e.currentTarget.dataset.page;
@@ -755,7 +1069,7 @@
         });
     });
 
-    // 建立 40 個格子並渲染圖片
+    // 渲染 40 格棋盤
     let selectedCellIndex = null;
     const board = document.getElementById('game-board');
 
@@ -764,7 +1078,6 @@
         cell.className = 'cell';
         cell.dataset.index = i;
         
-        // 設定圖片背景
         if (tileImages[i]) {
             cell.style.backgroundImage = `url('${tileImages[i]}')`;
         }
@@ -776,11 +1089,331 @@
             }
             selectedCellIndex = i;
             cell.classList.add('selected');
+            updateLandPanel(i);
         });
         board.appendChild(cell);
     }
 
-    // 監聽 Firebase 數據
+    // 渲染「樓房」頁面的土地 Chips
+    let selectedLandChipIndex = 1;
+    const chipContainer = document.getElementById('land-chip-container');
+
+    Object.keys(LAND_CONFIG).forEach(idx => {
+        const cfg = LAND_CONFIG[idx];
+        const btn = document.createElement('button');
+        btn.className = 'btn-land-chip';
+        btn.style.backgroundColor = cfg.color;
+        btn.textContent = cfg.name;
+        btn.dataset.index = idx;
+        if (parseInt(idx) === selectedLandChipIndex) btn.classList.add('active');
+
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.btn-land-chip').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            selectedLandChipIndex = parseInt(idx);
+        });
+        chipContainer.appendChild(btn);
+    });
+
+    // 更新土地控制面板 (棋盤頁面)
+    function updateLandPanel(index) {
+        const titleEl = document.getElementById('land-title');
+        const infoEl = document.getElementById('land-info-display');
+        const buyBtn = document.getElementById('btn-buy-land');
+        const buildBtn = document.getElementById('btn-build-house');
+        const sellBtn = document.getElementById('btn-sell-land');
+
+        buyBtn.style.display = 'none';
+        buildBtn.style.display = 'none';
+        sellBtn.style.display = 'none';
+
+        const config = LAND_CONFIG[index];
+        if (!config) {
+            titleEl.textContent = `格子 #${index}`;
+            infoEl.innerHTML = `<div>此格子不可購買土地</div>`;
+            return;
+        }
+
+        const landState = landsData[config.name] || { owned: false, built: false, timer: 1200 };
+        titleEl.textContent = config.name;
+
+        if (!landState.owned) {
+            infoEl.innerHTML = `
+                <div>土地地價: $${config.price}</div>
+                <div>狀態: 未購買</div>
+            `;
+            buyBtn.style.display = 'block';
+        } else if (!landState.built) {
+            infoEl.innerHTML = `
+                <div>建樓費用: $${config.buildCost}</div>
+                <div>每期收入: +$${config.income}</div>
+                <div>狀態: 已擁有 (未起樓)</div>
+            `;
+            buildBtn.style.display = 'block';
+            sellBtn.style.display = 'block';
+        } else {
+            const mins = String(Math.floor(landState.timer / 60)).padStart(2, '0');
+            const secs = String(landState.timer % 60).padStart(2, '0');
+            infoEl.innerHTML = `
+                <div>每期收入: +$${config.income}</div>
+                <div>收租倒計時: <b>${mins}:${secs}</b></div>
+                <div>狀態: 已起樓</div>
+            `;
+            sellBtn.style.display = 'block';
+        }
+    }
+
+    // 買地
+    function executeBuyLand(idx) {
+        const config = LAND_CONFIG[idx];
+        if (!config) return;
+        if (playerData.money < config.price) return alert("金額不足以購買此土地！");
+
+        playerData.money -= config.price;
+        playerData.lands = (playerData.lands || 0) + 1;
+
+        landsData[config.name] = {
+            index: idx,
+            owned: true,
+            built: false,
+            price: config.price,
+            buildCost: config.buildCost,
+            income: config.income,
+            timer: 1200
+        };
+
+        syncToFirebase({ playerData, landsData });
+        if (selectedCellIndex === idx) updateLandPanel(idx);
+    }
+
+    // 起樓
+    function executeBuildHouse(idx) {
+        const config = LAND_CONFIG[idx];
+        if (!config || !landsData[config.name] || !landsData[config.name].owned) return alert("請先擁有土地！");
+
+        if (playerData.money < config.buildCost) return alert("金額不足起樓！");
+
+        playerData.money -= config.buildCost;
+        landsData[config.name].built = true;
+        landsData[config.name].timer = 1200;
+
+        startHouseTimer(config.name);
+        syncToFirebase({ playerData, landsData });
+        if (selectedCellIndex === idx) updateLandPanel(idx);
+    }
+
+    // 拆樓
+    function executeDemolishHouse(idx) {
+        const config = LAND_CONFIG[idx];
+        if (!config || !landsData[config.name] || !landsData[config.name].built) return alert("該土地未起樓！");
+
+        landsData[config.name].built = false;
+        if (houseTimers[config.name]) clearInterval(houseTimers[config.name]);
+
+        syncToFirebase({ landsData });
+        if (selectedCellIndex === idx) updateLandPanel(idx);
+    }
+
+    // 賣地 / 賣樓 (70% 折扣連動機制)
+    function executeSellLand(idx) {
+        const config = LAND_CONFIG[idx];
+        if (!config || !landsData[config.name]) return;
+
+        // 若天文台倒計時生效中，退款率為 70%，否則退款率為 50%
+        const rate = observatoryState.discountActive ? 0.70 : 0.50;
+        const refund = Math.floor(config.price * rate);
+
+        if (confirm(`確定賣出 ${config.name}？將退回 (${Math.floor(rate * 100)}%) $${refund}`)) {
+            playerData.money += refund;
+            playerData.lands = Math.max(0, playerData.lands - 1);
+
+            if (houseTimers[config.name]) clearInterval(houseTimers[config.name]);
+            delete landsData[config.name];
+
+            syncToFirebase({ playerData, landsData });
+            if (selectedCellIndex === idx) updateLandPanel(idx);
+        }
+    }
+
+    // 棋盤與樓房頁面按鈕事件綁定
+    document.getElementById('btn-buy-land').addEventListener('click', () => executeBuyLand(selectedCellIndex));
+    document.getElementById('btn-build-house').addEventListener('click', () => executeBuildHouse(selectedCellIndex));
+    document.getElementById('btn-sell-land').addEventListener('click', () => executeSellLand(selectedCellIndex));
+
+    document.getElementById('btn-building-buy').addEventListener('click', () => executeBuyLand(selectedLandChipIndex));
+    document.getElementById('btn-building-build').addEventListener('click', () => executeBuildHouse(selectedLandChipIndex));
+    document.getElementById('btn-building-demolish').addEventListener('click', () => executeDemolishHouse(selectedLandChipIndex));
+    document.getElementById('btn-building-sell').addEventListener('click', () => executeSellLand(selectedLandChipIndex));
+
+    function startHouseTimer(landName) {
+        if (houseTimers[landName]) clearInterval(houseTimers[landName]);
+
+        houseTimers[landName] = setInterval(() => {
+            if (landsData[landName] && landsData[landName].timer > 0) {
+                landsData[landName].timer -= 1;
+                if (selectedCellIndex !== null && LAND_CONFIG[selectedCellIndex]?.name === landName) {
+                    updateLandPanel(selectedCellIndex);
+                }
+                syncToFirebase({ landsData });
+            } else {
+                clearInterval(houseTimers[landName]);
+            }
+        }, 1000);
+    }
+
+    // 渲染已有土地與已有樓房列表
+    function renderBuildingLists() {
+        const ownedLandsContainer = document.getElementById('owned-lands-list');
+        const ownedHousesContainer = document.getElementById('owned-houses-list');
+
+        ownedLandsContainer.innerHTML = '';
+        ownedHousesContainer.innerHTML = '';
+
+        Object.keys(landsData).forEach(name => {
+            const item = landsData[name];
+            if (item.owned) {
+                const landDiv = document.createElement('div');
+                landDiv.className = 'list-item';
+                landDiv.textContent = name;
+                ownedLandsContainer.appendChild(landDiv);
+            }
+
+            if (item.built) {
+                const tr = document.createElement('tr');
+                const mins = String(Math.floor(item.timer / 60)).padStart(2, '0');
+                const secs = String(item.timer % 60).padStart(2, '0');
+                tr.innerHTML = `
+                    <td>${name}</td>
+                    <td style="color:var(--accent-green);">+${item.income}</td>
+                    <td>${mins}:${secs}</td>
+                `;
+                ownedHousesContainer.appendChild(tr);
+            }
+        });
+    }
+
+    // 突發頁面 - 播放器控制邏輯
+    document.getElementById('btn-toggle-player').addEventListener('click', () => {
+        mediaState.visible = !mediaState.visible;
+        syncToFirebase({ mediaState });
+    });
+
+    document.getElementById('btn-media-play').addEventListener('click', () => {
+        mediaState.playing = true;
+        syncToFirebase({ mediaState });
+    });
+
+    document.getElementById('btn-media-pause').addEventListener('click', () => {
+        mediaState.playing = false;
+        syncToFirebase({ mediaState });
+    });
+
+    document.getElementById('btn-media-reset').addEventListener('click', () => {
+        mediaState.resetSignal = (mediaState.resetSignal || 0) + 1;
+        mediaState.playing = true;
+        syncToFirebase({ mediaState });
+    });
+
+    [1, 2, 3, 4].forEach(num => {
+        document.getElementById(`btn-video-${num}`).addEventListener('click', () => {
+            mediaState.src = videoSources[num];
+            mediaState.type = "video";
+            mediaState.visible = true;
+            mediaState.playing = true;
+            mediaState.resetSignal = (mediaState.resetSignal || 0) + 1;
+            syncToFirebase({ mediaState });
+        });
+    });
+
+    // 天文台倒計時邏輯 (15 分鐘連動 70% 折扣)
+    function startObservatoryTimer() {
+        if (obsInterval) clearInterval(obsInterval);
+        observatoryState.running = true;
+        observatoryState.discountActive = true;
+
+        obsInterval = setInterval(() => {
+            if (observatoryState.timerSeconds > 0) {
+                observatoryState.timerSeconds--;
+                document.getElementById('obs-timer-display').textContent = formatShortTime(observatoryState.timerSeconds);
+                syncToFirebase({ observatoryState });
+            } else {
+                clearInterval(obsInterval);
+                obsInterval = null;
+                observatoryState.running = false;
+                observatoryState.discountActive = false;
+                document.getElementById('obs-timer-display').textContent = "00:00";
+                syncToFirebase({ observatoryState });
+            }
+        }, 1000);
+    }
+
+    document.getElementById('btn-obs-toggle').addEventListener('click', () => {
+        observatoryState.visible = !observatoryState.visible;
+        syncToFirebase({ observatoryState });
+    });
+
+    document.getElementById('btn-obs-start').addEventListener('click', () => {
+        startObservatoryTimer();
+    });
+
+    document.getElementById('btn-obs-pause').addEventListener('click', () => {
+        if (obsInterval) {
+            clearInterval(obsInterval);
+            obsInterval = null;
+        }
+        observatoryState.running = false;
+        syncToFirebase({ observatoryState });
+    });
+
+    document.getElementById('btn-obs-reset').addEventListener('click', () => {
+        if (obsInterval) {
+            clearInterval(obsInterval);
+            obsInterval = null;
+        }
+        observatoryState.timerSeconds = 15 * 60;
+        observatoryState.running = false;
+        observatoryState.discountActive = false;
+        document.getElementById('obs-timer-display').textContent = "15:00";
+        syncToFirebase({ observatoryState });
+    });
+
+    // Rule 圖卡控制邏輯
+    function setRuleGroup(groupNum) {
+        ruleState.set = groupNum;
+        ruleState.pageIndex = 1;
+        document.getElementById('btn-rule-1').classList.toggle('active', groupNum === 1);
+        document.getElementById('btn-rule-2').classList.toggle('active', groupNum === 2);
+
+        mediaState.src = ruleState.images[groupNum][0];
+        mediaState.type = "image";
+        mediaState.visible = true;
+        syncToFirebase({ ruleState, mediaState });
+    }
+
+    document.getElementById('btn-rule-1').addEventListener('click', () => setRuleGroup(1));
+    document.getElementById('btn-rule-2').addEventListener('click', () => setRuleGroup(2));
+
+    document.getElementById('btn-rule-prev').addEventListener('click', () => {
+        const imgs = ruleState.images[ruleState.set];
+        if (ruleState.pageIndex > 1) {
+            ruleState.pageIndex--;
+            mediaState.src = imgs[ruleState.pageIndex - 1];
+            mediaState.type = "image";
+            syncToFirebase({ ruleState, mediaState });
+        }
+    });
+
+    document.getElementById('btn-rule-next').addEventListener('click', () => {
+        const imgs = ruleState.images[ruleState.set];
+        if (ruleState.pageIndex < imgs.length) {
+            ruleState.pageIndex++;
+            mediaState.src = imgs[ruleState.pageIndex - 1];
+            mediaState.type = "image";
+            syncToFirebase({ ruleState, mediaState });
+        }
+    });
+
+    // 監聽 Firebase 數據同步更新
     onValue(gameStateRef, (snapshot) => {
         const data = snapshot.val();
         if (!data) return;
@@ -790,8 +1423,14 @@
             document.getElementById('ctrl-player-money').textContent = `$${playerData.money}`;
             document.getElementById('ctrl-player-pass').textContent = playerData.pass;
             document.getElementById('ctrl-player-items').textContent = playerData.items;
-            document.getElementById('ctrl-player-lands').textContent = playerData.lands;
+            document.getElementById('ctrl-player-lands').textContent = playerData.lands || 0;
             document.getElementById('score-pass-val').textContent = String(playerData.pass).padStart(2, '0');
+        }
+
+        if (data.landsData) {
+            landsData = data.landsData;
+            if (selectedCellIndex !== null) updateLandPanel(selectedCellIndex);
+            renderBuildingLists();
         }
 
         if (data.items) {
@@ -815,6 +1454,21 @@
             document.getElementById('count-cssa').textContent = subsidyCounts.cssa || 0;
             document.getElementById('count-allowance').textContent = subsidyCounts.allowance || 0;
             document.getElementById('count-transport').textContent = subsidyCounts.transport || 0;
+        }
+
+        if (data.mediaState) {
+            mediaState = data.mediaState;
+        }
+
+        if (data.observatoryState) {
+            observatoryState = data.observatoryState;
+            document.getElementById('obs-timer-display').textContent = formatShortTime(observatoryState.timerSeconds);
+        }
+
+        if (data.ruleState) {
+            ruleState = data.ruleState;
+            document.getElementById('btn-rule-1').classList.toggle('active', ruleState.set === 1);
+            document.getElementById('btn-rule-2').classList.toggle('active', ruleState.set === 2);
         }
     });
 
@@ -902,8 +1556,9 @@
     document.getElementById('btn-global-reset').addEventListener('click', () => {
         if (confirm("確定要重設所有遊戲數據嗎？")) {
             stopDebtTimer();
+            Object.values(houseTimers).forEach(t => clearInterval(t));
             set(gameStateRef, {
-                player: { money: 0, pass: 1, items: 0, lands: 1 },
+                player: { money: 0, pass: 1, items: 0, lands: 0 },
                 items: {
                     dice: { purchased: 0, usable: 0, price: 2000 },
                     jail: { purchased: 0, usable: 0, price: 1000 },
@@ -911,6 +1566,10 @@
                 },
                 bank: { borrowed: 0, totalDebt: 0, debtTimerText: "00:00:00" },
                 subsidies: { cssa: 0, allowance: 0, transport: 0 },
+                landsData: {},
+                mediaState: { visible: false, playing: false, src: "", type: "video", resetSignal: 0 },
+                observatoryState: { visible: false, timerSeconds: 15 * 60, running: false, discountActive: false },
+                ruleState: { set: 1, pageIndex: 1 },
                 confirmedPosition: -1
             });
         }
@@ -987,7 +1646,7 @@
         syncToFirebase({ confirmedPosition: -1 });
     });
 
-    // 時間邏輯
+    // 頂部主遊戲計時器邏輯
     let timerInterval = null;
     let totalSeconds = 120 * 60;
 
@@ -1042,4 +1701,3 @@
 
 </body>
 </html>
-
