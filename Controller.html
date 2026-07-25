@@ -940,11 +940,10 @@
         </div>
     </div>
 </div>
-
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, update, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+<script>
+    // 💡 確保這裡的 firebaseConfig 設定與你的 Display.html 內容完全一樣
     const firebaseConfig = {
         apiKey: "AIzaSyAiEI_WuLV1va-mooABk6e5TmegK-45cAg",
   authDomain: "unitepoly-bb65a.firebaseapp.com",
@@ -955,10 +954,21 @@
   appId: "1:1014615394934:web:26958994ec19e037742d57"
     };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-    const gameStateRef = ref(db, 'gameState');
+    // 初始化 Firebase
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
+    const db = firebase.database();
+    const gameStateRef = db.ref('gameState');
 
+    // 修改同步函數，改用兼容版的 .update()
+    function syncToFirebase(dataObj) {
+        gameStateRef.update(dataObj).catch(err => console.error("Firebase 同步失敗:", err));
+    }
+
+    // --- 之後原本 Controller 裡面的所有業務邏輯、計時器、按鈕事件監聽等維持不變 ---
+</script>
+    
     // 40 個格子的詳細設定 (包含對應圖片路徑 bgImage)
     const LAND_CONFIG = {
         0:  { name: "Task", isSpecial: true, bgImage: "images/cell_0.png" },
