@@ -1192,7 +1192,7 @@
         const btn = document.getElementById(`btn-video-${i}`);
         if (btn) {
             btn.addEventListener('click', () => {
-                mediaState = { visible: true, type: 'video', src: `video/event_${i}.mp4`, playing: true };
+                mediaState = { visible: true, type: 'video', src: `videos/event_${i}.mp4`, playing: true };
                 syncToFirebase({ mediaState: mediaState });
             });
         }
