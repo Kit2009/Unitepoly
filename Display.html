@@ -32,7 +32,7 @@
             align-items: center;
             padding: clamp(10px, 2vw, 20px);
             color: var(--text-dark);
-            overflow: hidden; /* 防止縮放時出現滾動條 */
+            overflow: hidden; /* 防止自動縮放時出現滾動條 */
         }
 
         .container {
@@ -51,7 +51,7 @@
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
             position: relative;
             overflow: hidden;
-            transform-origin: center center; /* 用於自動調節大小 */
+            transform-origin: center center; /* 功能1：自動縮放原點 */
             transition: transform 0.1s ease-out;
         }
 
@@ -107,14 +107,14 @@
             z-index: 2;
         }
 
-        /* 已購買土地：靜態綠色外框 */
+        /* 買地後的綠色外框 */
         .cell.owned-land {
             outline: 4px solid #10b981 !important;
             outline-offset: -4px;
             z-index: 5;
         }
 
-        /* 玩家停留於已購買土地：動態綠黃閃爍邊框 */
+        /* 玩家停留於已購買土地時的動態綠黃閃爍邊框 */
         .cell.owned-land.player-here {
             animation: pulse-green-yellow 1s infinite alternate !important;
             z-index: 10;
@@ -234,7 +234,7 @@
             font-weight: 500;
         }
 
-        /* 修改：全屏多媒體覆蓋區 (改成固定佔據整個螢幕 fixed) */
+        /* 功能2：全屏多媒體覆蓋區 (改成 fixed 全螢幕) */
         .media-overlay {
             position: fixed;
             top: 0;
@@ -255,7 +255,7 @@
         .media-overlay img, .media-overlay video {
             width: 100vw;
             height: 100vh;
-            object-fit: contain; /* 保持圖片/影片比例滿屏展示，不拉伸變形 */
+            object-fit: contain; /* 保持原圖/影片比例全屏展示，不變形 */
         }
     </style>
 </head>
@@ -320,22 +320,20 @@
     const db = getDatabase(app);
     const gameStateRef = ref(db, 'gameState');
 
-    // 新增：自動調節畫面大小 (依據視窗高寬比縮放 container)
+    // 功能1：自動調節畫面大小 (依據視窗高寬自動計算 scale 比例)
     function autoScale() {
         const container = document.getElementById('main-container');
         if (!container) return;
         
-        const windowWidth = window.innerWidth - 30; // 扣除 body padding
+        const windowWidth = window.innerWidth - 30;
         const windowHeight = window.innerHeight - 30;
         
-        // 算出 container 預設寬高與視窗的比例
-        const rect = container.getBoundingClientRect();
         const baseWidth = container.offsetWidth;
         const baseHeight = container.offsetHeight;
         
         const scaleX = windowWidth / baseWidth;
         const scaleY = windowHeight / baseHeight;
-        const scale = Math.min(scaleX, scaleY, 1); // 最高為 1 倍原圖，不破壞排版
+        const scale = Math.min(scaleX, scaleY, 1);
         
         container.style.transform = `scale(${scale})`;
     }
@@ -385,7 +383,7 @@
         }
     }
 
-    // 動態更新 Display 棋盤格子的外框狀態
+    // 動態更新 Display 棋盤格子的外框狀態（買地綠框 / 玩家停留綠黃閃爍）
     function updateBoardLandStyles(landsData, confirmedPosition) {
         if (!landsData) return;
 
@@ -407,14 +405,14 @@
             const isOwned = land && land.owned;
             const isPlayerHere = (confirmedPosition === i);
 
-            // 1. 綠色外框 (已買地)
+            // 1. 已買地：顯示綠色外框
             if (isOwned) {
                 cell.classList.add('owned-land');
             } else {
                 cell.classList.remove('owned-land');
             }
 
-            // 2. 綠黃閃爍 (已買地且玩家位置在此)
+            // 2. 已買地且玩家在此位置：動態閃爍綠黃外框
             if (isOwned && isPlayerHere) {
                 cell.classList.add('player-here');
             } else {
@@ -453,7 +451,7 @@
             }
         }
 
-        // 4. 更新土地外框狀態（買地綠框 / 玩家停留綠黃閃爍）
+        // 4. 調用外框更新函數 (刷新綠框與綠黃閃爍)
         updateBoardLandStyles(data.landsData, data.confirmedPosition);
 
         // 5. 樓房與收益清單更新
@@ -477,7 +475,7 @@
             });
         }
 
-        // 6. 全屏媒體播放器狀態同步
+        // 6. 功能2：全屏媒體播放器狀態同步
         const mediaBox = document.getElementById('media-box');
         if (data.mediaState && data.mediaState.visible) {
             mediaBox.classList.remove('hidden');
