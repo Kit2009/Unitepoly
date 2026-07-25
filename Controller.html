@@ -1440,12 +1440,10 @@
             debtElapsedSeconds++;
             
             if (debtElapsedSeconds <= 1800) {
-                // 頭半小時 (0 ~ 1800秒) 免息
                 bankData.totalDebt = bankData.borrowed;
                 const remainSec = 1800 - debtElapsedSeconds;
                 bankData.debtTimerText = `免息期剩餘 ${formatShortTime(remainSec)}`;
             } else {
-                // 超過半小時後，每滿半小時 (1800秒) 加收一次 15% 複利
                 const periodsAfterFree = Math.floor((debtElapsedSeconds - 1801) / 1800) + 1;
                 let currentDebt = bankData.borrowed;
                 for (let i = 0; i < periodsAfterFree; i++) {
