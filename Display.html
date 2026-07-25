@@ -548,6 +548,39 @@
             mediaBox.classList.add('hidden');
             mediaBox.innerHTML = '';
         }
+                // 6. 天文台通知與倒數同步
+        const noticeContent = document.getElementById('notice-content');
+        const noticeTime = noticeContent.querySelector('.notice-time');
+
+        // 判斷天文台資料是否存在且處於啟用/倒數狀態
+        if (data.observatory && data.observatory.active) {
+            // 移除 hidden 類別以顯示卡片
+            noticeContent.classList.remove('hidden');
+
+            // 如果傳入的是剩餘秒數 (以 15 分鐘 = 900 秒為例)
+            if (typeof data.observatory.timer === 'number') {
+                const totalSecs = data.observatory.timer;
+                if (totalSecs > 0) {
+                    const mins = String(Math.floor(totalSecs / 60)).padStart(2, '0');
+                    const secs = String(totalSecs % 60).padStart(2, '0');
+                    noticeTime.textContent = `${mins}:${secs}`;
+                } else {
+                    // 秒數歸零時隱藏
+                    noticeContent.classList.add('hidden');
+                }
+            } 
+            // 如果傳入的是已格式化的字串 (如 "15:00" 或 "00:00")
+            else if (data.observatory.timerText) {
+                noticeTime.textContent = data.observatory.timerText;
+                if (data.observatory.timerText === "00:00" || data.observatory.timerText === "0:00") {
+                    noticeContent.classList.add('hidden');
+                }
+            }
+        } else {
+            // 未啟動或倒數結束，隱藏卡片
+            noticeContent.classList.add('hidden');
+        }
+
     });
 </script>
 
