@@ -151,31 +151,11 @@
             position: relative;
         }
 
-        /* 玩家位置高亮黃框與棋子標記 */
+        /* 玩家位置高亮黃框（已刪除紅色圓圈樣式） */
         .cell.has-player {
             border: 4px solid var(--select-yellow) !important;
             box-shadow: 0 0 12px rgba(250, 204, 21, 1);
             z-index: 10;
-        }
-
-        .player-token {
-            width: 22px;
-            height: 22px;
-            background-color: #ef4444;
-            border: 2px solid #fff;
-            border-radius: 50%;
-            box-shadow: 0 0 6px rgba(0,0,0,0.6);
-            display: none;
-            animation: bounce 0.6s infinite alternate;
-        }
-
-        @keyframes bounce {
-            from { transform: translateY(0); }
-            to { transform: translateY(-4px); }
-        }
-
-        .cell.has-player .player-token {
-            display: block;
         }
 
         /* 格子 1-40 定位 */
@@ -465,7 +445,7 @@
                 <div class="sub-panel">
                     <div class="debt-title">
                         <span>債務狀態</span>
-                        <span class="debt-timer-badge" id="disp-debt-timer">00:00:00</span>
+                        <span class="debt-timer-badge" id="disp-debt-timer">00:30:00</span>
                     </div>
                     <div class="debt-row">
                         <span>借款金額</span>
@@ -509,7 +489,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-    // 🔥 Firebase 金鑰與設定檔
+    // 🔥 Firebase 設定
     const firebaseConfig = {
         apiKey: "AIzaSyAiEI_WuLV1va-mooABk6e5TmegK-45cAg",
         authDomain: "unitepoly-bb65a.firebaseapp.com",
@@ -524,7 +504,7 @@
     const db = getDatabase(app);
     const gameStateRef = ref(db, 'gameState');
 
-    // 💡 1. 設定 40 個小格子照片（可在這裡填入你的圖片路徑，例如：'images/tile_0.png'）
+    // 💡 1. 自訂 40 個格子的圖片路徑
     const cellImages = [
         '', '', '', '', '', '', '', '', '', '',
         '', '', '', '', '', '', '', '', '', '',
@@ -532,7 +512,7 @@
         '', '', '', '', '', '', '', '', '', ''
     ];
 
-    // 💡 2. 動態渲染 40 個格子與紅色指示燈
+    // 💡 2. 動態渲染 40 個格子
     const board = document.getElementById('game-board');
     for (let i = 0; i < 40; i++) {
         const cell = document.createElement('div');
@@ -543,15 +523,10 @@
             cell.style.backgroundImage = `url('${cellImages[i]}')`;
         }
 
-        // 玩家棋子代表標記
-        const token = document.createElement('div');
-        token.className = 'player-token';
-        cell.appendChild(token);
-
         board.appendChild(cell);
     }
 
-    // 💡 3. 更新實時時鐘
+    // 💡 3. 更新實時時間
     function updateClock() {
         const now = new Date();
         const hours = String(now.getHours()).padStart(2, '0');
@@ -562,12 +537,12 @@
     setInterval(updateClock, 1000);
     updateClock();
 
-    // 💡 4. Firebase 資料即時同步 (解決資料無法更新的 Bug)
+    // 💡 4. Firebase 資料即時同步
     onValue(gameStateRef, (snapshot) => {
         const data = snapshot.val();
         if (!data) return;
 
-        // 遊戲時間倒數
+        // 遊戲剩餘時間
         if (data.gameTimerText) {
             document.getElementById('disp-game-timer').textContent = data.gameTimerText;
         }
@@ -588,21 +563,21 @@
             document.getElementById('disp-tunnel-uses').textContent = data.items.tunnel?.usable || 0;
         }
 
-        // 債務狀態
+        // 銀行債務與利息數據同步
         if (data.bank) {
-            document.getElementById('disp-principal-val').textContent = `$${data.bank.borrowed || 0}`;
-            document.getElementById('disp-total-debt-val').textContent = `$${data.bank.totalDebt || 0}`;
-            document.getElementById('disp-debt-timer').textContent = data.bank.debtTimerText || "00:00:00";
+            document.getElementById('disp-principal-val').textContent = `$${(data.bank.borrowed || 0).toLocaleString()}`;
+            document.getElementById('disp-total-debt-val').textContent = `$${(data.bank.totalDebt || 0).toLocaleString()}`;
+            document.getElementById('disp-debt-timer').textContent = data.bank.debtTimerText || "00:30:00";
         }
 
-        // 資助次數
+        // 申請資助次數
         if (data.subsidies) {
             document.getElementById('disp-cssa-count').textContent = data.subsidies.cssa || 0;
             document.getElementById('disp-allowance-count').textContent = data.subsidies.allowance || 0;
             document.getElementById('disp-transport-count').textContent = data.subsidies.transport || 0;
         }
 
-        // 棋盤玩家定位 (高亮黃框與紅色動態指示燈)
+        // 棋盤玩家定位 (僅顯示黃框高亮)
         document.querySelectorAll('.cell').forEach(cell => cell.classList.remove('has-player'));
         if (data.confirmedPosition !== undefined && data.confirmedPosition >= 0) {
             const targetCell = board.querySelector(`[data-index='${data.confirmedPosition}']`);
@@ -615,4 +590,3 @@
 
 </body>
 </html>
-
