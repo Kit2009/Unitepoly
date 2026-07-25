@@ -356,30 +356,6 @@
             font-weight: bold;
         }
 
-        /* 🎬 媒體播放黑框 */
-        .media-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #000;
-            border-radius: 20px;
-            z-index: 100;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-            border: 3.5px solid var(--border-color);
-        }
-
-        .media-overlay video,
-        .media-overlay img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
-
         .hidden {
             display: none !important;
         }
@@ -424,8 +400,6 @@
     </div>
 
     <div class="main-container">
-        <div class="media-overlay hidden" id="media-box"></div>
-
         <div class="main-layout">
             <div class="board" id="game-board">
                 <div class="board-center"></div>
