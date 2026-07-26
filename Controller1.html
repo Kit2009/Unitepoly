@@ -963,10 +963,12 @@
         });
     });
 
-    // 建立 40 個格子並渲染圖片
+    // 修正後的程式碼：
     let selectedCellIndex = null;
     const board = document.getElementById('game-board');
+    board.innerHTML = ''; // 1. 先清空容器，移除原有的 board-center
 
+    // 2. 依序生成 0 ~ 39 號格子 (對應 nth-child 1 ~ 40)
     for (let i = 0; i < 40; i++) {
         const cell = document.createElement('div');
         cell.className = 'cell';
@@ -986,6 +988,11 @@
         });
         board.appendChild(cell);
     }
+
+    // 3. 40 個格子放完後，最後才放中間的背景圖區域 (就不會影響 nth-child(1~40))
+    const centerDiv = document.createElement('div');
+    centerDiv.className = 'board-center';
+    board.appendChild(centerDiv);
 
     // 渲染土地 Chips 與列表
     function renderLandChips() {
