@@ -407,9 +407,9 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-
 
-    // 使用正確且對應的資料庫網址
+        // 使用正確且對應的資料庫網址
     const firebaseConfig = {
        apiKey: "AIzaSyAiEI_WuLV1va-mooABk6e5TmegK-45cAg",
   authDomain: "unitepoly-bb65a.firebaseapp.com",
@@ -424,13 +424,65 @@
     const db = getDatabase(app);
     const gameStateRef = ref(db, 'gameState');
 
-    const board = document.getElementById('game-board');
-    for (let i = 0; i < 40; i++) {
-        const cell = document.createElement('div');
-        cell.className = 'cell';
-        cell.dataset.index = i;
-        board.appendChild(cell);
+// 1. 在這裡定義 40 個格子的圖片路徑陣列 (索引號 0 到 39，對應棋盤 40 個格子)
+// 請將裡面的圖片網址/路徑替換成你的實際圖片檔案 (例如: "images/0.png" 或網址)
+const cellImages = [
+    "images/01.png",   // Index 0  (起點)
+    "images/01_land.png",    // Index 1
+    "images/02_chance.png",  // Index 2
+    "images/03_land.png",    // Index 3
+    "images/04_tax.png",     // Index 4
+    "images/05_land.png",    // Index 5
+    "images/06_land.png",    // Index 6
+    "images/07_chance.png",  // Index 7
+    "images/08_land.png",    // Index 8
+    "images/09_land.png",    // Index 9
+    "images/10_jail.png",    // Index 10 (監獄/過路)
+    "images/11_land.png",    // Index 11
+    "images/12_land.png",    // Index 12
+    "images/13_land.png",    // Index 13
+    "images/14_land.png",    // Index 14
+    "images/15_land.png",    // Index 15
+    "images/16_chance.png",  // Index 16
+    "images/17_land.png",    // Index 17
+    "images/18_land.png",    // Index 18
+    "images/19_land.png",    // Index 19
+    "images/20_park.png",    // Index 20 (免費停車)
+    "images/21_land.png",    // Index 21
+    "images/22_chance.png",  // Index 22
+    "images/23_land.png",    // Index 23
+    "images/24_land.png",    // Index 24
+    "images/25_land.png",    // Index 25
+    "images/26_land.png",    // Index 26
+    "images/27_land.png",    // Index 27
+    "images/28_land.png",    // Index 28
+    "images/29_land.png",    // Index 29
+    "images/30_gotojail.png",// Index 30 (入獄)
+    "images/31_land.png",    // Index 31
+    "images/32_land.png",    // Index 32
+    "images/33_chance.png",  // Index 33
+    "images/34_land.png",    // Index 34
+    "images/35_land.png",    // Index 35
+    "images/36_land.png",    // Index 36
+    "images/37_land.png",    // Index 37
+    "images/38_tax.png",     // Index 38
+    "images/39_land.png"     // Index 39
+];
+
+// 2. 生成 40 個格子並填入相應圖片背景
+const board = document.getElementById('game-board');
+for (let i = 0; i < 40; i++) {
+    const cell = document.createElement('div');
+    cell.className = 'cell';
+    cell.dataset.index = i;
+
+    // 如果該位置有設定圖片，則寫入 background-image
+    if (cellImages[i]) {
+        cell.style.backgroundImage = `url('${cellImages[i]}')`;
     }
+
+    board.appendChild(cell);
+}
 
     function updateClock() {
         const now = new Date();
@@ -445,6 +497,7 @@
     onValue(gameStateRef, (snapshot) => {
         const data = snapshot.val();
         if (!data) return;
+
 
         // 1. 同步上方遊戲剩餘時間
         if (data.gameTimerText) {
