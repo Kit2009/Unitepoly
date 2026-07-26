@@ -26,28 +26,27 @@
         body {
             background-color: var(--primary-bg);
             background-image: radial-gradient(circle, #e0f2fe 0%, #bae6fd 100%);
-            width: 100vw;
-            height: 100vh;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: hidden;
+            padding: clamp(10px, 2vw, 20px);
             color: var(--text-dark);
         }
 
         .container {
-            width: 1200px;
+            width: 100%;
+            max-width: 1200px;
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: clamp(12px, 1.8vw, 18px);
             position: relative;
-            transform-origin: center center;
         }
 
         .top-row {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 15px;
+            gap: clamp(10px, 1.5vw, 15px);
         }
 
         .status-card {
@@ -60,13 +59,13 @@
         }
 
         .status-title {
-            font-size: 0.9rem;
+            font-size: clamp(0.85rem, 1vw, 1rem);
             color: #4b5563;
             margin-bottom: 2px;
         }
 
         .status-value-large {
-            font-size: 2rem;
+            font-size: clamp(1.5rem, 2.5vw, 2.2rem);
             font-weight: bold;
             letter-spacing: 1px;
         }
@@ -80,7 +79,7 @@
             justify-content: space-around;
             align-items: center;
             gap: 15px;
-            font-size: 1.2rem;
+            font-size: clamp(1.1rem, 1.4vw, 1.3rem);
             font-weight: bold;
             box-shadow: 0 3px 6px rgba(0,0,0,0.08);
             border: 3px solid var(--border-color);
@@ -94,7 +93,7 @@
         .main-layout {
             display: grid;
             grid-template-columns: minmax(350px, 1.6fr) minmax(200px, 0.8fr) minmax(200px, 0.8fr);
-            gap: 15px;
+            gap: clamp(12px, 1.8vw, 18px);
         }
 
         .board {
@@ -124,7 +123,7 @@
         .cell {
             border: 1.5px solid var(--border-color);
             border-radius: 4px;
-            background: rgba(255, 255, 255, 0.9);
+            background-color: rgba(255, 255, 255, 0.9);
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -136,18 +135,21 @@
             position: relative;
         }
 
+        /* 買了土地：綠框 */
         .cell.has-land {
             border: 4px solid var(--accent-green) !important;
             box-shadow: 0 0 10px rgba(16, 185, 129, 0.8);
             z-index: 5;
         }
 
+        /* 玩家位置：黃框 */
         .cell.has-player {
             border: 4px solid var(--select-yellow) !important;
             box-shadow: 0 0 12px rgba(250, 204, 21, 1);
             z-index: 10;
         }
 
+        /* 玩家位於自己買的土地：黃綠閃爍 */
         .cell.has-player.has-land {
             animation: swapBorder 1s step-end infinite;
         }
@@ -288,31 +290,36 @@
         .notice-title { font-size: 1rem; font-weight: bold; margin: 2px 0; }
         .notice-time { font-size: 1.1rem; font-weight: bold; }
 
-        /* 修改：全屏媒體播放器 */
         .media-overlay {
-            position: fixed;
+            position: absolute;
             top: 0;
             left: 0;
-            width: 100vw;
-            height: 100vh;
+            width: 100%;
+            height: 100%;
             background-color: #000;
-            border-radius: 0;
-            z-index: 99999;
+            border-radius: 20px;
+            z-index: 100;
             display: flex;
             justify-content: center;
             align-items: center;
             overflow: hidden;
-            border: none;
+            border: 3.5px solid var(--border-color);
         }
 
         .media-overlay video,
         .media-overlay img { width: 100%; height: 100%; object-fit: contain; }
         .hidden { display: none !important; }
+
+        @media (max-width: 850px) {
+            .main-layout { grid-template-columns: 1fr; }
+            .right-column { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
+            .player-bar { justify-content: space-between; }
+        }
     </style>
 </head>
 <body>
 
-<div class="container" id="game-container">
+<div class="container">
     <div class="top-row">
         <div class="status-card">
             <div class="status-title">遊戲剩餘時間</div>
@@ -401,103 +408,56 @@
     </div>
 </div>
 
-<script>
-    // 自動按裝置畫面大小調節並保持原始比例
-    function autoScale() {
-        const container = document.getElementById('game-container');
-        const targetWidth = 1200;
-        const targetHeight = 820;
-
-        const scaleX = window.innerWidth / targetWidth;
-        const scaleY = window.innerHeight / targetHeight;
-        const scale = Math.min(scaleX, scaleY) * 0.95;
-
-        container.style.transform = `scale(${scale})`;
-    }
-
-    window.addEventListener('resize', autoScale);
-    window.addEventListener('DOMContentLoaded', autoScale);
-</script>
-
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-    // 使用正確且對應的資料庫網址
     const firebaseConfig = {
-       apiKey: "AIzaSyAiEI_WuLV1va-mooABk6e5TmegK-45cAg",
-  authDomain: "unitepoly-bb65a.firebaseapp.com",
-  databaseURL: "https://unitepoly-bb65a-default-rtdb.firebaseio.com",
-  projectId: "unitepoly-bb65a",
-  storageBucket: "unitepoly-bb65a.firebasestorage.app",
-  messagingSenderId: "1014615394934",
-  appId: "1:1014615394934:web:26958994ec19e037742d57"
+        apiKey: "AIzaSyAiEI_WuLV1va-mooABk6e5TmegK-45cAg",
+        authDomain: "unitepoly-bb65a.firebaseapp.com",
+        databaseURL: "https://unitepoly-bb65a-default-rtdb.firebaseio.com",
+        projectId: "unitepoly-bb65a",
+        storageBucket: "unitepoly-bb65a.firebasestorage.app",
+        messagingSenderId: "1014615394934",
+        appId: "1:1014615394934:web:26958994ec19e037742d57"
     };
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
     const gameStateRef = ref(db, 'gameState');
 
-// 1. 在這裡定義 40 個格子的圖片路徑陣列 (索引號 0 到 39，對應棋盤 40 個格子)
-// 請將裡面的圖片網址/路徑替換成你的實際圖片檔案 (例如: "images/0.png" 或網址)
-const cellImages = [
-    "images/01.png",   // Index 0  (起點)
-    "images/01_land.png",    // Index 1
-    "images/02_chance.png",  // Index 2
-    "images/03_land.png",    // Index 3
-    "images/04_tax.png",     // Index 4
-    "images/05_land.png",    // Index 5
-    "images/06_land.png",    // Index 6
-    "images/07_chance.png",  // Index 7
-    "images/08_land.png",    // Index 8
-    "images/09_land.png",    // Index 9
-    "images/10_jail.png",    // Index 10 (監獄/過路)
-    "images/11_land.png",    // Index 11
-    "images/12_land.png",    // Index 12
-    "images/13_land.png",    // Index 13
-    "images/14_land.png",    // Index 14
-    "images/15_land.png",    // Index 15
-    "images/16_chance.png",  // Index 16
-    "images/17_land.png",    // Index 17
-    "images/18_land.png",    // Index 18
-    "images/19_land.png",    // Index 19
-    "images/20_park.png",    // Index 20 (免費停車)
-    "images/21_land.png",    // Index 21
-    "images/22_chance.png",  // Index 22
-    "images/23_land.png",    // Index 23
-    "images/24_land.png",    // Index 24
-    "images/25_land.png",    // Index 25
-    "images/26_land.png",    // Index 26
-    "images/27_land.png",    // Index 27
-    "images/28_land.png",    // Index 28
-    "images/29_land.png",    // Index 29
-    "images/30_gotojail.png",// Index 30 (入獄)
-    "images/31_land.png",    // Index 31
-    "images/32_land.png",    // Index 32
-    "images/33_chance.png",  // Index 33
-    "images/34_land.png",    // Index 34
-    "images/35_land.png",    // Index 35
-    "images/36_land.png",    // Index 36
-    "images/37_land.png",    // Index 37
-    "images/38_tax.png",     // Index 38
-    "images/39_land.png"     // Index 39
-];
+    // 40 格地圖名稱對照
+    const mapCells = [
+        { index: 0, name: "Task" }, { index: 1, name: "商店" }, { index: 2, name: "埃及" },
+        { index: 3, name: "銀行" }, { index: 4, name: "Task" }, { index: 5, name: "稅務局" },
+        { index: 6, name: "伊甸園" }, { index: 7, name: "Task" }, { index: 8, name: "社會福利署" },
+        { index: 9, name: "監獄" }, { index: 10, name: "羅馬" }, { index: 11, name: "Task" },
+        { index: 12, name: "Task" }, { index: 13, name: "銀行" }, { index: 14, name: "Task" },
+        { index: 15, name: "巴比倫" }, { index: 16, name: "商店" }, { index: 17, name: "Task" },
+        { index: 18, name: "以色列" }, { index: 19, name: "監獄" }, { index: 20, name: "Task" },
+        { index: 21, name: "社會福利署" }, { index: 22, name: "加利利海旁" }, { index: 23, name: "Task" },
+        { index: 24, name: "銀行" }, { index: 25, name: "拿撒勒" }, { index: 26, name: "Task" },
+        { index: 27, name: "稅務局" }, { index: 28, name: "Task" }, { index: 29, name: "Task" },
+        { index: 30, name: "伯利恆" }, { index: 31, name: "Task" }, { index: 32, name: "耶路撒冷" },
+        { index: 33, name: "社會福利署" }, { index: 34, name: "稅務局" }, { index: 35, name: "Task" },
+        { index: 36, name: "雅典" }, { index: 37, name: "Task" }, { index: 38, name: "通行證" },
+        { index: 39, name: "起點" }
+    ];
 
-// 2. 生成 40 個格子並填入相應圖片背景
-const board = document.getElementById('game-board');
-for (let i = 0; i < 40; i++) {
-    const cell = document.createElement('div');
-    cell.className = 'cell';
-    cell.dataset.index = i;
-
-    // 如果該位置有設定圖片，則寫入 background-image
-    if (cellImages[i]) {
-        cell.style.backgroundImage = `url('${cellImages[i]}')`;
+    // 初始化 40 個小格子，並設定背景圖片
+    const board = document.getElementById('game-board');
+    for (let i = 0; i < 40; i++) {
+        const cell = document.createElement('div');
+        cell.className = 'cell';
+        cell.dataset.index = i;
+        cell.style.backgroundImage = `url('images/cell-${i}.jpg')`;
+        board.appendChild(cell);
     }
 
-    board.appendChild(cell);
-}
+    // 快取多媒體網址（防止重置影片）
+    let currentMediaSrc = "";
 
+    // 即時系統時間更新
     function updateClock() {
         const now = new Date();
         const hours = String(now.getHours()).padStart(2, '0');
@@ -508,18 +468,19 @@ for (let i = 0; i < 40; i++) {
     setInterval(updateClock, 1000);
     updateClock();
 
+    // Firebase 即時連線與同步
     onValue(gameStateRef, (snapshot) => {
         const data = snapshot.val();
         if (!data) return;
 
-        // 1. 同步上方遊戲剩餘時間
-        if (data.gameTimerText) {
-            document.getElementById('disp-game-timer').textContent = data.gameTimerText;
-        } else if (data.gameTimer) {
-            document.getElementById('disp-game-timer').textContent = data.gameTimer;
+        // 1. 同步遊戲剩餘時間
+        const gameTimerEl = document.getElementById('disp-game-timer');
+        const newGameTime = data.gameTimerText || data.gameTimer;
+        if (newGameTime && gameTimerEl.textContent !== newGameTime) {
+            gameTimerEl.textContent = newGameTime;
         }
 
-        // 2. 同步玩家數據
+        // 2. 同步玩家與各項欄位數據
         if (data.player) {
             document.getElementById('disp-money').textContent = `$${data.player.money || 0}`;
             document.getElementById('disp-pass').textContent = data.player.pass || 0;
@@ -546,18 +507,27 @@ for (let i = 0; i < 40; i++) {
             document.getElementById('disp-transport-count').textContent = data.subsidies.transport || 0;
         }
 
-        // 3. 棋盤重置與即時玩家位置高亮同步
+        // 3. 棋盤高亮同步
         document.querySelectorAll('.cell').forEach(cell => cell.classList.remove('has-player', 'has-land'));
 
+        // 買地：綠框
         if (data.landsData) {
-            Object.values(data.landsData).forEach(land => {
-                if (land.owned && land.index !== undefined) {
-                    const targetLandCell = board.querySelector(`[data-index='${land.index}']`);
-                    if (targetLandCell) targetLandCell.classList.add('has-land');
+            Object.entries(data.landsData).forEach(([key, land]) => {
+                if (land.owned) {
+                    let targetIndex = land.index;
+                    if (targetIndex === undefined) {
+                        const found = mapCells.find(c => c.name === key);
+                        if (found) targetIndex = found.index;
+                    }
+                    if (targetIndex !== undefined) {
+                        const targetLandCell = board.querySelector(`[data-index='${targetIndex}']`);
+                        if (targetLandCell) targetLandCell.classList.add('has-land');
+                    }
                 }
             });
         }
 
+        // 玩家位置：黃框（站在已買土地上時黃綠閃爍）
         let pos = undefined;
         if (data.confirmedPosition !== undefined) pos = data.confirmedPosition;
         else if (data.position !== undefined) pos = data.position;
@@ -568,72 +538,79 @@ for (let i = 0; i < 40; i++) {
             if (playerCell) playerCell.classList.add('has-player');
         }
 
-        // 4. 房產列表渲染
+        // 4. 渲染現有房產列表（避免整體重置 DOM 導致倒計時 reset）
         const houseContainer = document.getElementById('disp-house-container');
-        houseContainer.innerHTML = '';
         if (data.landsData) {
-            Object.entries(data.landsData).forEach(([name, land]) => {
-                if (land.built) {
-                    const row = document.createElement('div');
+            const currentBuiltLands = Object.entries(data.landsData).filter(([_, land]) => land.built);
+
+            // 移除已經賣掉或不存在的房產元素
+            const existingRows = houseContainer.querySelectorAll('.house-item-row');
+            existingRows.forEach(row => {
+                const landName = row.dataset.landName;
+                if (!data.landsData[landName] || !data.landsData[landName].built) {
+                    row.remove();
+                }
+            });
+
+            // 新增或更新房產列
+            currentBuiltLands.forEach(([name, land]) => {
+                let row = houseContainer.querySelector(`[data-land-name="${name}"]`);
+                if (!row) {
+                    row = document.createElement('div');
                     row.className = 'house-item-row';
-                    const timerSec = land.timer || 1200;
-                    const mins = String(Math.floor(timerSec / 60)).padStart(2, '0');
-                    const secs = String(timerSec % 60).padStart(2, '0');
+                    row.dataset.landName = name;
+                    
+                    const timerSec = land.timer !== undefined ? land.timer : 1200;
                     row.innerHTML = `
                         <span>${name}</span>
                         <span style="color: var(--accent-green);">+$${land.income}</span>
-                        <span>${mins}:${secs}</span>
+                        <span class="house-timer" data-time="${timerSec}">00:00</span>
                     `;
                     houseContainer.appendChild(row);
+                } else {
+                    const incomeEl = row.children[1];
+                    if (incomeEl) incomeEl.textContent = `+$${land.income}`;
                 }
             });
+        } else {
+            houseContainer.innerHTML = '';
         }
 
-        // 5. 媒體播放狀態同步
+        // 5. 多媒體播放器同步
         const mediaBox = document.getElementById('media-box');
         if (data.mediaState && data.mediaState.visible) {
             mediaBox.classList.remove('hidden');
-            mediaBox.innerHTML = data.mediaState.type === 'video'
-                ? `<video src="${data.mediaState.src}" autoplay ${data.mediaState.playing ? 'controls' : ''}></video>`
-                : `<img src="${data.mediaState.src}" alt="media">`;
+            if (currentMediaSrc !== data.mediaState.src) {
+                currentMediaSrc = data.mediaState.src;
+                mediaBox.innerHTML = data.mediaState.type === 'video'
+                    ? `<video src="${data.mediaState.src}" autoplay ${data.mediaState.playing ? 'controls' : ''}></video>`
+                    : `<img src="${data.mediaState.src}" alt="media">`;
+            }
         } else {
             mediaBox.classList.add('hidden');
             mediaBox.innerHTML = '';
+            currentMediaSrc = "";
         }
     });
-            // 6. 天文台通知與倒數同步
-        const noticeContent = document.getElementById('notice-content');
-        const noticeTime = noticeContent.querySelector('.notice-time');
 
-        // 判斷天文台資料是否存在且處於啟用/倒數狀態
-        if (data.observatory && data.observatory.active) {
-            // 移除 hidden 類別以顯示卡片
-            noticeContent.classList.remove('hidden');
-
-            // 如果傳入的是剩餘秒數 (以 15 分鐘 = 900 秒為例)
-            if (typeof data.observatory.timer === 'number') {
-                const totalSecs = data.observatory.timer;
-                if (totalSecs > 0) {
-                    const mins = String(Math.floor(totalSecs / 60)).padStart(2, '0');
-                    const secs = String(totalSecs % 60).padStart(2, '0');
-                    noticeTime.textContent = `${mins}:${secs}`;
-                } else {
-                    // 秒數歸零時隱藏
-                    noticeContent.classList.add('hidden');
-                }
-            } 
-            // 如果傳入的是已格式化的字串 (如 "15:00" 或 "00:00")
-            else if (data.observatory.timerText) {
-                noticeTime.textContent = data.observatory.timerText;
-                if (data.observatory.timerText === "00:00" || data.observatory.timerText === "0:00") {
-                    noticeContent.classList.add('hidden');
-                }
+    // 每秒自動扣減房產倒計時 (獨立運作，不受 Firebase 刷新干擾)
+    setInterval(() => {
+        const timerElements = document.querySelectorAll('.house-timer');
+        timerElements.forEach(el => {
+            let timeLeft = parseInt(el.dataset.time, 10);
+            if (!isNaN(timeLeft) && timeLeft > 0) {
+                timeLeft--;
+                el.dataset.time = timeLeft;
+                
+                const mins = String(Math.floor(timeLeft / 60)).padStart(2, '0');
+                const secs = String(timeLeft % 60).padStart(2, '0');
+                el.textContent = `${mins}:${secs}`;
+            } else if (timeLeft <= 0) {
+                el.textContent = "已到期";
+                el.style.color = "var(--accent-red)";
             }
-        } else {
-            // 未啟動或倒數結束，隱藏卡片
-            noticeContent.classList.add('hidden');
-        }
-
+        });
+    }, 1000);
 </script>
 
 </body>
