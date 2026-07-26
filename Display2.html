@@ -422,7 +422,6 @@
     const db = getDatabase(app);
     const gameStateRef = ref(db, 'gameState');
 
-    // 1. 定義 40 個格子的圖片路徑陣列 (索引號 0 到 39)
     const cellImages = [
         "images/01.png",        // Index 0  (起點)
         "images/01_land.png",   // Index 1
@@ -466,9 +465,9 @@
         "images/39_land.png"    // Index 39
     ];
 
-    // 2. 清空並依序生成 40 個格子與中間區域 (避免 nth-child 順序錯誤)
+    // 動態生成 40 個格子
     const board = document.getElementById('game-board');
-    board.innerHTML = ''; 
+    board.innerHTML = ''; // 清空容器，防止 nth-child 順序算錯
 
     for (let i = 0; i < 40; i++) {
         const cell = document.createElement('div');
@@ -482,7 +481,7 @@
         board.appendChild(cell);
     }
 
-    // 將中間區域放在 40 個格子之後生成
+    // 將中間區域放在最後生成，避免成為 nth-child(1)
     const centerDiv = document.createElement('div');
     centerDiv.className = 'board-center';
     board.appendChild(centerDiv);
@@ -501,14 +500,12 @@
         const data = snapshot.val();
         if (!data) return;
 
-        // 1. 同步上方遊戲剩餘時間
         if (data.gameTimerText) {
             document.getElementById('disp-game-timer').textContent = data.gameTimerText;
         } else if (data.gameTimer) {
             document.getElementById('disp-game-timer').textContent = data.gameTimer;
         }
 
- // 2. 同步玩家數據
         if (data.player) {
             document.getElementById('disp-money').textContent = `$${data.player.money || 0}`;
             document.getElementById('disp-pass').textContent = data.player.pass || 0;
@@ -535,7 +532,6 @@
             document.getElementById('disp-transport-count').textContent = data.subsidies.transport || 0;
         }
 
-        // 3. 棋盤重置與即時玩家位置高亮同步
         document.querySelectorAll('.cell').forEach(cell => cell.classList.remove('has-player', 'has-land'));
 
         if (data.landsData) {
@@ -557,7 +553,6 @@
             if (playerCell) playerCell.classList.add('has-player');
         }
 
-        // 4. 房產列表渲染
         const houseContainer = document.getElementById('disp-house-container');
         houseContainer.innerHTML = '';
         if (data.landsData) {
@@ -578,7 +573,6 @@
             });
         }
 
-        // 5. 媒體播放狀態同步
         const mediaBox = document.getElementById('media-box');
         if (data.mediaState && data.mediaState.visible) {
             mediaBox.classList.remove('hidden');
