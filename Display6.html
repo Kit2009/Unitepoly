@@ -642,32 +642,44 @@
             houseContainer.innerHTML = '';
         }
 
-        // 5. 多媒體播放器同步 (支援自動播放與聲軌容錯機制)
-        const mediaBox = document.getElementById('media-box');
-        if (data.mediaState && data.mediaState.visible) {
-            mediaBox.classList.remove('hidden');
-            if (currentMediaSrc !== data.mediaState.src) {
-                currentMediaSrc = data.mediaState.src;
-                if (data.mediaState.type === 'video') {
-                    mediaBox.innerHTML = `<video id="active-video" src="${data.mediaState.src}" autoplay playsinline ${data.mediaState.playing ? 'controls' : ''}></video>`;
-                    const videoEl = document.getElementById('active-video');
-                    if (videoEl) {
-                        videoEl.play().catch(() => {
-                            // 若因瀏覽器安全性限制無法帶聲自動播放，自動改為靜音播放
-                            videoEl.muted = true;
-                            videoEl.play();
-                        });
-                    }
-                } else {
-                    mediaBox.innerHTML = `<img src="${data.mediaState.src}" alt="media">`;
+  // 5. 多媒體播放器同步 (支援影片觸發時自動全屏播放)
+const mediaBox = document.getElementById('media-box');
+if (data.mediaState && data.mediaState.visible) {
+    mediaBox.classList.remove('hidden');
+    if (currentMediaSrc !== data.mediaState.src) {
+        currentMediaSrc = data.mediaState.src;
+        
+        if (data.mediaState.type === 'video') {
+            mediaBox.innerHTML = `<video id="active-video" src="${data.mediaState.src}" autoplay playsinline ${data.mediaState.playing ? 'controls' : ''}></video>`;
+            const videoEl = document.getElementById('active-video');
+            
+            if (videoEl) {
+                // 嘗試讓影片自動播放
+                videoEl.play().catch(() => {
+                    videoEl.muted = true; // 若有聲音限制則靜音自動播放
+                    videoEl.play();
+                });
+
+                // 🎬 自動將影片元素推至瀏覽器全屏模式
+                if (videoEl.requestFullscreen) {
+                    videoEl.requestFullscreen().catch(err => console.log("影片全屏受限:", err));
+                } else if (videoEl.webkitRequestFullscreen) { /* Safari / iOS 支援 */
+                    videoEl.webkitRequestFullscreen();
                 }
             }
         } else {
-            mediaBox.classList.add('hidden');
-            mediaBox.innerHTML = '';
-            currentMediaSrc = "";
+            mediaBox.innerHTML = `<img src="${data.mediaState.src}" alt="media">`;
         }
-    });
+    }
+} else {
+    // 退出全屏（如果影片結束或隱藏時）
+    if (document.fullscreenElement && document.exitFullscreen) {
+        document.exitFullscreen().catch(() => {});
+    }
+    mediaBox.classList.add('hidden');
+    mediaBox.innerHTML = '';
+    currentMediaSrc = "";
+}
 
     // 每秒自動扣減房產倒計時
     setInterval(() => {
